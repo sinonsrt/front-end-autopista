@@ -1,12 +1,17 @@
-import React from "react";
-import { Switch, Route } from "react-router-dom";
+import React from 'react';
+import {Switch} from 'react-router-dom';
+import Route from './Route';
 
-import Login from "../pages/Login";
+import Login from '../pages/Login';
+import ExampleForm from '../pages/ExampleForm';
 
 const Routes: React.FC = () => (
-  <Switch>
-    <Route path="/" exact component={Login} />
-  </Switch>
+    <Switch>
+        <Route path="/" exact component={Login} title="Login" isPrivate />
+        <Route path="/ExampleForm" exact component={ExampleForm} title="ExampleForm" />
+
+        {/* <Route component={NotFound} isPrivate title="NotFound" /> */}
+    </Switch>
 );
 
 export default Routes;
