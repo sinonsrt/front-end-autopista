@@ -5,6 +5,7 @@ import Route from './Route';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import ExampleForm from '../pages/ExampleForm';
+import ExampleList from '../pages/ExampleList';
 
 import AccessLevel from '../pages/Admin/AccessLevel'
 import Code from '../pages/Admin/Code'
@@ -22,6 +23,7 @@ const Routes: React.FC = () => (
         <Route path="/register" exact component={Register} title="Register" isPrivate />
 
         <Route path="/exampleForm" exact component={ExampleForm} title="ExampleForm" />
+        <Route path="/ExampleList" exact component={ExampleList} title="ExampleList" />
 
         <Route path="/accessLevel" exact component={AccessLevel} title="AccessLevel" isPrivate />
         <Route path="/code" exact component={Code} title="Code" isPrivate />
