@@ -1,12 +1,4 @@
 import React, { useState } from "react";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import TextInputSearch from "../../components/TextInputSearch";
-import Box from "@material-ui/core/Box";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import Collapse from "@material-ui/core/Collapse";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Table from "@material-ui/core/Table";
@@ -16,30 +8,19 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import {
-  Edit,
-  AttachFile,
-  Delete,
-  WhatsApp,
-  List,
-  Search,
-  KeyboardArrowDown,
-  KeyboardArrowUp,
-} from "@material-ui/icons";
+import { Edit, Delete, List, Search } from "@material-ui/icons";
 import TableFooter from "@material-ui/core/TableFooter";
 import Pagination from "@material-ui/lab/Pagination";
 import {
-  DialogContent,
-  DialogTitle,
+  Button,
+  Grid,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
-  Tooltip,
-  useMediaQuery,
-  Zoom,
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import TextInputSearch from "../../components/TextInputSearch";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -85,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function CollapsibleTable() {
+const ExampleList: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState([
     {
@@ -102,15 +83,15 @@ export default function CollapsibleTable() {
     },
     {
       id: "uuid3",
-      name: "Unipar",
-      phone: "44 44444-4444",
-      address: "edifício tal tal tal",
-    },
-    {
-      id: "uuid4",
       name: "Alfa",
       phone: "33 33333-3333",
       address: "praça tal tal tal",
+    },
+    {
+      id: "uuid4",
+      name: "Unipar",
+      phone: "44 44444-4444",
+      address: "edifício tal tal tal",
     },
   ]);
   const columns = [
@@ -119,9 +100,14 @@ export default function CollapsibleTable() {
     { description: "Endereço", width: "25%" },
     { description: "Ações", width: "0%" },
   ];
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedItemIndex, setSelectedItemIndex] = useState("");
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    id: string
+  ) => {
     setAnchorEl(event.currentTarget);
+    setSelectedItemIndex(id);
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -142,7 +128,7 @@ export default function CollapsibleTable() {
 
   return (
     <>
-      <Typography variant="h5">Listagem</Typography>
+      <Typography variant="h5">Listagem (ações no console)</Typography>
       <p />
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
@@ -153,7 +139,7 @@ export default function CollapsibleTable() {
             variant="contained"
             className={classes.buttonAdd}
             color="primary"
-            onClick={() => console.log("new")}
+            onClick={() => alert("new")}
           >
             Incluir
           </Button>
@@ -181,7 +167,7 @@ export default function CollapsibleTable() {
                 <TableCell>{item.phone}</TableCell>
                 <TableCell>{item.address}</TableCell>
                 <TableCell align="center">
-                  <IconButton onClick={handleClick}>
+                  <IconButton onClick={(event) => handleClick(event, item.id)}>
                     <List />
                   </IconButton>
 
@@ -203,21 +189,21 @@ export default function CollapsibleTable() {
                       horizontal: "center",
                     }}
                   >
-                    <MenuItem onClick={() => handleView(item.id)}>
+                    <MenuItem onClick={() => handleView(selectedItemIndex)}>
                       <ListItemIcon>
                         <Search className={classes.iconsColor} />
                       </ListItemIcon>
                       <ListItemText primary="Visualizar" />
                     </MenuItem>
 
-                    <MenuItem onClick={() => handleEdit(item.id)}>
+                    <MenuItem onClick={() => handleEdit(selectedItemIndex)}>
                       <ListItemIcon>
                         <Edit className={classes.iconsColor} />
                       </ListItemIcon>
                       <ListItemText primary="Editar" />
                     </MenuItem>
 
-                    <MenuItem onClick={() => handleDelete(item.id)}>
+                    <MenuItem onClick={() => handleDelete(selectedItemIndex)}>
                       <ListItemIcon>
                         <Delete className={classes.iconsColor} />
                       </ListItemIcon>
@@ -241,4 +227,6 @@ export default function CollapsibleTable() {
       </TableContainer>
     </>
   );
-}
+};
+
+export default ExampleList;
