@@ -64,7 +64,7 @@ const Code: React.FC = () => {
           <Form>
             <Paper className={classes.paper}>
               <Typography variant="h3">Cadastro</Typography>
-              <Typography variant="h5">Nível de Acesso</Typography>
+              <Typography variant="h5">Cupom Bonûs</Typography>
 
               <Grid item xs={12} sm={8} md={12}>
                 <TextInput name="code" label="Cupom bônus para comentário" />
