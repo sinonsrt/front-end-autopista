@@ -19,6 +19,9 @@ import {
 import TextInput from "../../components/TextInput";
 import Select from "../../components/Select";
 import * as Yup from "yup";
+import api from "../../services/api";
+import { useAuth } from "../../hooks/Auth";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,25 +82,35 @@ const ExampleForm: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("xs"));
+  const { signIn } = useAuth();
 
   return (
     <div>
       <Formik
-        initialValues={{ name: "", email: "", phone: "", city: "" }}
-        onSubmit={(values) => {
-          console.log(values);
+        initialValues={{
+          password: "",
+          email: "",
+          // phone: "",
+          // city: "",
+        }}
+        onSubmit={async (values) => {
+          try {
+            signIn(values);
+          } catch (error) {
+            console.log(error);
+            toast.error("Erro ao fazer login");
+          }
         }}
         validationSchema={Yup.object({
-          name: Yup.string()
-            .required("É necessário informar o nome")
-            .min(3, "O nome precisa ter no mínimo 3 caracteres"),
+          password: Yup.string().required("É necessário informar a senha"),
+          // .min(3, "O nome precisa ter no mínimo 3 caracteres"),
           email: Yup.string()
             .required("E-mail obrigatório")
             .email("E-Mail inválido"),
-          phone: Yup.string()
-            .required("Telefone obrigatório")
-            .min(8, "Telefone deve ter ao menos 8 dígitos"),
-          city: Yup.string().required("Cidade obrigatória"),
+          // phone: Yup.string()
+          //   .required("Telefone obrigatório")
+          //   .min(8, "Telefone deve ter ao menos 8 dígitos"),
+          // city: Yup.string().required("Cidade obrigatória"),
         })}
       >
         {({ values, setFieldValue }) => (
@@ -115,12 +128,12 @@ const ExampleForm: React.FC = () => {
                 alignItems={matches ? "flex-start" : "center"}
               >
                 <Grid item xs={12} sm={8} md={12}>
-                  <TextInput name="name" label="Nome" />
+                  <TextInput name="email" label="Email" />
                 </Grid>
                 <Grid item xs={12} sm={8} md={12}>
-                  <TextInput name="email" label="E-mail" />
+                  <TextInput name="password" label="Senha" />
                 </Grid>
-                <Grid item xs={12} sm={8} md={12}>
+                {/* <Grid item xs={12} sm={8} md={12}>
                   <TextInput name="phone" label="Telefone" />
                 </Grid>
                 <Grid item xs={12} sm={8} md={12}>
@@ -132,7 +145,7 @@ const ExampleForm: React.FC = () => {
                       { id: "Maringá", text: "Maringá" },
                     ]}
                   />
-                </Grid>
+                </Grid> */}
               </Grid>
             </Paper>
 

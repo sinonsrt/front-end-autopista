@@ -28,12 +28,17 @@ const Route: React.FC<RouteProps> = ({
       render={({ location }) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         document.title = `${title} | AutoPosto`;
-        return !isPrivate ? (
+        return isPrivate === !!user ? (
           <Main>
             <Component />
           </Main>
         ) : (
-          <Component />
+          <Redirect
+            to={{
+              pathname: isPrivate ? "/" : "/dashboard",
+              state: { from: location },
+            }}
+          />
         );
       }}
     />

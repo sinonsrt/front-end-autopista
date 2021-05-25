@@ -1,85 +1,85 @@
-import React, {createContext, useCallback, useState, useContext} from 'react';
-import {useHistory} from 'react-router-dom';
-// import api from '../services/api';
+import React, { createContext, useCallback, useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
+import api from "../services/api";
 
 interface User {
-    id: string;
-    clinic_id: string;
-    name: string;
-    email: string;
+  id: string;
+  clinic_id: string;
+  name: string;
+  email: string;
 }
 
 interface AuthState {
-    token: string;
-    user: User;
+  token: string;
+  user: User;
 }
 
 interface SignInCredentials {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
 
 interface AuthContextData {
-    user: User;
-    signIn(credentials: SignInCredentials): Promise<void>;
-    signOut(): void;
+  user: User;
+  signIn(credentials: SignInCredentials): Promise<void>;
+  signOut(): void;
 }
 
 export const AuthContext = createContext<AuthContextData>(
-    {} as AuthContextData
+  {} as AuthContextData
 );
 
-export const AuthProvider: React.FC = ({children}) => {
-    const history = useHistory();
+export const AuthProvider: React.FC = ({ children }) => {
+  const history = useHistory();
 
-    const [data, setData] = useState<AuthState>(() => {
-        const token = localStorage.getItem('@autopista:token');
-        const user = localStorage.getItem('@autopista:user');
-        // if (token && user) {
-        //     api.defaults.headers.authorization = `Bearer ${token}`;
+  const [data, setData] = useState<AuthState>(() => {
+    const token = localStorage.getItem("@autopista:token");
+    const user = localStorage.getItem("@autopista:user");
+    if (token && user) {
+      api.defaults.headers.authorization = `Bearer ${token}`;
 
-        //     return {token, user: JSON.parse(user)};
-        // }
+      return { token, user: JSON.parse(user) };
+    }
 
-        return {} as AuthState;
+    return {} as AuthState;
+  });
+
+  const signIn = useCallback(async ({ email, password }) => {
+    const response = await api.post("login", {
+      email,
+      password,
     });
 
-    const signIn = useCallback(async ({email, password}) => {
-        // const response = await api.post('login', {
-        //     email,
-        //     password
-        // });
+    const { token } = response.data.token;
+    const { user } = response.data;
 
-        // const {token} = response.data.token;
-        // const {user} = response.data;
+    localStorage.setItem("@autopista:token", token);
+    localStorage.setItem("@autopista:user", JSON.stringify(user));
 
-        // localStorage.setItem('@autopista:token', token);
-        // localStorage.setItem('@autopista:user', JSON.stringify(user));
+    api.defaults.headers.authorization = `Bearer ${token}`;
 
-        // api.defaults.headers.authorization = `Bearer ${token}`;
+    setData({ token, user });
+  }, []);
 
-        // setData({token, user});
-    }, []);
+  const signOut = useCallback(() => {
+    localStorage.removeItem("@autopista:token");
+    history.push("/");
+    setData({} as AuthState);
+  }, [history]);
 
-    const signOut = useCallback(() => {
-        localStorage.removeItem('@autopista:token');
-        history.push('/');
-        setData({} as AuthState);
-    }, [history]);
-
-    return (
-        <AuthContext.Provider value={{user: data.user, signIn, signOut}}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export function useAuth(): AuthContextData {
-    const context = useContext(AuthContext);
+  const context = useContext(AuthContext);
 
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
 
-    return context;
+  return context;
 }
