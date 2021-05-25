@@ -9,6 +9,7 @@ import {
   FilledInput,
 } from "@material-ui/core";
 import TextInput from "../../../components/TextInput";
+import Select from "../../../components/Select";
 import {
   makeStyles,
   createStyles,
@@ -68,6 +69,17 @@ const News: React.FC = () => {
 
               <Grid item xs={12} sm={8} md={12}>
                 <TextInput name="description" label="Descrição do serviço" />
+              </Grid>
+
+              <Grid item xs={12} sm={8} md={12}>
+                <Select
+                  name="type"
+                  label="Tipo de serviço"
+                  options={[
+                    { id: "01", text: "Posto de Combústivel" },
+                    { id: "02", text: "Prestador de Serviço" },
+                  ]}
+                />
               </Grid>
             </Paper>
 
