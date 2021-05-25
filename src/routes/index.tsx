@@ -20,6 +20,7 @@ import NewsTable from '../pages/Admin/News/NewsTable'
 import Types from '../pages/Admin/Types'
 import TypesTable from '../pages/Admin/Types/TypesTable'
 import User from '../pages/Admin/User'
+import UserTable from '../pages/Admin/User/UserTable'
 
 const Routes: React.FC = () => (
     <Switch>
@@ -42,6 +43,7 @@ const Routes: React.FC = () => (
         <Route path="/types" exact component={Types} title="Types" isPrivate />
         <Route path="/typesTable" exact component={TypesTable} title="TypesTable" isPrivate />
         <Route path="/user" exact component={User} title="User" isPrivate />
+        <Route path="/userTable" exact component={UserTable} title="UserTable" isPrivate />
 
         {/* <Route component={NotFound} isPrivate title="NotFound" /> */}
     </Switch>
