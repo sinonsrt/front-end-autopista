@@ -27,7 +27,7 @@ const Route: React.FC<RouteProps> = ({
       {...rest}
       render={({ location }) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        document.title = `${title} | AutoPosto`;
+        document.title = `${title} | AutoPista`;
         return isPrivate === !!user ? (
           <Main>
             <Component />

@@ -11,7 +11,7 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import ForumIcon from "@material-ui/icons/Forum";
 import { MenuList } from "../../../components/Menu/menuList";
 import { MenuListItem } from "../../../components/Menu/menuListItem";
-// import logo from '../../../assets/autopista-m.png';
+import logo from '../../../assets/autopista-bbranca-mp.png';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
       zIndex: theme.zIndex.drawer + 1,
     },
     logo: {
-      height: 40,
+      width: "35%",
     },
     content: {
       flexGrow: 1,
@@ -54,22 +54,22 @@ const Header: React.FC = () => {
         <Toolbar>
           <NavLink exact activeClassName="is-active" to="/Dashboard">
             <img
-              src={
-                "https://w7.pngwing.com/pngs/511/537/png-transparent-logo-filling-station-gasoline-fuel-liquefied-petroleum-gas-others-diesel-fuel-logo-sign.png"
-              }
+              src={logo}
               alt="logo"
               className={classes.logo}
             />
           </NavLink>
           <div />
           <MenuList heading="Cadastros">
-            <MenuListItem>Posto de Gasolina</MenuListItem>
-            <MenuListItem>Sei lá oq</MenuListItem>
-            <MenuListItem>Pau tora</MenuListItem>
+            <MenuListItem>Nível de Acesso</MenuListItem>
+            <MenuListItem>Tipos</MenuListItem>
+            <MenuListItem>Serviços</MenuListItem>
             <hr />
-            <MenuListItem>Alguma outra coisa</MenuListItem>
-            <MenuListItem>Vai Corinthians</MenuListItem>
-            <MenuListItem>TCC bom demais</MenuListItem>
+            <MenuListItem>Notícias</MenuListItem>
+            <MenuListItem>Usuários</MenuListItem>
+            <MenuListItem>Empresas</MenuListItem>
+            <hr />
+            <MenuListItem>Códigos Bônus</MenuListItem>
           </MenuList>
 
           <MenuList heading="Admin">
