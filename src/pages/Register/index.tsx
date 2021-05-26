@@ -82,26 +82,6 @@ interface State {
 const Register: React.FC = () => {
   const classes = useStyles();
 
-  const [values, setValues] = React.useState<State>({
-    password: "",
-    showPassword: false,
-  });
-
-  const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValues({ ...values, [prop]: event.target.value });
-    };
-
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
-  };
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-  };
-
   return (
     <div className={classes.container}>
       <div className={classes.root}>

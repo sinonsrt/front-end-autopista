@@ -1,12 +1,6 @@
 import React from "react";
-import clsx from "clsx";
 import {
   Button,
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  IconButton,
   Paper,
   Typography,
   Grid,
@@ -15,7 +9,6 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 import TextInput from "../../components/TextInput";
 
-import { Visibility, VisibilityOff } from "@material-ui/icons";
 import ReplyAllIcon from "@material-ui/icons/ReplyAll";
 
 import background from "../../assets/background-login.jpg";
@@ -90,27 +83,6 @@ interface State {
 const Login: React.FC = () => {
   const classes = useStyles();
   const { signIn } = useAuth();
-
-  const [passwordValue, setValues] = React.useState<State>({
-    password: "",
-    showPassword: false,
-  });
-
-  const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValues({ ...passwordValue, [prop]: event.target.value });
-    };
-
-  const handleClickShowPassword = () => {
-    setValues({ ...passwordValue, showPassword: !passwordValue.showPassword });
-  };
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-  };
-
   return (
     <div className={classes.container}>
       <div className={classes.root}>
