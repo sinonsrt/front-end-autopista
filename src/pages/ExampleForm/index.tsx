@@ -1,5 +1,4 @@
 import React from "react";
-import { useHistory, useParams } from "react-router-dom";
 
 import { Formik, Form } from "formik";
 import Paper from "@material-ui/core/Paper";
@@ -7,7 +6,6 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import Swal from "sweetalert2";
 
 import {
   makeStyles,
@@ -17,9 +15,7 @@ import {
 } from "@material-ui/core/styles";
 
 import TextInput from "../../components/TextInput";
-import Select from "../../components/Select";
 import * as Yup from "yup";
-import api from "../../services/api";
 import { useAuth } from "../../hooks/Auth";
 import { toast } from "react-toastify";
 

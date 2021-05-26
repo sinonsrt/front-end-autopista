@@ -84,7 +84,7 @@ const CodeTable: React.FC = () => {
     },
   ]);
   const columns = [
-    { description: "Código Bonûs", width: "40%" },
+    { description: "Código Bônus", width: "40%" },
     { description: "Empresa", width: "40%" },
     { description: "Data de cadastro", width: "20%" },
     { description: "Ações", width: "0%" },
