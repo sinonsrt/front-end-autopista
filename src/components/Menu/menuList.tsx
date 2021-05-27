@@ -87,7 +87,7 @@ export const MenuList: FC<MenuListProps> = ({children, heading, className}) => {
                 color="inherit"
                 onClick={handleToggle}
             >
-                {heading}
+                <div className="title navlink">{heading}</div>
                 <ArrowDropDownIcon />
             </Button>
             <Popper
@@ -95,6 +95,7 @@ export const MenuList: FC<MenuListProps> = ({children, heading, className}) => {
                 anchorEl={anchorRef.current}
                 role={undefined}
                 transition
+                style={{position: 'relative', zIndex: 1250}}
             >
                 {({TransitionProps, placement}) => (
                     <Grow

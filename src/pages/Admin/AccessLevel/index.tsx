@@ -10,7 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { Edit, Delete, List, Search } from "@material-ui/icons";
 import TableFooter from "@material-ui/core/TableFooter";
-import Pagination from "@material-ui/lab/Pagination";
+import AccessLevelDialog from "./dialogForm";
 import {
   Button,
   Dialog,
@@ -79,11 +79,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const ExampleList: React.FC = () => {
+const AccessLevel: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
   const [dialogData, setDialogData] = useState<any>({});
-  const [refresh, setRefresh] = useState(true);
+  const [refresh, setRefresh] = useState(0);
   const columns = [
     { description: "Descrição", width: "100%" },
     { description: "Ações", width: "0%" },
@@ -114,8 +114,8 @@ const ExampleList: React.FC = () => {
     api
       .delete(`accesslevel/${id}`)
       .then(() => {
-        toast.success("Registro excluído com sucesso!");
-        setRefresh((current) => !current);
+        toast.success("Registro excluído com sucesso");
+        setRefresh(Math.random());
       })
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
@@ -240,82 +240,14 @@ const ExampleList: React.FC = () => {
         </Table>
       </TableContainer>
 
-      <Dialog
-        open={openDialog}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <Formik
-          initialValues={dialogData}
-          onSubmit={(values) => {
-            switch (values.action) {
-              case "include":
-                api
-                  .post("accesslevel", values)
-                  .then(() => {
-                    setRefresh((current) => !current);
-                    setOpenDialog(false);
-                    toast.success("Nível de acesso cadastrado com sucesso!");
-                  })
-                  .catch((error) =>
-                    toast.error("Erro ao cadastrar nível de acesso")
-                  );
-                break;
-              case "edit":
-                api
-                  .put(`accesslevel/${values.id}`, values)
-                  .then(() => {
-                    setRefresh((current) => !current);
-                    setOpenDialog(false);
-                    toast.success("Nível de acesso atualizado com sucesso!");
-                  })
-                  .catch((error) =>
-                    toast.error("Erro ao alterar nível de acesso!")
-                  );
-                break;
-              default:
-                toast.error("Erro ao realizar operação!");
-                break;
-            }
-          }}
-          validationSchema={Yup.object({
-            description: Yup.string().required(
-              "É necessário informar a descrição!"
-            ),
-          })}
-        >
-          {({ values, setFieldValue }) => (
-            <Form>
-              <Paper className={classes.head}>
-                <DialogTitle>Nível de acesso</DialogTitle>
-              </Paper>
-
-              <DialogContent>
-                <DialogContentText>
-                  Preencha a descrição para cadastrar a origem do paciente, em
-                  seguida clique em gravar
-                </DialogContentText>
-
-                <TextInput name="description" label="Descrição" required />
-              </DialogContent>
-
-              <DialogActions>
-                <Button onClick={() => setOpenDialog(false)} color="primary">
-                  Cancelar
-                </Button>
-
-                {values.action !== "view" && (
-                  <Button type="submit" className={classes.buttonAdd}>
-                    Gravar
-                  </Button>
-                )}
-              </DialogActions>
-            </Form>
-          )}
-        </Formik>
-      </Dialog>
+      <AccessLevelDialog
+        dialogData={dialogData}
+        visible={openDialog}
+        hide={() => setOpenDialog(false)}
+        refresh={() => setRefresh(Math.random())}
+      />
     </>
   );
 };
 
-export default ExampleList;
+export default AccessLevel;

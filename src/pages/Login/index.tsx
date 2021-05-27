@@ -16,6 +16,7 @@ import logo from "../../assets/autopista-bbranca-mp.png";
 import { Form, Formik } from "formik";
 import { useAuth } from "../../hooks/Auth";
 import { toast } from "react-toastify";
+import TextInputPassword from "../../components/TextInputPassword";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -113,7 +114,7 @@ const Login: React.FC = () => {
                     label="E-mail"
                     className={classes.textField}
                   />
-                  <TextInput
+                  <TextInputPassword
                     name="password"
                     label="Senha"
                     className={classes.textField}
