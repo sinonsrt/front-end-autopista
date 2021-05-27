@@ -2,7 +2,7 @@ import React from "react";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import { useField } from "formik";
 
-const TextFieldWrapper: React.FC<TextFieldProps> = ({
+const TextInput: React.FC<TextFieldProps> = ({
   name,
   ...otherProps
 }) => {
@@ -24,4 +24,4 @@ const TextFieldWrapper: React.FC<TextFieldProps> = ({
   return <TextField variant="outlined" {...configTextField} />;
 };
 
-export default TextFieldWrapper;
+export default TextInput;

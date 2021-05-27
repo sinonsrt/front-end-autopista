@@ -24,8 +24,8 @@ import UserTable from '../pages/Admin/User/UserTable'
 
 const Routes: React.FC = () => (
     <Switch>
-        <Route path="/" exact component={Login} title="Login" isPrivate />
-        <Route path="/register" exact component={Register} title="Register" isPrivate />
+        <Route path="/" exact component={Login} title="Login" />
+        <Route path="/register" exact component={Register} title="Register" />
 
         <Route path="/exampleForm" exact component={ExampleForm} title="ExampleForm" />
         <Route path="/ExampleList" exact component={ExampleList} title="ExampleList" />
