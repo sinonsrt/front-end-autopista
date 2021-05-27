@@ -96,7 +96,7 @@ const AccessLevel: React.FC = () => {
     api
       .get("accesslevel")
       .then((response) => setData(response.data))
-      .catch((error) => toast.error("Não foi possível realizar a consulta"));
+      .catch((error) => toast.error("Não foi possível realizar a consulta!"));
   }, [refresh]);
 
   const handleClick = (
@@ -117,7 +117,7 @@ const AccessLevel: React.FC = () => {
         toast.success("Registro excluído com sucesso");
         setRefresh(Math.random());
       })
-      .catch((error) => toast.error("Não foi possível efetuar a consulta"));
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
   }
 
@@ -131,7 +131,7 @@ const AccessLevel: React.FC = () => {
         });
         setOpenDialog(true);
       })
-      .catch((error) => toast.error("Não foi possível efetuar a consulta"));
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
   }
 

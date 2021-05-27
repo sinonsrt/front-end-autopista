@@ -21,7 +21,7 @@ import {
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInputSearch from "../../../../components/TextInputSearch";
-import UserLogo from "../../../../assets/icons/user-logo.svg"
+import CompanyLogo from "../../../../assets/icons/company-logo.svg"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -73,26 +73,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const UserTable: React.FC = () => {
+const AccessLevelTable: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState([
     {
       id: "uuid1",
-      name: "Lucas Marchiori",
-      email: "sinonsrt@hotmail.com",
-      city: "Umuarama - Paraná",
-      confirmed: "SIM"
-    },
-    {
-      id: "uuid2",
-      description: "Posto de Combústivel",
+      description: "Administrador",
     },
   ]);
   const columns = [
-    { description: "Nome", width: "25%" },
-    { description: "E-mail", width: "25%" },
-    { description: "Cidade", width: "25%" },
-    { description: "Confirmado", width: "25%" },
+    { description: "Descrição", width: "100%" },
     { description: "Ações", width: "0%" },
   ];
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -124,7 +114,7 @@ const UserTable: React.FC = () => {
   return (
     <>
       
-      <Typography variant="h5" display="initial" align="center" className={classes.titleLogo}> <img src={UserLogo} alt="Logotipo empresarial" /> Tipos cadastrados</Typography>
+      <Typography variant="h5" display="initial" align="center" className={classes.titleLogo}> <img src={CompanyLogo} alt="Logotipo empresarial" /> Cupons cadastrados</Typography>
       <p />
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
@@ -158,10 +148,7 @@ const UserTable: React.FC = () => {
           <TableBody>
             {data.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.email}</TableCell>
-                <TableCell>{item.city}</TableCell>
-                <TableCell>{item.confirmed}</TableCell>
+                <TableCell>{item.description}</TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>
                     <List />
@@ -225,4 +212,4 @@ const UserTable: React.FC = () => {
   );
 };
 
-export default UserTable;
+export default AccessLevelTable;
