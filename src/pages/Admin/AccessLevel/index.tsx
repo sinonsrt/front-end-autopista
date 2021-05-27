@@ -96,7 +96,7 @@ const ExampleList: React.FC = () => {
     api
       .get("accesslevel")
       .then((response) => setData(response.data))
-      .catch((error) => toast.error("Não foi possível realizar a consulta"));
+      .catch((error) => toast.error("Não foi possível realizar a consulta!"));
   }, [refresh]);
 
   const handleClick = (
@@ -114,10 +114,10 @@ const ExampleList: React.FC = () => {
     api
       .delete(`accesslevel/${id}`)
       .then(() => {
-        toast.success("Registro excluído com sucesso");
+        toast.success("Registro excluído com sucesso!");
         setRefresh((current) => !current);
       })
-      .catch((error) => toast.error("Não foi possível efetuar a consulta"));
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
   }
 
@@ -131,7 +131,7 @@ const ExampleList: React.FC = () => {
         });
         setOpenDialog(true);
       })
-      .catch((error) => toast.error("Não foi possível efetuar a consulta"));
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
   }
 
@@ -255,7 +255,7 @@ const ExampleList: React.FC = () => {
                   .then(() => {
                     setRefresh((current) => !current);
                     setOpenDialog(false);
-                    toast.success("Nível de acesso cadastrado com sucesso");
+                    toast.success("Nível de acesso cadastrado com sucesso!");
                   })
                   .catch((error) =>
                     toast.error("Erro ao cadastrar nível de acesso")
@@ -267,20 +267,20 @@ const ExampleList: React.FC = () => {
                   .then(() => {
                     setRefresh((current) => !current);
                     setOpenDialog(false);
-                    toast.success("Nível de acesso cadastrado com sucesso");
+                    toast.success("Nível de acesso atualizado com sucesso!");
                   })
                   .catch((error) =>
-                    toast.error("Erro ao alterar nível de acesso")
+                    toast.error("Erro ao alterar nível de acesso!")
                   );
                 break;
               default:
-                toast.error("Erro ao realizar operação");
+                toast.error("Erro ao realizar operação!");
                 break;
             }
           }}
           validationSchema={Yup.object({
             description: Yup.string().required(
-              "É necessário informar a descrição"
+              "É necessário informar a descrição!"
             ),
           })}
         >
