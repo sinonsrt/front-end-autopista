@@ -1,5 +1,6 @@
 import React from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import { NavLink, Link } from "react-router-dom";
@@ -7,6 +8,7 @@ import { MenuList } from "../../../components/Menu/menuList";
 import { MenuListItem } from "../../../components/Menu/menuListItem";
 import logo from "../../../assets/autopista-bbranca-mp.png";
 import { Button } from "@material-ui/core";
+import { useAuth } from "../../../hooks/Auth";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Header: React.FC = () => {
   const classes = useStyles();
+  const { signOut } = useAuth()
   return (
     <div>
       <AppBar color="inherit" className={classes.appBar}>
@@ -86,7 +89,10 @@ const Header: React.FC = () => {
               <MenuListItem>Empresas</MenuListItem>
             </Link>
           </MenuList>
-          <Button className={classes.logout} color="secondary">
+          <Button className={classes.logout} color="secondary" onClick={() => {
+            signOut()
+          }}>
+            <ExitToAppIcon/>
            SAIR 
           </Button>
         </Toolbar>
