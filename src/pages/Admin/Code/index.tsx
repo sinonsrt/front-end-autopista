@@ -10,19 +10,9 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { Edit, Delete, List, Search } from "@material-ui/icons";
 import TableFooter from "@material-ui/core/TableFooter";
-import Pagination from "@material-ui/lab/Pagination";
-import api from "../../../services/api";
-import * as Yup from "yup";
-import { Form, Formik } from "formik";
-import TextInput from "../../../components/TextInput";
-import Select from "../../../components/Select";
+import NewsDialog from "./dialogForm";
 import {
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Grid,
   ListItemIcon,
   ListItemText,
@@ -31,8 +21,9 @@ import {
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInputSearch from "../../../components/TextInputSearch";
-import CompanyLogo from "../../../assets/icons/company-logo.svg";
+import api from "../../../services/api";
 import { toast } from "react-toastify";
+import CodeLogo from "../../../assets/icons/code-logo.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,14 +66,14 @@ const useStyles = makeStyles((theme: Theme) =>
     textCenter: {
       textAlign: "center",
     },
+    head: {
+      backgroundColor: theme.palette.info.main,
+    },
     titleLogo: {
       "& img": {
         width: "5%",
         margin: "0.5%",
       },
-    },
-    head: {
-      backgroundColor: theme.palette.info.main,
     },
   })
 );
@@ -91,11 +82,11 @@ const Code: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
   const [dialogData, setDialogData] = useState<any>({});
-  const [refresh, setRefresh] = useState(true);
+  const [refresh, setRefresh] = useState(0);
   const columns = [
-    { description: "Código Bônus", width: "40%" },
+    { description: "Cupom Bônus", width: "40%" },
     { description: "Empresa", width: "40%" },
-    { description: "Data de cadastro", width: "20%" },
+    { description: "Data de publicação", width: "20%" },
     { description: "Ações", width: "0%" },
   ];
   const [openDialog, setOpenDialog] = useState(false);
@@ -104,9 +95,9 @@ const Code: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("code")
+      .get("codes")
       .then((response) => setData(response.data))
-      .catch((error) => toast.error("Não foi possível realizar a consulta!"));
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, [refresh]);
 
   const handleClick = (
@@ -116,25 +107,24 @@ const Code: React.FC = () => {
     setAnchorEl(event.currentTarget);
     setSelectedItemIndex(id);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
 
   function handleDelete(id: string) {
     api
-      .delete(`code/${id}`)
+      .delete(`codes/${id}`)
       .then(() => {
-        toast.success("Registro excluído com sucesso!");
-        setRefresh((current) => !current);
+        toast.success("Registro excluído com sucesso");
+        setRefresh(Math.random());
       })
-      .catch((error) => toast.error("Não foi possivel excluir!"));
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
   }
 
-  function showCode(id: string, action: "view" | "edit") {
+  function showTypes(id: string, action: "view" | "edit") {
     api
-      .get(`code/${id}`)
+      .get(`codes/${id}`)
       .then((response) => {
         setDialogData({
           ...response.data,
@@ -155,9 +145,9 @@ const Code: React.FC = () => {
         className={classes.titleLogo}
       >
         {" "}
-        <img src={CompanyLogo} alt="Logotipo empresarial" /> Cupoms cadastrados
+        <img src={CodeLogo} alt="Notícias" /> Notícias cadastrados
       </Typography>
-      <p />
+      
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
           <TextInputSearch placeholder="Buscar por..." />
@@ -168,12 +158,7 @@ const Code: React.FC = () => {
             className={classes.buttonAdd}
             color="primary"
             onClick={() => {
-              setDialogData({
-                id: "",
-                code: "",
-                company_id: "",
-                action: "include",
-              });
+              setDialogData({ id: "", description: "", action: "include" });
               setOpenDialog(true);
             }}
           >
@@ -181,6 +166,7 @@ const Code: React.FC = () => {
           </Button>
         </Grid>
       </Grid>
+
       <p />
 
       <TableContainer component={Paper}>
@@ -199,8 +185,8 @@ const Code: React.FC = () => {
             {data.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.code}</TableCell>
-                <TableCell>{item.company}</TableCell>
-                <TableCell>{item.date}</TableCell>
+                <TableCell>{item.company[0].corporate_name}</TableCell>
+                <TableCell>{item.created_at.split("T")[0]}</TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>
                     <List />
@@ -225,7 +211,7 @@ const Code: React.FC = () => {
                     }}
                   >
                     <MenuItem
-                      onClick={() => showCode(selectedItemIndex, "view")}
+                      onClick={() => showTypes(selectedItemIndex, "view")}
                     >
                       <ListItemIcon>
                         <Search className={classes.iconsColor} />
@@ -234,7 +220,7 @@ const Code: React.FC = () => {
                     </MenuItem>
 
                     <MenuItem
-                      onClick={() => showCode(selectedItemIndex, "edit")}
+                      onClick={() => showTypes(selectedItemIndex, "edit")}
                     >
                       <ListItemIcon>
                         <Edit className={classes.iconsColor} />
@@ -255,104 +241,22 @@ const Code: React.FC = () => {
           </TableBody>
 
           <TableFooter>
-            <Pagination
+            {/* <Pagination
               count={5}
               size="small"
               color="primary"
               className={classes.pagination}
-            />
+            /> */}
           </TableFooter>
         </Table>
       </TableContainer>
 
-      <Dialog
-        open={openDialog}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <Formik
-          initialValues={dialogData}
-          onSubmit={(values) => {
-            switch (values.action) {
-              case "include":
-                api
-                  .post("code", values)
-                  .then(() => {
-                    setRefresh((current) => !current);
-                    setOpenDialog(false);
-                    toast.success("Cupom bônus cadastrado com sucesso!");
-                  })
-                  .catch((error) =>
-                    toast.error("Erro ao cadastrar cupom bônus")
-                  );
-                break;
-              case "edit":
-                api
-                  .put(`put/${values.id}`, values)
-                  .then(() => {
-                    setRefresh((current) => !current);
-                    setOpenDialog(false);
-                    toast.success("Cupom bônus atualizado com sucesso!");
-                  })
-                  .catch((error) =>
-                    toast.error("Erro ao alterar cupom bônus!")
-                  );
-                break;
-              default:
-                toast.error("Erro ao realizar operação!");
-                break;
-            }
-          }}
-          validationSchema={Yup.object({
-            code: Yup.string().required("É nescessário informar a descrição!"),
-            company_code: Yup.string().required(
-              "É nescessário informar uma empresa pra vincular o cupom!"
-            ),
-          })}
-        >
-          {({ values, setFieldValue }) => (
-            <Form>
-              <Paper className={classes.head}>
-                <DialogTitle>Cupom Bônus</DialogTitle>
-
-                <DialogContent>
-                  <DialogContentText>
-                    Preencha o campo descrição para cadastrar um cupum bônus!
-                  </DialogContentText>
-                  <TextInput
-                    name="code"
-                    label="Código do cupom bônus"
-                    required
-                  />
-                </DialogContent>
-
-                <DialogContent>
-                  <DialogContentText>
-                    Selecione uma empresa para vincular ao cupum bônus!
-                  </DialogContentText>
-                  <Select
-                    name="company_id"
-                    label="Empresa"
-                    options={[{ id: "Umuarama", text: "Umuarama" }]}
-                  />
-                </DialogContent>
-
-                <DialogActions>
-                  <Button onClick={() => setOpenDialog(false)} color="primary">
-                    Cancelar
-                  </Button>
-
-                  {values.action !== "view" && (
-                    <Button type="submit" className={classes.buttonAdd}>
-                      Gravar
-                    </Button>
-                  )}
-                </DialogActions>
-              </Paper>
-            </Form>
-          )}
-        </Formik>
-      </Dialog>
+      <NewsDialog
+        dialogData={dialogData}
+        visible={openDialog}
+        hide={() => setOpenDialog(false)}
+        refresh={() => setRefresh(Math.random())}
+      />
     </>
   );
 };

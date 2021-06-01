@@ -42,7 +42,7 @@ interface Props {
   hide: any;
 }
 
-const AccessLevelDialog: React.FC<Props> = ({
+const TypesDialog: React.FC<Props> = ({
   dialogData,
   refresh,
   visible,
@@ -70,11 +70,11 @@ const AccessLevelDialog: React.FC<Props> = ({
           switch (values.action) {
             case "include":
               api
-                .post("accesslevel", values)
+                .post("types", values)
                 .then(() => {
                   refresh();
                   hide();
-                  toast.success("Nível de acesso cadastrado com sucesso");
+                  toast.success("Tipo cadastrado com sucesso");
                 })
                 .catch((error) =>
                   toast.error("Erro ao cadastrar nível de acesso")
@@ -82,14 +82,14 @@ const AccessLevelDialog: React.FC<Props> = ({
               break;
             case "edit":
               api
-                .put(`accesslevel/${values.id}`, values)
+                .put(`types/${values.id}`, values)
                 .then(() => {
                   refresh();
                   hide();
-                  toast.success("Nível de acesso cadastrado com sucesso");
+                  toast.success("Tipo cadastrado com sucesso");
                 })
                 .catch((error) =>
-                  toast.error("Erro ao alterar nível de acesso")
+                  toast.error("Erro ao alterar tipo")
                 );
               break;
             default:
@@ -106,7 +106,7 @@ const AccessLevelDialog: React.FC<Props> = ({
         {({ values, setFieldValue }) => (
           <Form>
             <Paper className={classes.head}>
-              <DialogTitle>Nível de acesso</DialogTitle>
+              <DialogTitle>Tipo</DialogTitle>
             </Paper>
 
             <DialogContent>
@@ -131,4 +131,4 @@ const AccessLevelDialog: React.FC<Props> = ({
   );
 };
 
-export default AccessLevelDialog;
+export default TypesDialog;

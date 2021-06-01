@@ -4,11 +4,8 @@ import Route from './Route';
 
 import Login from '../pages/Login';
 import Register from '../pages/Register';
-import ExampleForm from '../pages/ExampleForm';
-import ExampleList from '../pages/ExampleList';
 
 import AccessLevel from '../pages/Admin/AccessLevel'
-import AccessLevelTable from '../pages/Admin/AccessLevel/AccessLevelTable'
 import Code from '../pages/Admin/Code'
 import Company from '../pages/Admin/Company'
 import Dashboard from '../pages/Admin/Dashboard'
@@ -22,18 +19,14 @@ const Routes: React.FC = () => (
         <Route path="/" exact component={Login} title="Login" />
         <Route path="/register" exact component={Register} title="Register" />
 
-        <Route path="/exampleForm" exact component={ExampleForm} title="ExampleForm" />
-        <Route path="/ExampleList" exact component={ExampleList} title="ExampleList" />
-
         <Route path="/accessLevel" exact component={AccessLevel} title="AccessLevel" isPrivate />
-        <Route path="/accessLevelTable" exact component={AccessLevelTable} title="AccessLevelTable" isPrivate />
         <Route path="/code" exact component={Code} title="Code" isPrivate />
-        <Route path="/company" exact component={Company} title="Company" isPrivate />
+        <Route path="/companys" exact component={Company} title="Company" isPrivate />
         <Route path="/dashboard" exact component={Dashboard} title="Dashboard" isPrivate />
-        <Route path="/service" exact component={Service} title="Service" isPrivate />
+        <Route path="/services" exact component={Service} title="Service" isPrivate />
         <Route path="/news" exact component={News} title="News" isPrivate />
         <Route path="/types" exact component={Types} title="Types" isPrivate />
-        <Route path="/user" exact component={User} title="User" isPrivate />
+        <Route path="/users" exact component={User} title="User" isPrivate />
     
         {/* <Route component={NotFound} isPrivate title="NotFound" /> */}
     </Switch>

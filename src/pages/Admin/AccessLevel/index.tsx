@@ -31,6 +31,7 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
+import AccessLogo from "../../../assets/icons/access-logo.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,6 +76,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     head: {
       backgroundColor: theme.palette.info.main,
+    },
+    titleLogo: {
+      "& img": {
+        width: "5%",
+        margin: "0.5%",
+      },
     },
   })
 );
@@ -137,7 +144,15 @@ const AccessLevel: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h5">Níveis de Acesso</Typography>
+      <Typography
+        variant="h5"
+        display="initial"
+        align="center"
+        className={classes.titleLogo}
+      >
+        {" "}
+        <img src={AccessLogo} alt="Nível de Acesso" /> Níveis de Acesso
+      </Typography>
       <p />
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
