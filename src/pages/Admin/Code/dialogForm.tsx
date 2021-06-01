@@ -6,14 +6,22 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  useMediaQuery
+  useMediaQuery,
+  Fab,
 } from "@material-ui/core";
-import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme,
+} from "@material-ui/core/styles";
+import AddIcon from "@material-ui/icons/Add";
 import TextInput from "../../../components/TextInput";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
+import Select from "../../../components/Select";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,16 +50,17 @@ interface Props {
   hide: any;
 }
 
-const AccessLevelDialog: React.FC<Props> = ({
+const CodeDialog: React.FC<Props> = ({
   dialogData,
   refresh,
   visible,
   hide,
 }) => {
   const classes = useStyles();
+  const [data, setData] = useState<any[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -70,27 +79,23 @@ const AccessLevelDialog: React.FC<Props> = ({
           switch (values.action) {
             case "include":
               api
-                .post("accesslevel", values)
+                .post("news", values)
                 .then(() => {
                   refresh();
                   hide();
-                  toast.success("Nível de acesso cadastrado com sucesso");
+                  toast.success("Cupom Bônus cadastrado com sucesso");
                 })
-                .catch((error) =>
-                  toast.error("Erro ao cadastrar nível de acesso")
-                );
+                .catch((error) => toast.error("Erro ao cadastrar Cupom Bônus"));
               break;
             case "edit":
               api
-                .put(`accesslevel/${values.id}`, values)
+                .put(`news/${values.id}`, values)
                 .then(() => {
                   refresh();
                   hide();
-                  toast.success("Nível de acesso cadastrado com sucesso");
+                  toast.success("Cupom Bônus cadastrado com sucesso");
                 })
-                .catch((error) =>
-                  toast.error("Erro ao alterar nível de acesso")
-                );
+                .catch((error) => toast.error("Erro ao alterar Cupom Bônus"));
               break;
             default:
               toast.error("Erro ao realizar operação");
@@ -98,7 +103,7 @@ const AccessLevelDialog: React.FC<Props> = ({
           }
         }}
         validationSchema={Yup.object({
-          description: Yup.string().required(
+          code: Yup.string().required(
             "É necessário informar a descrição"
           ),
         })}
@@ -106,11 +111,27 @@ const AccessLevelDialog: React.FC<Props> = ({
         {({ values, setFieldValue }) => (
           <Form>
             <Paper className={classes.head}>
-              <DialogTitle>Nível de acesso</DialogTitle>
+              <DialogTitle>Notícias</DialogTitle>
             </Paper>
 
             <DialogContent>
-              <TextInput name="description" label="Descrição" required />
+              <TextInput name="code" label="Cupom Bônus" required />
+            </DialogContent>
+
+            <DialogContent>
+              <Select
+                name="type_id"
+                label="Tipo de Serviço"
+                options={[
+                  { id: "8d938bdc-fef3-5f66-8d49-b34762e794db", text: "ADM" },
+                ]}
+              />
+            </DialogContent>
+
+            <DialogContent>
+              <Fab color="primary" aria-label="add">
+                <AddIcon />
+              </Fab>
             </DialogContent>
 
             <DialogActions>
@@ -131,4 +152,4 @@ const AccessLevelDialog: React.FC<Props> = ({
   );
 };
 
-export default AccessLevelDialog;
+export default CodeDialog;

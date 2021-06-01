@@ -10,31 +10,20 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { Edit, Delete, List, Search } from "@material-ui/icons";
 import TableFooter from "@material-ui/core/TableFooter";
-import Pagination from "@material-ui/lab/Pagination";
-import api from "../../../services/api";
-import * as Yup from "yup";
-import { Form, Formik } from "formik";
-import TextInput from "../../../components/TextInput";
-import Select from "../../../components/Select";
+import NewsDialog from "./dialogForm";
 import {
   Button,
-  Dialog,
-  useMediaQuery,
   Grid,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
 } from "@material-ui/core";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInputSearch from "../../../components/TextInputSearch";
-import NewsLogo from "../../../assets/icons/news-logo.svg";
+import api from "../../../services/api";
 import { toast } from "react-toastify";
+import NewsLogo from "../../../assets/icons/news-logo.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,39 +66,13 @@ const useStyles = makeStyles((theme: Theme) =>
     textCenter: {
       textAlign: "center",
     },
+    head: {
+      backgroundColor: theme.palette.info.main,
+    },
     titleLogo: {
       "& img": {
         width: "5%",
         margin: "0.5%",
-      },
-    },
-    head: {
-      backgroundColor: theme.palette.info.main,
-    },
-    paper: {
-      borderBottomRightRadius: 0,
-      borderBottomLeftRadius: 0,
-      flexDirection: "column",
-      padding: theme.spacing(4),
-      paddingRight: theme.spacing(3),
-
-      [theme.breakpoints.down("xs")]: {
-        paddingBottom: 130,
-      },
-    },
-    paperBotton: {
-      borderTopRightRadius: 0,
-      borderTopLeftRadius: 0,
-      padding: theme.spacing(1),
-      background: "#f9f9f9",
-    },
-    buttonSave: {
-      margin: theme.spacing(1),
-      backgroundColor: theme.palette.success.main,
-      boxShadow: "none",
-      color: "#fff",
-      "&:hover": {
-        backgroundColor: "#208c4e",
       },
     },
   })
@@ -117,14 +80,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const News: React.FC = () => {
   const classes = useStyles();
-  const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.down("xs"));
   const [data, setData] = useState<any[]>([]);
   const [dialogData, setDialogData] = useState<any>({});
-  const [refresh, setRefresh] = useState(true);
+  const [refresh, setRefresh] = useState(0);
   const columns = [
-    { description: "Título", width: "50%" },
-    { description: "Data de publicação", width: "50%" },
+    { description: "Titulo", width: "40%" },
+    { description: "Autor", width: "40%" },
+    { description: "Data de publicação", width: "20%" },
     { description: "Ações", width: "0%" },
   ];
   const [openDialog, setOpenDialog] = useState(false);
@@ -133,9 +95,9 @@ const News: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("company")
+      .get("news")
       .then((response) => setData(response.data))
-      .catch((error) => toast.error("Não foi possivel realizar a consulta!"));
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, [refresh]);
 
   const handleClick = (
@@ -145,25 +107,24 @@ const News: React.FC = () => {
     setAnchorEl(event.currentTarget);
     setSelectedItemIndex(id);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
 
   function handleDelete(id: string) {
     api
-      .delete(`code/${id}`)
+      .delete(`services/${id}`)
       .then(() => {
-        toast.success("Registro excluído com sucesso!");
-        setRefresh((current) => !current);
+        toast.success("Registro excluído com sucesso");
+        setRefresh(Math.random());
       })
-      .catch((error) => toast.error("Não foi possível excluir!"));
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
   }
 
-  function showNews(id: string, action: "view" | "edit") {
+  function showTypes(id: string, action: "view" | "edit") {
     api
-      .get(`company/${id}`)
+      .get(`services/${id}`)
       .then((response) => {
         setDialogData({
           ...response.data,
@@ -184,9 +145,9 @@ const News: React.FC = () => {
         className={classes.titleLogo}
       >
         {" "}
-        <img src={NewsLogo} alt="Logotipo empresarial" /> Notícias cadastradas
+        <img src={NewsLogo} alt="Notícias" /> Notícias cadastrados
       </Typography>
-      <p />
+      
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
           <TextInputSearch placeholder="Buscar por..." />
@@ -197,14 +158,7 @@ const News: React.FC = () => {
             className={classes.buttonAdd}
             color="primary"
             onClick={() => {
-              setDialogData({
-                id: "",
-                title: "",
-                description: "",
-                link: "",
-                image: "",
-                action: "include",
-              });
+              setDialogData({ id: "", description: "", action: "include" });
               setOpenDialog(true);
             }}
           >
@@ -212,6 +166,7 @@ const News: React.FC = () => {
           </Button>
         </Grid>
       </Grid>
+
       <p />
 
       <TableContainer component={Paper}>
@@ -229,10 +184,9 @@ const News: React.FC = () => {
           <TableBody>
             {data.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>{item.corporate_name}</TableCell>
-                <TableCell>{item.phone}</TableCell>
-                <TableCell>{item.date}</TableCell>
-                <TableCell>{item.address}</TableCell>
+                <TableCell>{item.title}</TableCell>
+                <TableCell>{item.user[0].name}</TableCell>
+                <TableCell>{item.created_at.split("T")[0]}</TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>
                     <List />
@@ -257,7 +211,7 @@ const News: React.FC = () => {
                     }}
                   >
                     <MenuItem
-                      onClick={() => showNews(selectedItemIndex, "view")}
+                      onClick={() => showTypes(selectedItemIndex, "view")}
                     >
                       <ListItemIcon>
                         <Search className={classes.iconsColor} />
@@ -266,7 +220,7 @@ const News: React.FC = () => {
                     </MenuItem>
 
                     <MenuItem
-                      onClick={() => showNews(selectedItemIndex, "edit")}
+                      onClick={() => showTypes(selectedItemIndex, "edit")}
                     >
                       <ListItemIcon>
                         <Edit className={classes.iconsColor} />
@@ -287,115 +241,22 @@ const News: React.FC = () => {
           </TableBody>
 
           <TableFooter>
-            <Pagination
+            {/* <Pagination
               count={5}
               size="small"
               color="primary"
               className={classes.pagination}
-            />
+            /> */}
           </TableFooter>
         </Table>
       </TableContainer>
-      <Dialog
-        open={openDialog}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <Formik
-          initialValues={dialogData}
-          onSubmit={(values) => {
-            switch (values.action) {
-              case "include":
-                api
-                  .post("code", values)
-                  .then(() => {
-                    setRefresh((current) => !current);
-                    setOpenDialog(false);
-                    toast.success("Cupom bônus cadastrado com sucesso!");
-                  })
-                  .catch((error) =>
-                    toast.error("Erro ao cadastrar cupom bônus")
-                  );
-                break;
-              case "edit":
-                api
-                  .put(`put/${values.id}`, values)
-                  .then(() => {
-                    setRefresh((current) => !current);
-                    setOpenDialog(false);
-                    toast.success("Cupom bônus atualizado com sucesso!");
-                  })
-                  .catch((error) =>
-                    toast.error("Erro ao alterar cupom bônus!")
-                  );
-                break;
-              default:
-                toast.error("Erro ao realizar operação!");
-                break;
-            }
-          }}
-          validationSchema={Yup.object({
-            code: Yup.string().required("É nescessário informar a descrição!"),
-            company_code: Yup.string().required(
-              "É nescessário informar uma empresa pra vincular o cupom!"
-            ),
-          })}
-        >
-          {({ values, setFieldValue }) => (
-            <Form>
-              <Paper className={classes.paper}>
-                <Typography variant="h3">Cadastro</Typography>
-                <Typography variant="h5">Notícias</Typography>
 
-                <Grid item xs={12} sm={8} md={12}>
-                  <TextInput name="title" label="Titulo da notícia" />
-                </Grid>
-                <Grid item xs={12} sm={8} md={12}>
-                  <TextInput name="description" label="Corpo da notícia" />
-                </Grid>
-                <Grid item xs={12} sm={8} md={12}>
-                  <TextInput name="link" label="Link relacionado a notícia" />
-                </Grid>
-                <Grid item xs={12} sm={8} md={12}>
-                  <TextInput name="image" label="Imagem" />
-                </Grid>
-                <input
-                  style={{ display: "none" }}
-                  id="contained-button-file"
-                  type="file"
-                />
-                <label htmlFor="contained-button-file">
-                  <Button variant="contained" color="primary" component="span">
-                    Imagem
-                  </Button>
-                </label>
-              </Paper>
-
-              <Paper className={classes.paperBotton}>
-                <Grid
-                  container
-                  spacing={1}
-                  direction="row"
-                  justify="flex-start"
-                  alignItems={matches ? "flex-start" : "center"}
-                >
-                  <Grid item xs={12} sm={12} md={4}>
-                    <Button
-                      type="submit"
-                      disableElevation
-                      variant="contained"
-                      style={{ float: "right" }}
-                      className={classes.buttonSave}
-                    >
-                      Gravar
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Paper>
-            </Form>
-          )}
-        </Formik>
-      </Dialog>
+      <NewsDialog
+        dialogData={dialogData}
+        visible={openDialog}
+        hide={() => setOpenDialog(false)}
+        refresh={() => setRefresh(Math.random())}
+      />
     </>
   );
 };

@@ -6,6 +6,7 @@ import { NavLink, Link } from "react-router-dom";
 import { MenuList } from "../../../components/Menu/menuList";
 import { MenuListItem } from "../../../components/Menu/menuListItem";
 import logo from "../../../assets/autopista-bbranca-mp.png";
+import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -13,8 +14,12 @@ const useStyles = makeStyles((theme: Theme) =>
       zIndex: theme.zIndex.drawer + 1,
     },
     logo: {
-      height: 32,
+      height: 80,
     },
+    logout: {
+      float: 'right',
+      marginLeft: '72%'
+    }
   })
 );
 
@@ -33,33 +38,57 @@ const Header: React.FC = () => {
             <img src={logo} alt="logo" className={classes.logo} />
           </NavLink>
           <div />
-          <MenuList heading="Cadastros">
+          <MenuList heading="Configurações">
             <Link
               to="/accessLevel"
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <MenuListItem>Nível de Acesso</MenuListItem>
             </Link>
-
-            <MenuListItem>Tipos</MenuListItem>
-            <MenuListItem>Serviços</MenuListItem>
+            <Link
+              to="/types"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Tipos</MenuListItem>
+            </Link>
+            <Link
+              to="/services"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Serviços</MenuListItem>
+            </Link>
             <hr />
-            <MenuListItem>Notícias</MenuListItem>
-            <MenuListItem>Usuários</MenuListItem>
-            <MenuListItem>Empresas</MenuListItem>
-            <hr />
-            <MenuListItem>Códigos Bônus</MenuListItem>
+            <Link
+              to="/news"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Notícias</MenuListItem>
+            </Link>
+            <Link
+              to="/code"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Códigos Bônus</MenuListItem>
+            </Link>
           </MenuList>
 
-          <MenuList heading="Admin">
-            <MenuListItem>Unipar {">"} Alfa</MenuListItem>
-            <MenuListItem>Ms1 melhor empresa</MenuListItem>
-            <MenuListItem>TCC</MenuListItem>
-            <hr />
-            <MenuListItem>Truco</MenuListItem>
-            <MenuListItem>Cerveja</MenuListItem>
-            <MenuListItem>Churrasco</MenuListItem>
+          <MenuList heading="Cadastros">
+            <Link
+              to="/users"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Usuários</MenuListItem>
+            </Link>
+            <Link
+              to="/companys"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Empresas</MenuListItem>
+            </Link>
           </MenuList>
+          <Button className={classes.logout} color="secondary">
+           SAIR 
+          </Button>
         </Toolbar>
       </AppBar>
       ;

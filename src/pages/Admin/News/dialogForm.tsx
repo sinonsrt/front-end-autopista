@@ -6,9 +6,16 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  useMediaQuery
+  useMediaQuery,
+  Fab,
 } from "@material-ui/core";
-import { createStyles, makeStyles, Theme, useTheme } from "@material-ui/core/styles";
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme,
+} from "@material-ui/core/styles";
+import AddIcon from "@material-ui/icons/Add";
 import TextInput from "../../../components/TextInput";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -42,16 +49,17 @@ interface Props {
   hide: any;
 }
 
-const AccessLevelDialog: React.FC<Props> = ({
+const NewsDialog: React.FC<Props> = ({
   dialogData,
   refresh,
   visible,
   hide,
 }) => {
   const classes = useStyles();
+  const [data, setData] = useState<any[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -70,26 +78,26 @@ const AccessLevelDialog: React.FC<Props> = ({
           switch (values.action) {
             case "include":
               api
-                .post("accesslevel", values)
+                .post("news", values)
                 .then(() => {
                   refresh();
                   hide();
-                  toast.success("Nível de acesso cadastrado com sucesso");
+                  toast.success("Notícias cadastrado com sucesso");
                 })
                 .catch((error) =>
-                  toast.error("Erro ao cadastrar nível de acesso")
+                  toast.error("Erro ao cadastrar notícias")
                 );
               break;
             case "edit":
               api
-                .put(`accesslevel/${values.id}`, values)
+                .put(`news/${values.id}`, values)
                 .then(() => {
                   refresh();
                   hide();
-                  toast.success("Nível de acesso cadastrado com sucesso");
+                  toast.success("Notícias cadastrado com sucesso");
                 })
                 .catch((error) =>
-                  toast.error("Erro ao alterar nível de acesso")
+                  toast.error("Erro ao alterar notícias")
                 );
               break;
             default:
@@ -98,19 +106,32 @@ const AccessLevelDialog: React.FC<Props> = ({
           }
         }}
         validationSchema={Yup.object({
-          description: Yup.string().required(
-            "É necessário informar a descrição"
+          title: Yup.string().required(
+            "É necessário informar o título"
           ),
+          describe: Yup.string().required(
+            "É nescessário informar a descrição"
+          )
         })}
       >
         {({ values, setFieldValue }) => (
           <Form>
             <Paper className={classes.head}>
-              <DialogTitle>Nível de acesso</DialogTitle>
+              <DialogTitle>Notícias</DialogTitle>
             </Paper>
 
             <DialogContent>
+              <TextInput name="title" label="Título" required />
+            </DialogContent>
+
+            <DialogContent>
               <TextInput name="description" label="Descrição" required />
+            </DialogContent>
+
+            <DialogContent>
+              <Fab color="primary" aria-label="add">
+                <AddIcon />
+              </Fab>
             </DialogContent>
 
             <DialogActions>
@@ -131,4 +152,4 @@ const AccessLevelDialog: React.FC<Props> = ({
   );
 };
 
-export default AccessLevelDialog;
+export default NewsDialog;
