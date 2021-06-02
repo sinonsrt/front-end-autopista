@@ -6,6 +6,8 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 
 import AccessLevel from '../pages/Admin/AccessLevel'
+import WorkedDay from '../pages/Admin/WorkedDay'
+import WorkedTime from '../pages/Admin/WorkedTime'
 import Code from '../pages/Admin/Code'
 import Company from '../pages/Admin/Company'
 import Dashboard from '../pages/Admin/Dashboard'
@@ -20,6 +22,8 @@ const Routes: React.FC = () => (
         <Route path="/register" exact component={Register} title="Register" />
 
         <Route path="/accessLevel" exact component={AccessLevel} title="AccessLevel" isPrivate />
+        <Route path="/workedDay" exact component={WorkedDay} title="WorkedDay" isPrivate />
+        <Route path="/workedTime" exact component={WorkedTime} title="WorkedTime" isPrivate />
         <Route path="/code" exact component={Code} title="Code" isPrivate />
         <Route path="/companys" exact component={Company} title="Company" isPrivate />
         <Route path="/dashboard" exact component={Dashboard} title="Dashboard" isPrivate />
