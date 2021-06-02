@@ -40,6 +40,7 @@ const AsyncComboBox: React.FC<Props> = ({ name, options, ...otherProps }) => {
         )
       );
     } else {
+      setFieldOptions([]);
       setMessage("Digite ao menos 3 caracteres");
     }
   }
