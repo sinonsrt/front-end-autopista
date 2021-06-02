@@ -16,11 +16,11 @@ const useStyles = makeStyles((theme: Theme) =>
       zIndex: theme.zIndex.drawer + 1,
     },
     logo: {
-      height: 80,
+      height: 60,
     },
     logout: {
-      float: 'right',
-      marginLeft: '66%'
+      position: 'absolute',
+      right: 0
     }
   })
 );

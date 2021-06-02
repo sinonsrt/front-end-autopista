@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
-import Toolbar from "@material-ui/core/Toolbar";
 import Header from "./Header";
+import { useAuth } from "../../hooks/Auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,20 +13,21 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(1),
-    marginTop: "2.5%"
+    marginTop: "2.5%",
   },
 }));
 
 const Main: React.FC = ({ children }) => {
+  const { user } = useAuth();
   const classes = useStyles();
-  return (
+
+  return user ? (
     <div className={classes.root}>
       <Header />
-      <main className={classes.content}>
-        <Toolbar />
-        {children}
-      </main>
+      <main className={classes.content}>{children}</main>
     </div>
+  ) : (
+    <>{children}</>
   );
 };
 
