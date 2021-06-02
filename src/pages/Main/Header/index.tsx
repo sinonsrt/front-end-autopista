@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     logout: {
       float: 'right',
-      marginLeft: '72%'
+      marginLeft: '66%'
     }
   })
 );
@@ -73,6 +73,18 @@ const Header: React.FC = () => {
             >
               <MenuListItem>Códigos Bônus</MenuListItem>
             </Link>
+            <Link
+              to="/workedDay"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Dias de funcionamento</MenuListItem>
+            </Link>
+            <Link
+              to="/workedTime"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Horários de funcionamento</MenuListItem>
+            </Link>
           </MenuList>
 
           <MenuList heading="Cadastros">
@@ -88,6 +100,9 @@ const Header: React.FC = () => {
             >
               <MenuListItem>Empresas</MenuListItem>
             </Link>
+          </MenuList>
+          <MenuList heading="Relatórios">
+
           </MenuList>
           <Button className={classes.logout} color="secondary" onClick={() => {
             signOut()

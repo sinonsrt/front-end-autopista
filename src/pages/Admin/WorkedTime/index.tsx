@@ -10,7 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { Edit, Delete, List, Search } from "@material-ui/icons";
 import TableFooter from "@material-ui/core/TableFooter";
-import UserDialog from "./dialogForm";
+import TypesDialog from "./dialogForm";
 import {
   Button,
   Grid,
@@ -23,7 +23,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInputSearch from "../../../components/TextInputSearch";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
-import UserLogo from "../../../assets/icons/user-logo.svg";
+import WorkedTimeLogo from "../../../assets/icons/worked-time-logo.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,16 +78,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const User: React.FC = () => {
+const WorkedTime: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
   const [dialogData, setDialogData] = useState<any>({});
   const [refresh, setRefresh] = useState(0);
   const columns = [
-    { description: "Nome", width: "40%" },
-    { description: "E-mail", width: "45%" },
-    { description: "Confimado", width: "5%" },
-    { description: "Data de cadastro", width: "10%" },
+    { description: "Descrição", width: "100%" },
     { description: "Ações", width: "0%" },
   ];
   const [openDialog, setOpenDialog] = useState(false);
@@ -96,7 +93,7 @@ const User: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("users")
+      .get("workedTimes")
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, [refresh]);
@@ -114,7 +111,7 @@ const User: React.FC = () => {
 
   function handleDelete(id: string) {
     api
-      .delete(`users/${id}`)
+      .delete(`workedTimes/${id}`)
       .then(() => {
         toast.success("Registro excluído com sucesso");
         setRefresh(Math.random());
@@ -125,7 +122,7 @@ const User: React.FC = () => {
 
   function showTypes(id: string, action: "view" | "edit") {
     api
-      .get(`users/${id}`)
+      .get(`workedTimes/${id}`)
       .then((response) => {
         setDialogData({
           ...response.data,
@@ -146,7 +143,7 @@ const User: React.FC = () => {
         className={classes.titleLogo}
       >
         {" "}
-        <img src={UserLogo} alt="Usuários" /> Usuários cadastrados
+        <img src={WorkedTimeLogo} alt="Tipos" /> Horários cadastrados
       </Typography>
       
       <Grid container direction="row" justify="flex-start">
@@ -185,10 +182,7 @@ const User: React.FC = () => {
           <TableBody>
             {data.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.email}</TableCell>
-                <TableCell>{item.confirmed}</TableCell>
-                <TableCell>{item.created_at.split("T")[0]}</TableCell>
+                <TableCell>{item.description}</TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>
                     <List />
@@ -253,7 +247,7 @@ const User: React.FC = () => {
         </Table>
       </TableContainer>
 
-      <UserDialog
+      <TypesDialog
         dialogData={dialogData}
         visible={openDialog}
         hide={() => setOpenDialog(false)}
@@ -263,4 +257,4 @@ const User: React.FC = () => {
   );
 };
 
-export default User;
+export default WorkedTime;

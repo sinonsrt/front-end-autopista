@@ -8,6 +8,7 @@ import {
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 import TextInput from "../../components/TextInput";
+import TextInputPassword from "../../components/TextInputPassword";
 import Select from "../../components/Select";
 
 import ReplyAllIcon from "@material-ui/icons/ReplyAll";
@@ -110,12 +111,12 @@ const Register: React.FC = () => {
                     label="E-mail"
                     className={classes.textField}
                   />
-                  <TextInput
+                  <TextInputPassword
                     name="password"
                     label="Senha"
                     className={classes.textField}
                   />
-                  <TextInput
+                  <TextInputPassword
                     name="confirm-password"
                     label="Confirme sua senha"
                     className={classes.textField}
