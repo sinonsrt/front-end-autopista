@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Grid,
-  Button,
-  Typography,
-  Paper,
-} from "@material-ui/core";
+import { Grid, Button, Typography, Paper } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 import TextInput from "../../components/TextInput";
@@ -16,6 +11,7 @@ import ReplyAllIcon from "@material-ui/icons/ReplyAll";
 import background from "../../assets/background-register.png";
 import logo from "../../assets/autopista-bbranca-mp.png";
 import { Form, Formik } from "formik";
+import AsyncSelect from "../../components/AsyncSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -121,15 +117,24 @@ const Register: React.FC = () => {
                     label="Confirme sua senha"
                     className={classes.textField}
                   />
-                  <Select
-                    name="city"
-                    label="Selecione sua cidade"
-                    className={classes.textField}
+                  <AsyncSelect
+                    name="cidade"
+                    placeholder="Cidade"
                     options={[
-                      { id: "01", text: "Umuarama" },
-                      { id: "02", text: "Maringá" },
+                      { text: "Umuarama", id: "1" },
+                      { text: "Maringá", id: "2" },
+                      { text: "Cianorte", id: "3" },
+                      { text: "Londrina", id: "4" },
+                      { text: "Maria Helena", id: "5" },
+                      { text: "Curitiba", id: "6" },
+                      { text: "Toledo", id: "7" },
+                      { text: "Perobal", id: "8" },
+                      { text: "Perola", id: "9" },
+                      { text: "Xambre", id: "10" },
                     ]}
+                    className={classes.textField}
                   />
+                  
                   <Button
                     type="submit"
                     variant="contained"

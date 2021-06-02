@@ -63,6 +63,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   const signOut = useCallback(() => {
     localStorage.removeItem("@autopista:token");
+    localStorage.removeItem("@autopista:user");
     history.push("/");
     setData({} as AuthState);
   }, [history]);

@@ -13,7 +13,7 @@ interface OptProps {
 
 type Props = OptProps & TextFieldProps;
 
-const SelectWrapper: React.FC<Props> = ({ name, options, ...otherProps }) => {
+const Select: React.FC<Props> = ({ name, options, ...otherProps }) => {
   const [field, meta] = useField(name || "");
   const { setFieldValue } = useFormikContext();
 
@@ -47,4 +47,4 @@ const SelectWrapper: React.FC<Props> = ({ name, options, ...otherProps }) => {
   );
 };
 
-export default SelectWrapper;
+export default Select;
