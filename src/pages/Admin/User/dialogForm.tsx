@@ -7,7 +7,9 @@ import {
   DialogContent,
   DialogTitle,
   useMediaQuery,
+  Fab,
 } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import {
   createStyles,
   makeStyles,
@@ -84,7 +86,7 @@ const UserDialog: React.FC<Props> = ({
         onSubmit={(values) => {
           switch (values.action) {
             case "include":
-              console.log(values)
+              console.log(values);
               api
                 .post("register", values)
                 .then(() => {
@@ -165,6 +167,12 @@ const UserDialog: React.FC<Props> = ({
                   text: item.description,
                 }))}
               />
+            </DialogContent>
+
+            <DialogContent>
+              <Fab color="primary" aria-label="add">
+                <AddIcon />
+              </Fab>
             </DialogContent>
 
             <DialogActions>
