@@ -1,22 +1,15 @@
-import React from "react";
-import {
-  Button,
-  Paper,
-  Typography,
-  Grid,
-} from "@material-ui/core";
+import React, { useState } from "react";
+import { Button, Paper, Typography, Grid } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-
 import TextInput from "../../components/TextInput";
-
 import ReplyAllIcon from "@material-ui/icons/ReplyAll";
-
 import background from "../../assets/background-login.jpg";
 import logo from "../../assets/autopista-bbranca-mp.png";
 import { Form, Formik } from "formik";
 import { useAuth } from "../../hooks/Auth";
 import { toast } from "react-toastify";
 import TextInputPassword from "../../components/TextInputPassword";
+import Loader from "../../components/Loader";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -76,13 +69,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-interface State {
-  password: string;
-  showPassword: boolean;
-}
 
 const Login: React.FC = () => {
   const classes = useStyles();
+  const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
   return (
     <div className={classes.container}>
@@ -94,12 +84,13 @@ const Login: React.FC = () => {
             password: "",
           }}
           onSubmit={async (values) => {
+            setLoading(true);
             try {
-              signIn(values);
+              await signIn(values);
             } catch (error) {
-              console.log(error);
               toast.error("Erro ao fazer login");
             }
+            setLoading(false);
           }}
         >
           {({ values, setFieldValue }) => (
@@ -141,6 +132,7 @@ const Login: React.FC = () => {
           Realizar cadastro
         </a>
       </div>
+      {loading && <Loader />}
       <img className={classes.background} src={background} alt="Background" />
     </div>
   );
