@@ -2,12 +2,20 @@ import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import {
   Button,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   useMediaQuery,
+  Grid,
+  Typography,
+  FormControl,
+  FormLabel,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  FormHelperText
 } from "@material-ui/core";
+import Dialog, { DialogProps } from "@material-ui/core/Dialog";
 import {
   createStyles,
   makeStyles,
@@ -19,7 +27,6 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
-import TextInputPassword from "../../../components/TextInputPassword";
 import Select from "../../../components/Select";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -38,6 +45,20 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     head: {
       backgroundColor: theme.palette.info.main,
+      padding: "2px",
+    },
+    form: {
+      display: "flex",
+      flexDirection: "column",
+      margin: "auto",
+      width: "fit-content",
+    },
+    formControl: {
+      marginTop: theme.spacing(2),
+      minWidth: 120,
+    },
+    formControlLabel: {
+      marginTop: theme.spacing(1),
     },
   })
 );
@@ -57,9 +78,14 @@ const CompanyDialog: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
+  const [city, setCity] = useState<any[]>([]);
+  const [workedDays, setWorkedDays] = useState<any[]>([]);
+  const [workedTimes, setWorkedTimes] = useState<any[]>([]);
+  const [services, setServices] = useState<any[]>([]);
+
+  const [fullWidth, setFullWidth] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [maxWidth, setMaxWidth] = React.useState<DialogProps["maxWidth"]>("md");
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -72,12 +98,45 @@ const CompanyDialog: React.FC<Props> = ({
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, [refresh]);
 
+  useEffect(() => {
+    api
+      .get("cities?page=1&limit=5&order=description&type=asc")
+      .then((response) => setCity(response.data.data))
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+  }, [refresh]);
+
+  useEffect(() => {
+    api
+      .get("workedDays")
+      .then((response) => setWorkedDays(response.data))
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+  }, [refresh]);
+
+  useEffect(() => {
+    api
+      .get("workedTimes")
+      .then((response) => setWorkedTimes(response.data))
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+  }, [refresh]);
+
+  /* useEffect(() => {
+    api
+      .get("services")
+      .then((response) => setServices(response.data))
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+  }, [refresh]); */
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setServices({ ...services, [event.target.name]: event.target.checked });
+  };
+
   return (
     <Dialog
       open={visible}
       onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-      fullScreen={fullScreen}
+      fullWidth={fullWidth}
+      maxWidth={maxWidth}
+      aria-labelledby="max-width-dialog-title"
     >
       <Formik
         initialValues={dialogData}
@@ -116,98 +175,149 @@ const CompanyDialog: React.FC<Props> = ({
         })}
       >
         {({ values, setFieldValue }) => (
-          <Form>
+          <Form className={classes.form}>
             <Paper className={classes.head}>
-              <DialogTitle>Empresa</DialogTitle>
+              <Typography variant="h5">Empresa</Typography>
             </Paper>
+            <Grid container spacing={3}>
+              <Grid xs={12} sm={12} md={12}>
+                <DialogContent>
+                  <Select
+                    name="type_id"
+                    label="Tipo de Empresa"
+                    options={data.map((item) => ({
+                      id: item.id,
+                      text: item.description,
+                    }))}
+                  />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <Select
-                name="type_id"
-                label="Tipo de Empresa"
-                options={data.map((item) => ({
-                  id: item.id,
-                  text: item.description,
-                }))}
-              />
-            </DialogContent>
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <TextInput name="cnpj" label="CNPJ" required />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <TextInput name="corporate_name" label="Razão Social" required />
-            </DialogContent>
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <TextInput name="ie" label="Inscrição Estadual" required />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <TextInput name="company_name" label="Nome Fantasia" required />
-            </DialogContent>
+              <Grid xs={12} sm={12} md={12}>
+                <DialogContent>
+                  <TextInput
+                    name="corporate_name"
+                    label="Razão Social"
+                    required
+                  />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <TextInputPassword name="cnpj" label="CNPJ" required />
-            </DialogContent>
+              <Grid xs={12} sm={12} md={12}>
+                <DialogContent>
+                  <TextInput
+                    name="company_name"
+                    label="Nome Fantasia"
+                    required
+                  />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <TextInputPassword name="ie" label="Inscrição Estadual" required />
-            </DialogContent>
+              <Grid xs={12} sm={12} md={12}>
+                <Typography variant="h5" align="center">
+                  Endereço
+                </Typography>
+              </Grid>
 
-            <hr/>
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <TextInput name="cep" label="CEP" required />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <TextInputPassword name="cep" label="CEP" required />
-            </DialogContent>
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <TextInput name="district" label="Bairro" required />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <TextInputPassword name="address" label="Endereço" required />
-            </DialogContent>
+              <Grid xs={12} sm={12} md={12}>
+                <DialogContent>
+                  <TextInput name="address" label="Endereço" required />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <TextInputPassword name="number" label="Numero" required />
-            </DialogContent>
+              <Grid xs={4} sm={4} md={4}>
+                <DialogContent>
+                  <TextInput name="number" label="Numero" required />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <TextInputPassword name="district" label="Bairro" required />
-            </DialogContent>
+              <Grid xs={8} sm={8} md={8}>
+                <DialogContent>
+                  <Select
+                    name="city_id"
+                    label="Cidade"
+                    options={city.map((item) => ({
+                      id: item.id,
+                      text: item.description,
+                    }))}
+                  />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <Select
-                name="city_id"
-                label="Cidade"
-                options={data.map((item) => ({
-                  id: item.id,
-                  text: item.description,
-                }))}
-              />
-            </DialogContent>
+              <Grid xs={12} sm={12} md={12}>
+                <Typography variant="h5" align="center">
+                  Contato
+                </Typography>
+              </Grid>
 
-            <hr/>
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <TextInput name="phone" label="Telefone" required />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <TextInput name="phone" label="Telefone" required />
-            </DialogContent>
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <TextInput name="email" label="E-mail" required />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <TextInput name="email" label="E-mail" required />
-            </DialogContent>
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <Select
+                    name="worked_days"
+                    label="Dias de funcionamento"
+                    options={workedDays.map((item) => ({
+                      id: item.id,
+                      text: item.description,
+                    }))}
+                  />
+                </DialogContent>
+              </Grid>
 
-            <DialogContent>
-              <Select
-                name="worked_days"
-                label="Dias de funcionamento"
-                options={data.map((item) => ({
-                  id: item.id,
-                  text: item.description,
-                }))}
-              />
-            </DialogContent>
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <Select
+                    name="worked_time"
+                    label="Horário de funcionamento"
+                    options={workedTimes.map((item) => ({
+                      id: item.id,
+                      text: item.description,
+                    }))}
+                  />
+                </DialogContent>
+              </Grid>
+            </Grid>
 
-            <DialogContent>
-              <Select
-                name="worked_time"
-                label="Horário de funcionamento"
-                options={data.map((item) => ({
-                  id: item.id,
-                  text: item.description,
-                }))}
-              />
-            </DialogContent>
+            <Grid xs={12} sm={12} md={12}>
+              <Typography variant="h5" align="center">
+                Serviços
+              </Typography>
+            </Grid>
 
             <DialogActions>
               <Button onClick={() => hide()} color="primary">

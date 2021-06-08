@@ -10110,7 +10110,7 @@
   dependencies:
     "prop-types" "^15.5.6"
 
-"react-toastify@^7.0.3":
+"react-toastify@^7.0.4":
   "integrity" "sha512-Rol7+Cn39hZp5hQ/k6CbMNE2CKYV9E5OQdC/hBLtIQU2xz7DdAm7xil4NITQTHR6zEbE5RVFbpgSwTD7xRGLeQ=="
   "resolved" "https://registry.npmjs.org/react-toastify/-/react-toastify-7.0.4.tgz"
   "version" "7.0.4"
