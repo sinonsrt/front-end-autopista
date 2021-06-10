@@ -12,6 +12,7 @@ import background from "../../assets/background-register.png";
 import logo from "../../assets/autopista-bbranca-mp.png";
 import { Form, Formik } from "formik";
 import AsyncSelect from "../../components/AsyncSelect";
+import MultipleSelect from "../../components/MultipleSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -118,8 +119,8 @@ const Register: React.FC = () => {
                     className={classes.textField}
                   />
                   <AsyncSelect
-                    name="cidade"
-                    placeholder="Cidade"
+                    name="async"
+                    label="Select assíncrono"
                     options={[
                       { text: "Umuarama", id: "1" },
                       { text: "Maringá", id: "2" },
@@ -134,7 +135,43 @@ const Register: React.FC = () => {
                     ]}
                     className={classes.textField}
                   />
-                  
+
+                  <MultipleSelect
+                    name="multi"
+                    label="Select múltiplo"
+                    options={[
+                      { text: "Umuarama", id: "1" },
+                      { text: "Maringá", id: "2" },
+                      { text: "Cianorte", id: "3" },
+                      { text: "Londrina", id: "4" },
+                      { text: "Maria Helena", id: "5" },
+                      { text: "Curitiba", id: "6" },
+                      { text: "Toledo", id: "7" },
+                      { text: "Perobal", id: "8" },
+                      { text: "Perola", id: "9" },
+                      { text: "Xambre", id: "10" },
+                    ]}
+                    className={classes.textField}
+                  />
+
+                  <Select
+                    name="simples"
+                    label="Select simples"
+                    options={[
+                      { text: "Umuarama", id: "1" },
+                      { text: "Maringá", id: "2" },
+                      { text: "Cianorte", id: "3" },
+                      { text: "Londrina", id: "4" },
+                      { text: "Maria Helena", id: "5" },
+                      { text: "Curitiba", id: "6" },
+                      { text: "Toledo", id: "7" },
+                      { text: "Perobal", id: "8" },
+                      { text: "Perola", id: "9" },
+                      { text: "Xambre", id: "10" },
+                    ]}
+                    className={classes.textField}
+                  />
+
                   <Button
                     type="submit"
                     variant="contained"
