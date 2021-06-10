@@ -14,9 +14,15 @@ interface OptProps {
 
 type Props = OptProps & TextFieldProps;
 
-const AsyncComboBox: React.FC<Props> = ({ name, options, ...otherProps }) => {
+const AsyncComboBox: React.FC<Props> = ({
+  name,
+  label,
+  options,
+  ...otherProps
+}) => {
   const configSelect = {
     id: name,
+    label: label,
     ...otherProps,
     fullWidth: true,
   };

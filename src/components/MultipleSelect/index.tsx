@@ -14,7 +14,7 @@ interface OptProps {
 
 type Props = OptProps & TextFieldProps;
 
-const Select: React.FC<Props> = ({
+const MultipleSelect: React.FC<Props> = ({
   name,
   label,
   options,
@@ -37,15 +37,22 @@ const Select: React.FC<Props> = ({
 
   return (
     <Autocomplete
+      multiple
       options={options}
       getOptionLabel={(option) => option.text}
       noOptionsText={"Nenhum resultado encontrado"}
+      filterSelectedOptions
       renderInput={(params) => (
         <TextField {...params} variant="outlined" {...configSelect} />
       )}
-      onChange={(event, data) => setFieldValue(`${name}`, data?.id)}
+      onChange={(event, data) =>
+        setFieldValue(
+          `${name}`,
+          data.map((item) => item.id)
+        )
+      }
     />
   );
 };
 
-export default Select;
+export default MultipleSelect;
