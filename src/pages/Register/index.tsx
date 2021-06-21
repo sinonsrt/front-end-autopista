@@ -4,7 +4,7 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 import TextInput from "../../components/TextInput";
 import TextInputPassword from "../../components/TextInputPassword";
-import Select from "../../components/Select";
+import api from "../../services/api";
 
 import ReplyAllIcon from "@material-ui/icons/ReplyAll";
 
@@ -12,7 +12,7 @@ import background from "../../assets/background-register.png";
 import logo from "../../assets/autopista-bbranca-mp.png";
 import { Form, Formik } from "formik";
 import AsyncSelect from "../../components/AsyncSelect";
-import MultipleSelect from "../../components/MultipleSelect";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -87,7 +87,14 @@ const Register: React.FC = () => {
         <Formik
           initialValues={{}}
           onSubmit={(values) => {
-            console.log(values);
+            api
+            .post("services", values)
+            .then(() => {
+              toast.success("Serviço cadastrado com sucesso");
+            })
+            .catch((error) =>
+              toast.error("Erro ao cadastrar serviço")
+            );
           }}
         >
           {({ values, setFieldValue }) => (
@@ -119,44 +126,8 @@ const Register: React.FC = () => {
                     className={classes.textField}
                   />
                   <AsyncSelect
-                    name="async"
-                    label="Select assíncrono"
-                    options={[
-                      { text: "Umuarama", id: "1" },
-                      { text: "Maringá", id: "2" },
-                      { text: "Cianorte", id: "3" },
-                      { text: "Londrina", id: "4" },
-                      { text: "Maria Helena", id: "5" },
-                      { text: "Curitiba", id: "6" },
-                      { text: "Toledo", id: "7" },
-                      { text: "Perobal", id: "8" },
-                      { text: "Perola", id: "9" },
-                      { text: "Xambre", id: "10" },
-                    ]}
-                    className={classes.textField}
-                  />
-
-                  <MultipleSelect
-                    name="multi"
-                    label="Select múltiplo"
-                    options={[
-                      { text: "Umuarama", id: "1" },
-                      { text: "Maringá", id: "2" },
-                      { text: "Cianorte", id: "3" },
-                      { text: "Londrina", id: "4" },
-                      { text: "Maria Helena", id: "5" },
-                      { text: "Curitiba", id: "6" },
-                      { text: "Toledo", id: "7" },
-                      { text: "Perobal", id: "8" },
-                      { text: "Perola", id: "9" },
-                      { text: "Xambre", id: "10" },
-                    ]}
-                    className={classes.textField}
-                  />
-
-                  <Select
-                    name="simples"
-                    label="Select simples"
+                    name="city_id"
+                    label="Cidade"
                     options={[
                       { text: "Umuarama", id: "1" },
                       { text: "Maringá", id: "2" },

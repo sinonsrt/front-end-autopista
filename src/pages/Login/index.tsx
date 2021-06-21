@@ -86,7 +86,10 @@ const Login: React.FC = () => {
           onSubmit={async (values) => {
             setLoading(true);
             try {
-              await signIn(values);
+              await signIn(values)
+              .catch((error) =>
+                toast.error("Usuário ou senha incorretos!")
+              );
             } catch (error) {
               toast.error("Erro ao fazer login");
             }
