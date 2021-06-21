@@ -101,9 +101,67 @@ const Header: React.FC = () => {
               <MenuListItem>Empresas</MenuListItem>
             </Link>
           </MenuList>
-          <MenuList heading="Relatórios">
 
+          <MenuList heading="Relatórios">
+            <Link
+              to="/users"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Usuários</MenuListItem>
+            </Link>
+            <Link
+              to="/companys"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Empresas</MenuListItem>
+            </Link>
+            <hr />
+            
+            <Link
+              to="/accessLevel"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Nível de Acesso</MenuListItem>
+            </Link>
+            <Link
+              to="/types"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Tipos</MenuListItem>
+            </Link>
+            <Link
+              to="/services"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Serviços</MenuListItem>
+            </Link>
+            <hr />
+            <Link
+              to="/news"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Notícias</MenuListItem>
+            </Link>
+            <Link
+              to="/code"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Códigos Bônus</MenuListItem>
+            </Link>
+            <Link
+              to="/workedDay"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Dias de funcionamento</MenuListItem>
+            </Link>
+            <Link
+              to="/workedTime"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <MenuListItem>Horários de funcionamento</MenuListItem>
+            </Link>
           </MenuList>
+
           <Button className={classes.logout} color="secondary" onClick={() => {
             signOut()
           }}>
