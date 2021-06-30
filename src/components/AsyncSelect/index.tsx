@@ -14,7 +14,7 @@ interface OptProps {
 
 type Props = OptProps & TextFieldProps;
 
-const AsyncComboBox: React.FC<Props> = ({
+const AsyncSelect: React.FC<Props> = ({
   name,
   label,
   options,
@@ -69,4 +69,4 @@ const AsyncComboBox: React.FC<Props> = ({
   );
 };
 
-export default AsyncComboBox;
+export default AsyncSelect;
