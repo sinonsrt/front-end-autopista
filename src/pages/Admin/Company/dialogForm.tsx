@@ -28,6 +28,7 @@ import * as Yup from "yup";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
 import Select from "../../../components/Select";
+import AsyncSelect from "../../../components/AsyncSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -100,10 +101,10 @@ const CompanyDialog: React.FC<Props> = ({
 
   useEffect(() => {
     api
-      .get("cities?page=1&limit=5&order=description&type=asc")
+      .get("cities?page=1&limit=10000&order=description&type=asc")
       .then((response) => setCity(response.data.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  }, []);
 
   useEffect(() => {
     api
@@ -257,12 +258,12 @@ const CompanyDialog: React.FC<Props> = ({
 
               <Grid xs={8} sm={8} md={8}>
                 <DialogContent>
-                  <Select
+                  <AsyncSelect
                     name="city_id"
                     label="Cidade"
                     options={city.map((item) => ({
                       id: item.id,
-                      text: item.description,
+                      text: `${item.description} - ${item.state[0].initials}`,
                     }))}
                   />
                 </DialogContent>

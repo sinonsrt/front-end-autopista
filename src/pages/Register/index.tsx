@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Button, Typography, Paper } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import api from "../../services/api";
+import { toast } from "react-toastify";
 
 import TextInput from "../../components/TextInput";
 import TextInputPassword from "../../components/TextInputPassword";
-import api from "../../services/api";
+import Select from "../../components/Select";
 
 import ReplyAllIcon from "@material-ui/icons/ReplyAll";
 
@@ -12,7 +14,8 @@ import background from "../../assets/background-register.png";
 import logo from "../../assets/autopista-bbranca-mp.png";
 import { Form, Formik } from "formik";
 import AsyncSelect from "../../components/AsyncSelect";
-import { toast } from "react-toastify";
+import MultipleSelect from "../../components/MultipleSelect";
+import TextInputFile from "../../components/TextInputFile";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,13 +75,19 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-interface State {
-  password: string;
-  showPassword: boolean;
-}
 
 const Register: React.FC = () => {
   const classes = useStyles();
+
+  const [city, setCity] = useState<any[]>([]);
+  const [image, setImage] = useState<any>();
+
+  // useEffect(() => { *** SÓ DESCOMENTAR AQUI QUE AS CIDADES VÃO APARECER DEPOIS DE TIRAR ELAS DO AUTH
+  //   api
+  //     .get("cities?page=1&limit=10000&order=description&type=asc")
+  //     .then((response) => setCity(response.data.data))
+  //     .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+  // }, []);
 
   return (
     <div className={classes.container}>
@@ -86,15 +95,13 @@ const Register: React.FC = () => {
         <img src={logo} alt="AutoPista" />
         <Formik
           initialValues={{}}
-          onSubmit={(values) => {
-            api
-            .post("services", values)
-            .then(() => {
-              toast.success("Serviço cadastrado com sucesso");
-            })
-            .catch((error) =>
-              toast.error("Erro ao cadastrar serviço")
-            );
+          onSubmit={(values: any) => {
+            const formData = new FormData();
+            Object.keys(values).forEach((key) => {
+              formData.append(key, values[key]);
+            });
+            formData.append("image", image);
+            api.post("teste", formData);
           }}
         >
           {({ values, setFieldValue }) => (
@@ -105,6 +112,21 @@ const Register: React.FC = () => {
                   Cadastro{" "}
                 </Typography>
                 <Grid>
+                  <input
+                    type="file"
+                    className={classes.textField}
+                    onChange={(event) => {
+                      if (event.target.files && event.target.files[0]) {
+                        setImage(event.target.files[0]);
+                      }
+                    }}
+                  />
+                  <img
+                    src="https://ilustrado.com.br/wp-content/uploads/2021/03/combustivel_adulterado-761x520.jpg"
+                    // poderia ser assim: src=`${process.env.ENDERECO_DO_BACK_PUBLIC}/images/nome_da_imagem.jpg`
+                    alt="teste"
+                    style={{ width: 100 }}
+                  />
                   <TextInput
                     name="name"
                     label="Nome"
@@ -126,8 +148,36 @@ const Register: React.FC = () => {
                     className={classes.textField}
                   />
                   <AsyncSelect
-                    name="city_id"
-                    label="Cidade"
+                    name="async"
+                    label="Select assíncrono"
+                    options={city.map((item) => ({
+                      id: item.id,
+                      text: item.description,
+                    }))}
+                    className={classes.textField}
+                  />
+
+                  <MultipleSelect
+                    name="multi"
+                    label="Select múltiplo"
+                    options={[
+                      { text: "Umuarama", id: "1" },
+                      { text: "Maringá", id: "2" },
+                      { text: "Cianorte", id: "3" },
+                      { text: "Londrina", id: "4" },
+                      { text: "Maria Helena", id: "5" },
+                      { text: "Curitiba", id: "6" },
+                      { text: "Toledo", id: "7" },
+                      { text: "Perobal", id: "8" },
+                      { text: "Perola", id: "9" },
+                      { text: "Xambre", id: "10" },
+                    ]}
+                    className={classes.textField}
+                  />
+
+                  <Select
+                    name="simples"
+                    label="Select simples"
                     options={[
                       { text: "Umuarama", id: "1" },
                       { text: "Maringá", id: "2" },
