@@ -15,6 +15,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "axios": "^0.21.1",
+    "chokidar": "^3.5.2",
     "cpf": "^2.0.1",
     "date-fns": "^2.21.3",
     "dotenv": "^8.2.0",

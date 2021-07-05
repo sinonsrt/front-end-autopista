@@ -41,6 +41,10 @@ const useStyles = makeStyles((theme: Theme) =>
     head: {
       backgroundColor: theme.palette.info.main,
     },
+    textField: {
+      width: "97.5%",
+      margin: theme.spacing(1),
+    },
   })
 );
 
@@ -61,6 +65,7 @@ const UserDialog: React.FC<Props> = ({
   const [data, setData] = useState<any[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
+  const [image, setImage] = useState<any>();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleClose = () => {
@@ -172,7 +177,22 @@ const UserDialog: React.FC<Props> = ({
             <DialogContent>
               <Fab color="primary" aria-label="add">
                 <AddIcon />
+                <input
+                  type="file"
+                  className={classes.textField}
+                  onChange={(event) => {
+                    if (event.target.files && event.target.files[0]) {
+                      setImage(event.target.files[0]);
+                    }
+                  }}
+                />
               </Fab>
+              <img
+                src="https://ilustrado.com.br/wp-content/uploads/2021/03/combustivel_adulterado-761x520.jpg"
+                // poderia ser assim: src=`${process.env.ENDERECO_DO_BACK_PUBLIC}/images/nome_da_imagem.jpg`
+                alt="teste"
+                style={{ width: 100 }}
+              />
             </DialogContent>
 
             <DialogActions>

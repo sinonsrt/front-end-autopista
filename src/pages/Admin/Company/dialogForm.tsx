@@ -4,23 +4,16 @@ import {
   Button,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  useMediaQuery,
   Grid,
   Typography,
-  FormControl,
-  FormLabel,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-  FormHelperText
+  Fab
 } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import Dialog, { DialogProps } from "@material-ui/core/Dialog";
 import {
   createStyles,
   makeStyles,
   Theme,
-  useTheme,
 } from "@material-ui/core/styles";
 import TextInput from "../../../components/TextInput";
 import { Form, Formik } from "formik";
@@ -61,6 +54,10 @@ const useStyles = makeStyles((theme: Theme) =>
     formControlLabel: {
       marginTop: theme.spacing(1),
     },
+    textField: {
+      width: "97.5%",
+      margin: theme.spacing(1),
+    },
   })
 );
 
@@ -87,6 +84,7 @@ const CompanyDialog: React.FC<Props> = ({
   const [fullWidth, setFullWidth] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps["maxWidth"]>("md");
+  const [image, setImage] = useState<any>();
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -319,6 +317,27 @@ const CompanyDialog: React.FC<Props> = ({
                 Serviços
               </Typography>
             </Grid>
+
+            <DialogContent>
+              <Fab color="primary" aria-label="add">
+                <AddIcon />
+                <input
+                  type="file"
+                  className={classes.textField}
+                  onChange={(event) => {
+                    if (event.target.files && event.target.files[0]) {
+                      setImage(event.target.files[0]);
+                    }
+                  }}
+                />
+              </Fab>
+              <img
+                src="https://ilustrado.com.br/wp-content/uploads/2021/03/combustivel_adulterado-761x520.jpg"
+                // poderia ser assim: src=`${process.env.ENDERECO_DO_BACK_PUBLIC}/images/nome_da_imagem.jpg`
+                alt="teste"
+                style={{ width: 100 }}
+              />
+            </DialogContent>
 
             <DialogActions>
               <Button onClick={() => hide()} color="primary">
