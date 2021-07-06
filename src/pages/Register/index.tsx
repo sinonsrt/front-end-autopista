@@ -15,7 +15,6 @@ import logo from "../../assets/autopista-bbranca-mp.png";
 import { Form, Formik } from "formik";
 import AsyncSelect from "../../components/AsyncSelect";
 import MultipleSelect from "../../components/MultipleSelect";
-import TextInputFile from "../../components/TextInputFile";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

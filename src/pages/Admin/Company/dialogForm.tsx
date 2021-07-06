@@ -13,7 +13,7 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
-  FormHelperText
+  FormHelperText,
 } from "@material-ui/core";
 import Dialog, { DialogProps } from "@material-ui/core/Dialog";
 import {
@@ -23,12 +23,13 @@ import {
   useTheme,
 } from "@material-ui/core/styles";
 import TextInput from "../../../components/TextInput";
-import { Form, Formik } from "formik";
+import { Form, Formik, FieldArray } from "formik";
 import * as Yup from "yup";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
 import Select from "../../../components/Select";
 import AsyncSelect from "../../../components/AsyncSelect";
+import CheckBox from "../../../components/CheckBox";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -97,7 +98,7 @@ const CompanyDialog: React.FC<Props> = ({
       .get("accesslevel")
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  }, []);
 
   useEffect(() => {
     api
@@ -111,21 +112,21 @@ const CompanyDialog: React.FC<Props> = ({
       .get("workedDays")
       .then((response) => setWorkedDays(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  }, []);
 
   useEffect(() => {
     api
       .get("workedTimes")
       .then((response) => setWorkedTimes(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  }, []);
 
-  /* useEffect(() => {
+  useEffect(() => {
     api
       .get("services")
       .then((response) => setServices(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]); */
+  }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setServices({ ...services, [event.target.name]: event.target.checked });
@@ -142,32 +143,32 @@ const CompanyDialog: React.FC<Props> = ({
       <Formik
         initialValues={dialogData}
         onSubmit={(values) => {
-          switch (values.action) {
-            case "include":
-              console.log(values);
-              api
-                .post("register", values)
-                .then(() => {
-                  refresh();
-                  hide();
-                  toast.success("Empresa cadastrado com sucesso");
-                })
-                .catch((error) => toast.error("Erro ao cadastrar empresa"));
-              break;
-            case "edit":
-              api
-                .put(`users/${values.id}`, values)
-                .then(() => {
-                  refresh();
-                  hide();
-                  toast.success("Empresa cadastrado com sucesso");
-                })
-                .catch((error) => toast.error("Erro ao alterar empresa"));
-              break;
-            default:
-              toast.error("Erro ao realizar operação");
-              break;
-          }
+          console.log(values);
+          // switch (values.action) {
+          //   case "include":
+          //     api
+          //       .post("register", values)
+          //       .then(() => {
+          //         refresh();
+          //         hide();
+          //         toast.success("Empresa cadastrado com sucesso");
+          //       })
+          //       .catch((error) => toast.error("Erro ao cadastrar empresa"));
+          //     break;
+          //   case "edit":
+          //     api
+          //       .put(`users/${values.id}`, values)
+          //       .then(() => {
+          //         refresh();
+          //         hide();
+          //         toast.success("Empresa cadastrado com sucesso");
+          //       })
+          //       .catch((error) => toast.error("Erro ao alterar empresa"));
+          //     break;
+          //   default:
+          //     toast.error("Erro ao realizar operação");
+          //     break;
+          // }
         }}
         validationSchema={Yup.object({
           /* description: Yup.string().required(
@@ -318,6 +319,17 @@ const CompanyDialog: React.FC<Props> = ({
               <Typography variant="h5" align="center">
                 Serviços
               </Typography>
+
+              <DialogContent>
+                {services.map((item, index) => (
+                  <Grid xs={12} sm={12} md={12}>
+                    <CheckBox
+                      name={`service_${item.id}`}
+                      placeholder={item.description}
+                    />
+                  </Grid>
+                ))}
+              </DialogContent>
             </Grid>
 
             <DialogActions>
