@@ -1,20 +1,75 @@
 import React from "react";
 import InfoCard from "../../../components/InfoCard";
-import image from "../../../assets/pexels-johannes-rapprich-1051397.jpg";
+import company from "../../../assets/company.png";
+import user from "../../../assets/user.png";
+import service from "../../../assets/service.png";
+import { Theme, Typography } from "@material-ui/core";
+import { createStyles, makeStyles, useTheme } from "@material-ui/core/styles";
+import logo from "../../../assets/autopista-bbranca-mp.png";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    container: {
+      marginTop: "5%",
+      textAlign: "center",
+    },
+    box: {
+      display: "flex",
+      marginTop: "5%",
+      marginLeft: "21%",
+    },
+    card: {
+      marginRight: "1%",
+    },
+    title: {
+      fontSize: "450%",
+      margin: "0",
+    },
+    logoTitle: {
+      marginTop: "-5%",
+      letterSpacing: "3px"
+    }
+  })
+);
 
 const Dashboard: React.FC = () => {
+  const classes = useStyles();
   return (
     <>
-      <h1>Dashboard</h1>
-      <InfoCard
-        image={image}
-        title="Título do Card"
-        text="Texto do Card, texto texto texto texto texto texto texto texto texto texto texto texto"
-        imageTitle="Título da imagem"
-        cardAction={() => alert("da pra definir uma ação quando clica no card")} //-| ações opcionais, se não definir não acontece nada ao clicar.
-        firstButtonAction={() => alert("botão de compartilhar")} //-----------------| se for o caso, da pra criar uma prop pra mudar o texto dos botões.
-        secondButtonAction={() => alert("botão de saiba mais")} //------------------| ou então podemos remover os botões também, deixando só imagem e texto.
-      />
+      <div className={classes.container}>
+        <div className={classes.logoTitle}>
+          <img src={logo} alt="AutoPosto" />
+          <Typography gutterBottom variant="h5" component="h2">
+            SEJA BEM-VINDO!
+          </Typography>
+        </div>
+        <div className={classes.box}>
+          <div className={classes.card}>
+            <InfoCard
+              image={company}
+              title="EMPRESAS"
+              text="49"
+              imageTitle="Total de empresas cadastradas"
+            />
+          </div>
+          <div className={classes.card}>
+            <InfoCard
+              image={service}
+              title="PRESTADORES DE SERVIÇO"
+              text="50"
+              imageTitle="Total de prestadores de serviço cadastradas"
+            />
+          </div>
+          <div className={classes.card}>
+            <InfoCard
+              image={user}
+              title="USUÁRIOS"
+              text="22"
+              imageTitle="Total de usuários cadastradas"
+            />
+          </div>
+        </div>
+      </div>
     </>
   );
 };
