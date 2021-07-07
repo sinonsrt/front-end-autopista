@@ -10,7 +10,7 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 345,
+    width: 345,
   },
   media: {
     height: 140,
@@ -51,14 +51,16 @@ const InfoCard: React.FC<Props> = ({
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions>
-        <Button size="small" color="primary" onClick={firstButtonAction}>
-          Compartilhar
-        </Button>
-        <Button size="small" color="primary" onClick={secondButtonAction}>
-          Saiba mais
-        </Button>
-      </CardActions>
+      <b>
+        <Typography
+          variant="subtitle1"
+          color="primary"
+          align="center"
+          onClick={firstButtonAction}
+        >
+          CADASTRADOS
+        </Typography>
+      </b>
     </Card>
   );
 };
