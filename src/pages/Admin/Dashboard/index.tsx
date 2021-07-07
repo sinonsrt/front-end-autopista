@@ -3,8 +3,9 @@ import InfoCard from "../../../components/InfoCard";
 import company from "../../../assets/company.png";
 import user from "../../../assets/user.png";
 import service from "../../../assets/service.png";
-import { Theme } from "@material-ui/core";
+import { Theme, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, useTheme } from "@material-ui/core/styles";
+import logo from "../../../assets/autopista-bbranca-mp.png";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,7 +23,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       fontSize: "450%",
-      margin: "0"
+      margin: "0",
+    },
+    logoTitle: {
+      marginTop: "-5%",
+      letterSpacing: "3px"
     }
   })
 );
@@ -32,8 +37,12 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <div className={classes.container}>
-        <h1 className={classes.title}> SISTEMA AUTOPISTA </h1>
-        <h3>SEJA BEM-VINDO!</h3>
+        <div className={classes.logoTitle}>
+          <img src={logo} alt="AutoPosto" />
+          <Typography gutterBottom variant="h5" component="h2">
+            SEJA BEM-VINDO!
+          </Typography>
+        </div>
         <div className={classes.box}>
           <div className={classes.card}>
             <InfoCard
@@ -46,16 +55,16 @@ const Dashboard: React.FC = () => {
           <div className={classes.card}>
             <InfoCard
               image={service}
-              title="PRESTADOR DE SERVIÇO"
-              text="Texto do Card, texto texto texto texto texto texto texto texto texto texto texto texto"
-              imageTitle="Total de prestadores de serviço cadastradas" 
+              title="PRESTADORES DE SERVIÇO"
+              text="50"
+              imageTitle="Total de prestadores de serviço cadastradas"
             />
           </div>
           <div className={classes.card}>
             <InfoCard
               image={user}
               title="USUÁRIOS"
-              text="Texto do Card, texto texto texto texto texto texto texto texto texto texto texto texto"
+              text="22"
               imageTitle="Total de usuários cadastradas"
             />
           </div>

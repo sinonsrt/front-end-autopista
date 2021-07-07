@@ -46,7 +46,7 @@ const InfoCard: React.FC<Props> = ({
           <Typography gutterBottom variant="h5" component="h2">
             {title}
           </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
+          <Typography variant="h2" color="textSecondary" component="p">
             {text}
           </Typography>
         </CardContent>
