@@ -4,6 +4,7 @@ import {
   Button,
   Dialog,
   DialogActions,
+  Grid,
   DialogContent,
   DialogTitle,
 } from "@material-ui/core";
@@ -17,6 +18,7 @@ import { toast } from "react-toastify";
 import TextInputPassword from "../../../components/TextInputPassword";
 import Select from "../../../components/Select";
 import defaultUser from "../../../assets/default_user.png";
+import AsyncSelect from "../../../components/AsyncSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,6 +55,7 @@ const UserDialog: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
+  const [city, setCity] = useState<any[]>([]);
   const [image, setImage] = useState<any>();
   const [imageLocalPath, setImageLocalPath] = useState<any>();
 
@@ -62,6 +65,13 @@ const UserDialog: React.FC<Props> = ({
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, [refresh]);
+
+  useEffect(() => {
+    api
+      .get("cities?page=1&limit=10000&order=description&type=asc")
+      .then((response) => setCity(response.data.data))
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+  }, []);
 
   return (
     <Dialog
@@ -82,7 +92,7 @@ const UserDialog: React.FC<Props> = ({
             case "include":
               console.log(values);
               api
-                .post("register", formData)
+                .post("users", formData)
                 .then(() => {
                   refresh();
                   hide();
@@ -153,12 +163,12 @@ const UserDialog: React.FC<Props> = ({
             </DialogContent>
 
             <DialogContent>
-              <Select
+              <AsyncSelect
                 name="city_id"
                 label="Cidade"
-                options={data.map((item) => ({
+                options={city.map((item) => ({
                   id: item.id,
-                  text: item.description,
+                  text: `${item.description} - ${item.state[0].initials}`,
                 }))}
               />
             </DialogContent>
