@@ -116,6 +116,10 @@ const NewsDialog: React.FC<Props> = ({
               <TextInput name="description" label="Descrição" required />
             </DialogContent>
 
+            <DialogContent>
+              <TextInput name="link" label="URL:" required />
+            </DialogContent>
+
             <DialogContent style={{ display: "flex", alignItems: "center" }}>
               <img
                 src={imageLocalPath || defaultImage}
