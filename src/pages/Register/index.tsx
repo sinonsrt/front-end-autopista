@@ -120,12 +120,6 @@ const Register: React.FC = () => {
                       }
                     }}
                   />
-                  <img
-                    src="https://ilustrado.com.br/wp-content/uploads/2021/03/combustivel_adulterado-761x520.jpg"
-                    // poderia ser assim: src=`${process.env.ENDERECO_DO_BACK_PUBLIC}/images/nome_da_imagem.jpg`
-                    alt="teste"
-                    style={{ width: 100 }}
-                  />
                   <TextInput
                     name="name"
                     label="Nome"

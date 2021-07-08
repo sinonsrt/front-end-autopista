@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
     box: {
       display: "flex",
       marginTop: "5%",
-      marginLeft: "21%",
+      justifyContent: "center",
     },
     card: {
       marginRight: "1%",
@@ -27,8 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     logoTitle: {
       marginTop: "-5%",
-      letterSpacing: "3px"
-    }
+      letterSpacing: "3px",
+    },
   })
 );
 

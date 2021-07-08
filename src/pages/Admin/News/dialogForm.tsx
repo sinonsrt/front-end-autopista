@@ -6,21 +6,15 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  useMediaQuery,
-  Fab,
+  Typography,
 } from "@material-ui/core";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInput from "../../../components/TextInput";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
+import defaultImage from "../../../assets/default_image.png";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,49 +50,45 @@ const NewsDialog: React.FC<Props> = ({
   hide,
 }) => {
   const classes = useStyles();
-  const [data, setData] = useState<any[]>([]);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const [image, setImage] = useState<any>();
+  const [imageLocalPath, setImageLocalPath] = useState<any>();
 
   return (
     <Dialog
       open={visible}
-      onClose={handleClose}
       aria-labelledby="form-dialog-title"
-      fullScreen={fullScreen}
+      fullWidth={true}
+      maxWidth={"md"}
     >
       <Formik
         initialValues={dialogData}
         onSubmit={(values) => {
+          values.image = image;
+          const formData = new FormData();
+          Object.keys(values).forEach((key) =>
+            formData.append(key, values[key] === null ? "" : values[key])
+          );
           switch (values.action) {
             case "include":
               api
-                .post("news", values)
+                .post("news", formData)
                 .then(() => {
                   refresh();
                   hide();
                   toast.success("Notícias cadastrado com sucesso");
                 })
-                .catch((error) =>
-                  toast.error("Erro ao cadastrar notícias")
-                );
+                .catch((error) => toast.error("Erro ao cadastrar notícias"));
               break;
             case "edit":
               api
-                .put(`news/${values.id}`, values)
+                .put(`news/${values.id}`, formData)
                 .then(() => {
                   refresh();
                   hide();
                   toast.success("Notícias cadastrado com sucesso");
                 })
-                .catch((error) =>
-                  toast.error("Erro ao alterar notícias")
-                );
+                .catch((error) => toast.error("Erro ao alterar notícias"));
               break;
             default:
               toast.error("Erro ao realizar operação");
@@ -106,12 +96,10 @@ const NewsDialog: React.FC<Props> = ({
           }
         }}
         validationSchema={Yup.object({
-          title: Yup.string().required(
-            "É necessário informar o título"
+          title: Yup.string().required("É necessário informar o título"),
+          description: Yup.string().required(
+            "É necessário informar a descrição"
           ),
-          describe: Yup.string().required(
-            "É nescessário informar a descrição"
-          )
         })}
       >
         {({ values, setFieldValue }) => (
@@ -128,10 +116,23 @@ const NewsDialog: React.FC<Props> = ({
               <TextInput name="description" label="Descrição" required />
             </DialogContent>
 
-            <DialogContent>
-              <Fab color="primary" aria-label="add">
-                <AddIcon />
-              </Fab>
+            <DialogContent style={{ display: "flex", alignItems: "center" }}>
+              <img
+                src={imageLocalPath || defaultImage}
+                style={{ width: 150, marginRight: 8 }}
+              />
+
+              <input
+                type="file"
+                onChange={(event) => {
+                  if (event.target.files && event.target.files[0]) {
+                    setImage(event.target.files[0]);
+                    setImageLocalPath(
+                      URL.createObjectURL(event.target.files[0])
+                    );
+                  }
+                }}
+              />
             </DialogContent>
 
             <DialogActions>

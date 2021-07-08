@@ -6,16 +6,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  useMediaQuery,
-  Fab,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInput from "../../../components/TextInput";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -23,6 +16,7 @@ import api from "../../../services/api";
 import { toast } from "react-toastify";
 import TextInputPassword from "../../../components/TextInputPassword";
 import Select from "../../../components/Select";
+import defaultUser from "../../../assets/default_user.png";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,13 +53,8 @@ const UserDialog: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const [image, setImage] = useState<any>();
+  const [imageLocalPath, setImageLocalPath] = useState<any>();
 
   useEffect(() => {
     api
@@ -77,18 +66,23 @@ const UserDialog: React.FC<Props> = ({
   return (
     <Dialog
       open={visible}
-      onClose={handleClose}
       aria-labelledby="form-dialog-title"
-      fullScreen={fullScreen}
+      fullWidth={true}
+      maxWidth={"md"}
     >
       <Formik
         initialValues={dialogData}
         onSubmit={(values) => {
+          values.image = image;
+          const formData = new FormData();
+          Object.keys(values).forEach((key) =>
+            formData.append(key, values[key] === null ? "" : values[key])
+          );
           switch (values.action) {
             case "include":
               console.log(values);
               api
-                .post("register", values)
+                .post("register", formData)
                 .then(() => {
                   refresh();
                   hide();
@@ -98,7 +92,7 @@ const UserDialog: React.FC<Props> = ({
               break;
             case "edit":
               api
-                .put(`users/${values.id}`, values)
+                .put(`users/${values.id}`, formData)
                 .then(() => {
                   refresh();
                   hide();
@@ -169,10 +163,23 @@ const UserDialog: React.FC<Props> = ({
               />
             </DialogContent>
 
-            <DialogContent>
-              <Fab color="primary" aria-label="add">
-                <AddIcon />
-              </Fab>
+            <DialogContent style={{ display: "flex", alignItems: "center" }}>
+              <img
+                src={imageLocalPath || defaultUser}
+                style={{ width: 80, marginRight: 8 }}
+              />
+
+              <input
+                type="file"
+                onChange={(event) => {
+                  if (event.target.files && event.target.files[0]) {
+                    setImage(event.target.files[0]);
+                    setImageLocalPath(
+                      URL.createObjectURL(event.target.files[0])
+                    );
+                  }
+                }}
+              />
             </DialogContent>
 
             <DialogActions>
