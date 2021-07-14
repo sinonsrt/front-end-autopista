@@ -95,7 +95,7 @@ const News: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("news")
+      .get("newsPaper")
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, [refresh]);

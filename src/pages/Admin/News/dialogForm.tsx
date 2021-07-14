@@ -71,7 +71,7 @@ const NewsDialog: React.FC<Props> = ({
           switch (values.action) {
             case "include":
               api
-                .post("news", formData)
+                .post("newsPaper", formData)
                 .then(() => {
                   refresh();
                   hide();
@@ -83,7 +83,7 @@ const NewsDialog: React.FC<Props> = ({
               break;
             case "edit":
               api
-                .put(`news/${values.id}`, formData)
+                .put(`newsPaper/${values.id}`, formData)
                 .then(() => {
                   refresh();
                   hide();

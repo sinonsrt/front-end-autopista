@@ -86,6 +86,7 @@ const UserDialog: React.FC<Props> = ({
           Object.keys(values).forEach((key) =>
             formData.append(key, values[key] === null ? "" : values[key])
           );
+          formData.append('avatar', image)
           switch (values.action) {
             case "include":
               console.log(values);

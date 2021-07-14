@@ -140,35 +140,35 @@ const CompanyDialog: React.FC<Props> = ({
           Object.keys(values).forEach((key) =>
             formData.append(key, values[key] === null ? "" : values[key])
           );
-          // switch (values.action) {
-          //   case "include":
-          //     api
-          //       .post("register", values)
-          //       .then(() => {
-          //         refresh();
-          //         setImageLocalPath(undefined);
-          setImage(undefined);
-          //         hide();
-          //         toast.success("Empresa cadastrado com sucesso");
-          //       })
-          //       .catch((error) => toast.error("Erro ao cadastrar empresa"));
-          //     break;
-          //   case "edit":
-          //     api
-          //       .put(`users/${values.id}`, values)
-          //       .then(() => {
-          //         setImageLocalPath(undefined);
-          setImage(undefined);
-          //         refresh();
-          //         hide();
-          //         toast.success("Empresa cadastrado com sucesso");
-          //       })
-          //       .catch((error) => toast.error("Erro ao alterar empresa"));
-          //     break;
-          //   default:
-          //     toast.error("Erro ao realizar operação");
-          //     break;
-          // }
+          switch (values.action) {
+            case "include":
+              api
+                .post("companies", values)
+                .then(() => {
+                  refresh();
+                  setImageLocalPath(undefined);
+                  setImage(undefined);
+                  hide();
+                  toast.success("Empresa cadastrado com sucesso");
+                })
+                .catch((error) => toast.error("Erro ao cadastrar empresa"));
+              break;
+            case "edit":
+              api
+                .put(`companies/${values.id}`, values)
+                .then(() => {
+                  setImageLocalPath(undefined);
+                  setImage(undefined);
+                  refresh();
+                  hide();
+                  toast.success("Empresa cadastrado com sucesso");
+                })
+                .catch((error) => toast.error("Erro ao alterar empresa"));
+              break;
+            default:
+              toast.error("Erro ao realizar operação");
+              break;
+          }
         }}
         validationSchema={Yup.object({
           /* description: Yup.string().required(

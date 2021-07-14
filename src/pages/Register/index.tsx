@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 
 import TextInput from "../../components/TextInput";
 import TextInputPassword from "../../components/TextInputPassword";
-import Select from "../../components/Select";
 
 import ReplyAllIcon from "@material-ui/icons/ReplyAll";
 
@@ -14,7 +13,6 @@ import background from "../../assets/background-register.png";
 import logo from "../../assets/autopista-bbranca-mp.png";
 import { Form, Formik } from "formik";
 import AsyncSelect from "../../components/AsyncSelect";
-import MultipleSelect from "../../components/MultipleSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,14 +77,13 @@ const Register: React.FC = () => {
   const classes = useStyles();
 
   const [city, setCity] = useState<any[]>([]);
-  const [image, setImage] = useState<any>();
 
-  // useEffect(() => { *** SÓ DESCOMENTAR AQUI QUE AS CIDADES VÃO APARECER DEPOIS DE TIRAR ELAS DO AUTH
-  //   api
-  //     .get("cities?page=1&limit=10000&order=description&type=asc")
-  //     .then((response) => setCity(response.data.data))
-  //     .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  // }, []);
+  useEffect(() => {
+    api
+       .get("cities?page=1&limit=10000&order=description&type=asc")
+      .then((response) => setCity(response.data.data))
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+  }, []);
 
   return (
     <div className={classes.container}>
@@ -95,12 +92,13 @@ const Register: React.FC = () => {
         <Formik
           initialValues={{}}
           onSubmit={(values: any) => {
-            const formData = new FormData();
-            Object.keys(values).forEach((key) => {
-              formData.append(key, values[key]);
-            });
-            formData.append("image", image);
-            api.post("teste", formData);
+              console.log(values)
+              api
+              .post("register", values)
+              .then((response) => {
+                toast.success(response);
+              })
+              .catch((error) => toast.error("Erro ao cadastrar usuário"));
           }}
         >
           {({ values, setFieldValue }) => (
@@ -111,15 +109,6 @@ const Register: React.FC = () => {
                   Cadastro{" "}
                 </Typography>
                 <Grid>
-                  <input
-                    type="file"
-                    className={classes.textField}
-                    onChange={(event) => {
-                      if (event.target.files && event.target.files[0]) {
-                        setImage(event.target.files[0]);
-                      }
-                    }}
-                  />
                   <TextInput
                     name="name"
                     label="Nome"
@@ -140,49 +129,14 @@ const Register: React.FC = () => {
                     label="Confirme sua senha"
                     className={classes.textField}
                   />
+
                   <AsyncSelect
-                    name="async"
-                    label="Select assíncrono"
+                    name="city_id"
+                    label="Cidades"
                     options={city.map((item) => ({
                       id: item.id,
                       text: item.description,
                     }))}
-                    className={classes.textField}
-                  />
-
-                  <MultipleSelect
-                    name="multi"
-                    label="Select múltiplo"
-                    options={[
-                      { text: "Umuarama", id: "1" },
-                      { text: "Maringá", id: "2" },
-                      { text: "Cianorte", id: "3" },
-                      { text: "Londrina", id: "4" },
-                      { text: "Maria Helena", id: "5" },
-                      { text: "Curitiba", id: "6" },
-                      { text: "Toledo", id: "7" },
-                      { text: "Perobal", id: "8" },
-                      { text: "Perola", id: "9" },
-                      { text: "Xambre", id: "10" },
-                    ]}
-                    className={classes.textField}
-                  />
-
-                  <Select
-                    name="simples"
-                    label="Select simples"
-                    options={[
-                      { text: "Umuarama", id: "1" },
-                      { text: "Maringá", id: "2" },
-                      { text: "Cianorte", id: "3" },
-                      { text: "Londrina", id: "4" },
-                      { text: "Maria Helena", id: "5" },
-                      { text: "Curitiba", id: "6" },
-                      { text: "Toledo", id: "7" },
-                      { text: "Perobal", id: "8" },
-                      { text: "Perola", id: "9" },
-                      { text: "Xambre", id: "10" },
-                    ]}
                     className={classes.textField}
                   />
 
