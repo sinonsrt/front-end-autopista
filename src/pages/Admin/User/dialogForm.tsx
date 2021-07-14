@@ -4,11 +4,9 @@ import {
   Button,
   Dialog,
   DialogActions,
-  Grid,
   DialogContent,
   DialogTitle,
 } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInput from "../../../components/TextInput";
 import { Form, Formik } from "formik";
@@ -96,6 +94,8 @@ const UserDialog: React.FC<Props> = ({
                 .then(() => {
                   refresh();
                   hide();
+                  setImageLocalPath(undefined);
+                  setImage(undefined);
                   toast.success("Usuário cadastrado com sucesso");
                 })
                 .catch((error) => toast.error("Erro ao cadastrar usuário"));
@@ -106,6 +106,8 @@ const UserDialog: React.FC<Props> = ({
                 .then(() => {
                   refresh();
                   hide();
+                  setImageLocalPath(undefined);
+                  setImage(undefined);
                   toast.success("Usuário cadastrado com sucesso");
                 })
                 .catch((error) => toast.error("Erro ao alterar usuário"));
@@ -175,7 +177,11 @@ const UserDialog: React.FC<Props> = ({
 
             <DialogContent style={{ display: "flex", alignItems: "center" }}>
               <img
-                src={imageLocalPath || defaultUser}
+                src={
+                  values.avatar
+                    ? `http://25.99.194.144:3333/logo/${values.avatar}`
+                    : imageLocalPath || defaultUser
+                }
                 style={{ width: 80, marginRight: 8 }}
               />
 
@@ -183,6 +189,7 @@ const UserDialog: React.FC<Props> = ({
                 type="file"
                 onChange={(event) => {
                   if (event.target.files && event.target.files[0]) {
+                    setFieldValue("avatar", null);
                     setImage(event.target.files[0]);
                     setImageLocalPath(
                       URL.createObjectURL(event.target.files[0])
@@ -193,7 +200,14 @@ const UserDialog: React.FC<Props> = ({
             </DialogContent>
 
             <DialogActions>
-              <Button onClick={() => hide()} color="primary">
+              <Button
+                onClick={() => {
+                  hide();
+                  setImageLocalPath(undefined);
+                  setImage(undefined);
+                }}
+                color="primary"
+              >
                 Cancelar
               </Button>
 

@@ -4,32 +4,20 @@ import {
   Button,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  useMediaQuery,
   Grid,
   Typography,
-  FormControl,
-  FormLabel,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-  FormHelperText,
 } from "@material-ui/core";
 import Dialog, { DialogProps } from "@material-ui/core/Dialog";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInput from "../../../components/TextInput";
-import { Form, Formik, FieldArray } from "formik";
+import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
 import Select from "../../../components/Select";
 import AsyncSelect from "../../../components/AsyncSelect";
 import CheckBox from "../../../components/CheckBox";
+import defaultImage from "../../../assets/default_image.png";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -89,6 +77,9 @@ const CompanyDialog: React.FC<Props> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps["maxWidth"]>("md");
 
+  const [image, setImage] = useState<any>();
+  const [imageLocalPath, setImageLocalPath] = useState<any>();
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -144,12 +135,19 @@ const CompanyDialog: React.FC<Props> = ({
         initialValues={dialogData}
         onSubmit={(values) => {
           console.log(values);
+          values.image = image;
+          const formData = new FormData();
+          Object.keys(values).forEach((key) =>
+            formData.append(key, values[key] === null ? "" : values[key])
+          );
           // switch (values.action) {
           //   case "include":
           //     api
           //       .post("register", values)
           //       .then(() => {
           //         refresh();
+          //         setImageLocalPath(undefined);
+          setImage(undefined);
           //         hide();
           //         toast.success("Empresa cadastrado com sucesso");
           //       })
@@ -159,6 +157,8 @@ const CompanyDialog: React.FC<Props> = ({
           //     api
           //       .put(`users/${values.id}`, values)
           //       .then(() => {
+          //         setImageLocalPath(undefined);
+          setImage(undefined);
           //         refresh();
           //         hide();
           //         toast.success("Empresa cadastrado com sucesso");
@@ -315,6 +315,30 @@ const CompanyDialog: React.FC<Props> = ({
               </Grid>
             </Grid>
 
+            <Grid xs={6} sm={6} md={6}>
+              <img
+                src={
+                  values.avatar
+                    ? `http://25.99.194.144:3333/logo/${values.avatar}`
+                    : imageLocalPath || defaultImage
+                }
+                style={{ width: 80, marginRight: 8 }}
+              />
+
+              <input
+                type="file"
+                onChange={(event) => {
+                  if (event.target.files && event.target.files[0]) {
+                    setFieldValue("avatar", null);
+                    setImage(event.target.files[0]);
+                    setImageLocalPath(
+                      URL.createObjectURL(event.target.files[0])
+                    );
+                  }
+                }}
+              />
+            </Grid>
+
             <Grid xs={12} sm={12} md={12}>
               <Typography variant="h5" align="center">
                 Serviços
@@ -333,7 +357,14 @@ const CompanyDialog: React.FC<Props> = ({
             </Grid>
 
             <DialogActions>
-              <Button onClick={() => hide()} color="primary">
+              <Button
+                onClick={() => {
+                  hide();
+                  setImageLocalPath(undefined);
+                  setImage(undefined);
+                }}
+                color="primary"
+              >
                 Cancelar
               </Button>
 

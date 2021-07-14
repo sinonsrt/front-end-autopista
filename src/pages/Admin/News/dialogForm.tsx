@@ -6,7 +6,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Typography,
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInput from "../../../components/TextInput";
@@ -76,6 +75,8 @@ const NewsDialog: React.FC<Props> = ({
                 .then(() => {
                   refresh();
                   hide();
+                  setImageLocalPath(undefined);
+                  setImage(undefined);
                   toast.success("Notícias cadastrado com sucesso");
                 })
                 .catch((error) => toast.error("Erro ao cadastrar notícias"));
@@ -86,6 +87,8 @@ const NewsDialog: React.FC<Props> = ({
                 .then(() => {
                   refresh();
                   hide();
+                  setImageLocalPath(undefined);
+                  setImage(undefined);
                   toast.success("Notícias cadastrado com sucesso");
                 })
                 .catch((error) => toast.error("Erro ao alterar notícias"));
@@ -122,7 +125,11 @@ const NewsDialog: React.FC<Props> = ({
 
             <DialogContent style={{ display: "flex", alignItems: "center" }}>
               <img
-                src={imageLocalPath || defaultImage}
+                src={
+                  values.avatar
+                    ? `http://25.99.194.144:3333/logo/${values.avatar}`
+                    : imageLocalPath || defaultImage
+                }
                 style={{ width: 150, marginRight: 8 }}
               />
 
@@ -130,6 +137,7 @@ const NewsDialog: React.FC<Props> = ({
                 type="file"
                 onChange={(event) => {
                   if (event.target.files && event.target.files[0]) {
+                    setFieldValue("avatar", null);
                     setImage(event.target.files[0]);
                     setImageLocalPath(
                       URL.createObjectURL(event.target.files[0])
@@ -140,7 +148,14 @@ const NewsDialog: React.FC<Props> = ({
             </DialogContent>
 
             <DialogActions>
-              <Button onClick={() => hide()} color="primary">
+              <Button
+                onClick={() => {
+                  hide();
+                  setImageLocalPath(undefined);
+                  setImage(undefined);
+                }}
+                color="primary"
+              >
                 Cancelar
               </Button>
 
