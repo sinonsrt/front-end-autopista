@@ -81,7 +81,7 @@ const UserDialog: React.FC<Props> = ({
       <Formik
         initialValues={dialogData}
         onSubmit={(values) => {
-          values.image = image;
+          values.avatar = image;
           const formData = new FormData();
           Object.keys(values).forEach((key) =>
             formData.append(key, values[key] === null ? "" : values[key])
@@ -179,7 +179,7 @@ const UserDialog: React.FC<Props> = ({
               <img
                 src={
                   values.avatar
-                    ? `http://25.99.194.144:3333/logo/${values.avatar}`
+                    ? `http://25.99.194.144:3333/avatar/${values.avatar}`
                     : imageLocalPath || defaultUser
                 }
                 style={{ width: 80, marginRight: 8 }}

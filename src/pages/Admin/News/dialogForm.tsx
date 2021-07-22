@@ -63,7 +63,7 @@ const NewsDialog: React.FC<Props> = ({
       <Formik
         initialValues={dialogData}
         onSubmit={(values) => {
-          values.image = image;
+          values.avatar = image;
           const formData = new FormData();
           Object.keys(values).forEach((key) =>
             formData.append(key, values[key] === null ? "" : values[key])
@@ -71,7 +71,7 @@ const NewsDialog: React.FC<Props> = ({
           switch (values.action) {
             case "include":
               api
-                .post("news", formData)
+                .post("newsPaper", formData)
                 .then(() => {
                   refresh();
                   hide();
@@ -83,7 +83,7 @@ const NewsDialog: React.FC<Props> = ({
               break;
             case "edit":
               api
-                .put(`news/${values.id}`, formData)
+                .put(`newsPaper/${values.id}`, formData)
                 .then(() => {
                   refresh();
                   hide();
@@ -127,7 +127,7 @@ const NewsDialog: React.FC<Props> = ({
               <img
                 src={
                   values.avatar
-                    ? `http://25.99.194.144:3333/logo/${values.avatar}`
+                    ? `http://25.99.194.144:3333/news/${values.avatar}`
                     : imageLocalPath || defaultImage
                 }
                 style={{ width: 150, marginRight: 8 }}

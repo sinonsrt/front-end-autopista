@@ -14,12 +14,7 @@ interface OptProps {
 
 type Props = OptProps & TextFieldProps;
 
-const Select: React.FC<Props> = ({
-  name,
-  label,
-  options,
-  ...otherProps
-}) => {
+const Select: React.FC<Props> = ({ name, label, options, ...otherProps }) => {
   const configSelect = {
     id: name,
     label: label,
@@ -28,7 +23,7 @@ const Select: React.FC<Props> = ({
   };
 
   const [field, meta] = useField(`${name}`);
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext();
 
   if (meta && meta.touched && meta.error) {
     configSelect.error = true;
@@ -38,6 +33,7 @@ const Select: React.FC<Props> = ({
   return (
     <Autocomplete
       options={options}
+      defaultValue={options.find((item) => item.id === field.value)}
       getOptionLabel={(option) => option.text}
       noOptionsText={"Nenhum resultado encontrado"}
       renderInput={(params) => (

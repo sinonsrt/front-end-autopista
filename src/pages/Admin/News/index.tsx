@@ -95,7 +95,7 @@ const News: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("news")
+      .get("newsPaper")
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, [refresh]);
@@ -124,7 +124,7 @@ const News: React.FC = () => {
 
   function showTypes(id: string, action: "view" | "edit") {
     api
-      .get(`services/${id}`)
+      .get(`newsPaper/${id}`)
       .then((response) => {
         setDialogData({
           ...response.data,
@@ -147,7 +147,7 @@ const News: React.FC = () => {
         {" "}
         <img src={NewsLogo} alt="Notícias" /> Notícias cadastrados
       </Typography>
-      
+
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
           <TextInputSearch placeholder="Buscar por..." />
