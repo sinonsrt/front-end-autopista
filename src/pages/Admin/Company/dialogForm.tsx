@@ -67,7 +67,7 @@ const CompanyDialog: React.FC<Props> = ({
   hide,
 }) => {
   const classes = useStyles();
-  const [data, setData] = useState<any[]>([]);
+  const [types, setTypes] = useState<any[]>([]);
   const [city, setCity] = useState<any[]>([]);
   const [workedDays, setWorkedDays] = useState<any[]>([]);
   const [workedTimes, setWorkedTimes] = useState<any[]>([]);
@@ -86,8 +86,8 @@ const CompanyDialog: React.FC<Props> = ({
 
   useEffect(() => {
     api
-      .get("accesslevel")
-      .then((response) => setData(response.data))
+      .get("types")
+      .then((response) => setTypes(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, []);
 
@@ -135,40 +135,40 @@ const CompanyDialog: React.FC<Props> = ({
         initialValues={dialogData}
         onSubmit={(values) => {
           console.log(values);
-          values.image = image;
+          values.avatar = image;
           const formData = new FormData();
           Object.keys(values).forEach((key) =>
             formData.append(key, values[key] === null ? "" : values[key])
           );
-          // switch (values.action) {
-          //   case "include":
-          //     api
-          //       .post("register", values)
-          //       .then(() => {
-          //         refresh();
-          //         setImageLocalPath(undefined);
-          setImage(undefined);
-          //         hide();
-          //         toast.success("Empresa cadastrado com sucesso");
-          //       })
-          //       .catch((error) => toast.error("Erro ao cadastrar empresa"));
-          //     break;
-          //   case "edit":
-          //     api
-          //       .put(`users/${values.id}`, values)
-          //       .then(() => {
-          //         setImageLocalPath(undefined);
-          setImage(undefined);
-          //         refresh();
-          //         hide();
-          //         toast.success("Empresa cadastrado com sucesso");
-          //       })
-          //       .catch((error) => toast.error("Erro ao alterar empresa"));
-          //     break;
-          //   default:
-          //     toast.error("Erro ao realizar operação");
-          //     break;
-          // }
+          switch (values.action) {
+            case "include":
+              api
+                .post("companies", formData)
+                .then(() => {
+                  refresh();
+                  setImageLocalPath(undefined);
+                  setImage(undefined);
+                  hide();
+                  toast.success("Empresa cadastrado com sucesso");
+                })
+                .catch((error) => toast.error("Erro ao cadastrar empresa"));
+              break;
+            case "edit":
+              api
+                .put(`users/${values.id}`, formData)
+                .then(() => {
+                  setImageLocalPath(undefined);
+                  setImage(undefined);
+                  refresh();
+                  hide();
+                  toast.success("Empresa cadastrado com sucesso");
+                })
+                .catch((error) => toast.error("Erro ao alterar empresa"));
+              break;
+            default:
+              toast.error("Erro ao realizar operação");
+              break;
+          }
         }}
         validationSchema={Yup.object({
           /* description: Yup.string().required(
@@ -187,7 +187,7 @@ const CompanyDialog: React.FC<Props> = ({
                   <Select
                     name="type_id"
                     label="Tipo de Empresa"
-                    options={data.map((item) => ({
+                    options={types.map((item) => ({
                       id: item.id,
                       text: item.description,
                     }))}
@@ -319,7 +319,7 @@ const CompanyDialog: React.FC<Props> = ({
               <img
                 src={
                   values.avatar
-                    ? `http://25.99.194.144:3333/logo/${values.avatar}`
+                    ? `http://25.99.194.144:3333/company/${values.avatar}`
                     : imageLocalPath || defaultImage
                 }
                 style={{ width: 80, marginRight: 8 }}
