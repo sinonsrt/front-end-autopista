@@ -10,11 +10,12 @@ import WorkedDay from '../pages/Admin/WorkedDay'
 import WorkedTime from '../pages/Admin/WorkedTime'
 import Code from '../pages/Admin/Code'
 import Company from '../pages/Admin/Company'
-import Dashboard from '../pages/Admin/Dashboard'
+import AdminDashboard from '../pages/Admin/Dashboard'
 import Service from '../pages/Admin/Service'
 import News from '../pages/Admin/News'
 import Types from '../pages/Admin/Types'
 import User from '../pages/Admin/User'
+import Dashboard from '../pages/Dashboard';
 
 const Routes: React.FC = () => (
     <Switch>
@@ -26,11 +27,12 @@ const Routes: React.FC = () => (
         <Route path="/workedTime" exact component={WorkedTime} title="WorkedTime" isPrivate />
         <Route path="/code" exact component={Code} title="Code" isPrivate />
         <Route path="/companys" exact component={Company} title="Company" isPrivate />
-        <Route path="/dashboard" exact component={Dashboard} title="Dashboard" isPrivate />
+        <Route path="/dashboard" exact component={AdminDashboard} title="Dashboard" isPrivate />
         <Route path="/services" exact component={Service} title="Service" isPrivate />
         <Route path="/news" exact component={News} title="News" isPrivate />
         <Route path="/types" exact component={Types} title="Types" isPrivate />
         <Route path="/users" exact component={User} title="User" isPrivate />
+        <Route path="/main" exact component={Dashboard} title="Main" isPrivate />
     
         {/* <Route component={NotFound} isPrivate title="NotFound" /> */}
     </Switch>
