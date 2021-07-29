@@ -17,7 +17,7 @@ import TextInputSearch from "../../components/TextInputSearch";
 import api from "../../services/api";
 import { toast } from "react-toastify";
 import { createStyles, makeStyles } from "@material-ui/styles";
-import CompanyLogo from "../../assets/icons/gasStation.png";
+import CompanyLogo from "../../assets/icons/serviceProvider.png";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const GasStation: React.FC = () => {
+const ServiceProvider: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
   const [refresh, setRefresh] = useState(0);
@@ -64,8 +64,6 @@ const GasStation: React.FC = () => {
 
   return (
     <>
-
-
     <Typography
       variant="h5"
       display="initial"
@@ -73,7 +71,7 @@ const GasStation: React.FC = () => {
       className={classes.titleLogo}
     >
       {" "}
-      <img src={CompanyLogo} alt="Empresas" /> POSTOS DE COMBÚSTIVEL
+      <img src={CompanyLogo} alt="Empresas" /> PRESTADORES DE SERVIÇO
     </Typography>
       <Grid container direction="row" justify="space-around">
         <Grid md={10}>
@@ -119,4 +117,4 @@ const GasStation: React.FC = () => {
   );
 };
 
-export default GasStation;
+export default ServiceProvider;

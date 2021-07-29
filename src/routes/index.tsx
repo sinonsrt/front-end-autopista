@@ -16,12 +16,20 @@ import News from '../pages/Admin/News'
 import Types from '../pages/Admin/Types'
 import User from '../pages/Admin/User'
 import Dashboard from '../pages/Dashboard';
+import GasStation from '../pages/GasStation';
+import ServiceProvider from '../pages/ServiceProvider';
+import UserRole from '../pages/UserRole';
+import AboutUs from '../pages/AboutUs';
 
 const Routes: React.FC = () => (
     <Switch>
         <Route path="/" exact component={Login} title="Login" />
         <Route path="/register" exact component={Register} title="Register" />
 
+        <Route path="/aboutUs" exact component={AboutUs} title="AboutUs" isPrivate />
+        <Route path="/userRole" exact component={UserRole} title="UserRole" isPrivate />
+        <Route path="/serviceProvider" exact component={ServiceProvider} title="ServiceProvider" isPrivate />
+        <Route path="/gasStation" exact component={GasStation} title="GasStation" isPrivate />
         <Route path="/accessLevel" exact component={AccessLevel} title="AccessLevel" isPrivate />
         <Route path="/workedDay" exact component={WorkedDay} title="WorkedDay" isPrivate />
         <Route path="/workedTime" exact component={WorkedTime} title="WorkedTime" isPrivate />
