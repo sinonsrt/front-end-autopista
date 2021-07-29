@@ -12,16 +12,11 @@ import {
   Theme,
   IconButton,
   List,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
 } from "@material-ui/core";
 import TextInputSearch from "../../components/TextInputSearch";
 import api from "../../services/api";
 import { toast } from "react-toastify";
 import { createStyles, makeStyles } from "@material-ui/styles";
-import { Search } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,9 +45,12 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("companies")
+      .get("companies?order=id&type=asc&page=1&limit=20&company_type=Posto de combustivel")
       .then((response) => setData(response.data))
-      .catch((error) => toast.error("Não foi possivel efetuar a consulta!"));
+      .catch((error) => {
+        console.log(error)
+        //toast.error("Não foi possivel efetuar a consulta!")
+      });
   }, [refresh]);
 
   console.log(data);
