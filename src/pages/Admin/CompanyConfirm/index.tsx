@@ -23,7 +23,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInputSearch from "../../../components/TextInputSearch";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
-import CompanyLogo from "../../../assets/icons/company-logo.svg";
+import CompanyLogo from "../../../assets/icons/confirmed.png";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -161,7 +161,7 @@ const CompanyConfirm: React.FC = () => {
         className={classes.titleLogo}
       >
         {" "}
-        <img src={CompanyLogo} alt="Empresas" /> Empresas cadastradas
+        <img src={CompanyLogo} alt="Empresas" /> Confirmação de Empresas
       </Typography>
 
       <Grid container direction="row" justify="flex-start">
