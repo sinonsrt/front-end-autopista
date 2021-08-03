@@ -26,11 +26,12 @@ const AsyncSelect: React.FC<Props> = ({
     ...otherProps,
     fullWidth: true,
   };
-  const [fieldOptions, setFieldOptions] = useState<OptItens[]>([]);
-  const [message, setMessage] = useState("Digite ao menos 3 caracteres");
 
   const [field, meta] = useField(`${name}`);
-  const { setFieldValue } = useFormikContext();
+  const [fieldAction, metaAction] = useField("action");
+  const { setFieldValue, values } = useFormikContext();
+  const [fieldOptions, setFieldOptions] = useState<OptItens[]>([]);
+  const [message, setMessage] = useState("Digite ao menos 3 caracteres");
 
   if (meta && meta.touched && meta.error) {
     configSelect.error = true;
@@ -55,7 +56,9 @@ const AsyncSelect: React.FC<Props> = ({
     <Autocomplete
       options={fieldOptions}
       getOptionLabel={(option) => option.text}
+      defaultValue={options.find((item) => item.id === field.value)}
       noOptionsText={message}
+      disabled={fieldAction.value === "view"}
       renderInput={(params) => (
         <TextField
           {...params}

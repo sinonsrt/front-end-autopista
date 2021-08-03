@@ -16,8 +16,8 @@ import api from "../../../services/api";
 import { toast } from "react-toastify";
 import Select from "../../../components/Select";
 import AsyncSelect from "../../../components/AsyncSelect";
-import CheckBox from "../../../components/CheckBox";
 import defaultImage from "../../../assets/default_image.png";
+import MultipleSelect from "../../../components/MultipleSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -134,7 +134,6 @@ const CompanyDialog: React.FC<Props> = ({
       <Formik
         initialValues={dialogData}
         onSubmit={(values) => {
-          console.log(values);
           values.avatar = image;
           const formData = new FormData();
           Object.keys(values).forEach((key) =>
@@ -155,7 +154,7 @@ const CompanyDialog: React.FC<Props> = ({
               break;
             case "edit":
               api
-                .put(`users/${values.id}`, formData)
+                .put(`companies/${values.id}`, formData)
                 .then(() => {
                   setImageLocalPath(undefined);
                   setImage(undefined);
@@ -270,6 +269,27 @@ const CompanyDialog: React.FC<Props> = ({
                 </DialogContent>
               </Grid>
 
+              {dialogData.action === "view" && (
+                <Grid xs={6} sm={6} md={12}>
+                  <DialogContent>
+                    <iframe
+                      width="400"
+                      height="300"
+                      loading="lazy"
+                      src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCARVw8BxECC731e9oN2A9-zTV6TbyVqM0&q=${`${dialogData.address
+                        .trim()
+                        .replaceAll(" ", "+")}+${dialogData.number
+                        .toString()
+                        .trim()
+                        .replaceAll(" ", "+")}+${
+                        city.find((item) => item.id === dialogData.city_id)
+                          .description
+                      }`}`}
+                    ></iframe>
+                  </DialogContent>
+                </Grid>
+              )}
+
               <Grid xs={12} sm={12} md={12}>
                 <Typography variant="h5" align="center">
                   Contato
@@ -291,7 +311,7 @@ const CompanyDialog: React.FC<Props> = ({
               <Grid xs={6} sm={6} md={6}>
                 <DialogContent>
                   <Select
-                    name="worked_days"
+                    name="worked_day_id"
                     label="Dias de funcionamento"
                     options={workedDays.map((item) => ({
                       id: item.id,
@@ -304,7 +324,7 @@ const CompanyDialog: React.FC<Props> = ({
               <Grid xs={6} sm={6} md={6}>
                 <DialogContent>
                   <Select
-                    name="worked_time"
+                    name="worked_time_id"
                     label="Horário de funcionamento"
                     options={workedTimes.map((item) => ({
                       id: item.id,
@@ -326,6 +346,7 @@ const CompanyDialog: React.FC<Props> = ({
               />
 
               <input
+                hidden={dialogData.action === "view"}
                 type="file"
                 onChange={(event) => {
                   if (event.target.files && event.target.files[0]) {
@@ -344,16 +365,18 @@ const CompanyDialog: React.FC<Props> = ({
                 Serviços
               </Typography>
 
-              <DialogContent>
-                {services.map((item, index) => (
-                  <Grid xs={12} sm={12} md={12}>
-                    <CheckBox
-                      name={`service_${item.id}`}
-                      placeholder={item.description}
-                    />
-                  </Grid>
-                ))}
-              </DialogContent>
+              <Grid xs={6} sm={6} md={12}>
+                <DialogContent>
+                  <MultipleSelect
+                    name="services"
+                    label="Serviços"
+                    options={services.map((item) => ({
+                      id: item.id,
+                      text: item.description,
+                    }))}
+                  />
+                </DialogContent>
+              </Grid>
             </Grid>
 
             <DialogActions>

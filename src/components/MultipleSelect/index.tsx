@@ -28,6 +28,7 @@ const MultipleSelect: React.FC<Props> = ({
   };
 
   const [field, meta] = useField(`${name}`);
+  const [fieldAction, metaAction] = useField("action");
   const { setFieldValue } = useFormikContext();
 
   if (meta && meta.touched && meta.error) {
@@ -38,10 +39,18 @@ const MultipleSelect: React.FC<Props> = ({
   return (
     <Autocomplete
       multiple
-      options={options}
+      options={
+        field.value
+          ? options.filter((option) => !field.value.includes(option.id))
+          : options
+      }
+      defaultValue={
+        field.value && options.filter((item) => field.value.includes(item.id))
+      }
       getOptionLabel={(option) => option.text}
       noOptionsText={"Nenhum resultado encontrado"}
-      filterSelectedOptions
+      filterSelectedOptions={true}
+      disabled={fieldAction.value === "view"}
       renderInput={(params) => (
         <TextField {...params} variant="outlined" {...configSelect} />
       )}
