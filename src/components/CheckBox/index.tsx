@@ -8,6 +8,7 @@ const CheckBox: React.FC<CheckboxProps> = ({
   ...otherProps
 }) => {
   const [field] = useField(name || "");
+  const [fieldAction, metaAction] = useField("action");
   const { setFieldValue } = useFormikContext();
 
   const configTextField = {
@@ -28,6 +29,7 @@ const CheckBox: React.FC<CheckboxProps> = ({
           checked={field.checked}
           onChange={handleChange}
           name="checkedA"
+          disabled={fieldAction.value === "view"}
         />
       }
       label={placeholder}

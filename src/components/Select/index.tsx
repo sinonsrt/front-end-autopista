@@ -23,6 +23,7 @@ const Select: React.FC<Props> = ({ name, label, options, ...otherProps }) => {
   };
 
   const [field, meta] = useField(`${name}`);
+  const [fieldAction, metaAction] = useField("action");
   const { setFieldValue, values } = useFormikContext();
 
   if (meta && meta.touched && meta.error) {
@@ -36,6 +37,7 @@ const Select: React.FC<Props> = ({ name, label, options, ...otherProps }) => {
       defaultValue={options.find((item) => item.id === field.value)}
       getOptionLabel={(option) => option.text}
       noOptionsText={"Nenhum resultado encontrado"}
+      disabled={fieldAction.value === "view"}
       renderInput={(params) => (
         <TextField {...params} variant="outlined" {...configSelect} />
       )}

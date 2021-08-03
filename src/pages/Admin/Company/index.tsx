@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Company: React.FC = () => {
   const classes = useStyles();
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<any[]>([{ services: [] }]);
   const [dialogData, setDialogData] = useState<any>({});
   const [refresh, setRefresh] = useState(0);
   const columns = [
@@ -96,9 +96,15 @@ const Company: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("companies")
+      .get("companies?order=created_at&type=asc")
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+
+    api
+      .get(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyCARVw8BxECC731e9oN2A9-zTV6TbyVqM0`
+      )
+      .then((response) => console.log(response.data));
   }, [refresh]);
 
   const handleClick = (
@@ -123,12 +129,13 @@ const Company: React.FC = () => {
     handleClose();
   }
 
-  function showTypes(id: string, action: "view" | "edit") {
+  function showCompany(id: string, action: "view" | "edit") {
     api
       .get(`companies/${id}`)
       .then((response) => {
         setDialogData({
           ...response.data,
+          services: response.data.services.map((item: any) => item.service_id),
           action: action,
         });
         setOpenDialog(true);
@@ -148,7 +155,7 @@ const Company: React.FC = () => {
         {" "}
         <img src={CompanyLogo} alt="Empresas" /> Empresas cadastradas
       </Typography>
-      
+
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
           <TextInputSearch placeholder="Buscar por..." />
@@ -188,7 +195,15 @@ const Company: React.FC = () => {
                 <TableCell>{item.company_name}</TableCell>
                 <TableCell>{item.cnpj}</TableCell>
                 <TableCell>{item.phone}</TableCell>
-                <TableCell>{item.created_at.split("T")[0]}</TableCell>
+                <TableCell>
+                  {item.created_at
+                    ? item.created_at
+                        .split("T")[0]
+                        .split("-")
+                        .reverse()
+                        .join("/")
+                    : ""}
+                </TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>
                     <List />
@@ -213,7 +228,7 @@ const Company: React.FC = () => {
                     }}
                   >
                     <MenuItem
-                      onClick={() => showTypes(selectedItemIndex, "view")}
+                      onClick={() => showCompany(selectedItemIndex, "view")}
                     >
                       <ListItemIcon>
                         <Search className={classes.iconsColor} />
@@ -222,7 +237,7 @@ const Company: React.FC = () => {
                     </MenuItem>
 
                     <MenuItem
-                      onClick={() => showTypes(selectedItemIndex, "edit")}
+                      onClick={() => showCompany(selectedItemIndex, "edit")}
                     >
                       <ListItemIcon>
                         <Edit className={classes.iconsColor} />
