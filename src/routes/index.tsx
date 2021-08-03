@@ -20,6 +20,7 @@ import GasStation from '../pages/GasStation';
 import ServiceProvider from '../pages/ServiceProvider';
 import UserRole from '../pages/UserRole';
 import AboutUs from '../pages/AboutUs';
+import CompanyConfirm from '../pages/Admin/CompanyConfirm';
 
 const Routes: React.FC = () => (
     <Switch>
@@ -35,6 +36,7 @@ const Routes: React.FC = () => (
         <Route path="/workedTime" exact component={WorkedTime} title="WorkedTime" isPrivate />
         <Route path="/code" exact component={Code} title="Code" isPrivate />
         <Route path="/companys" exact component={Company} title="Company" isPrivate />
+        <Route path="/companyConfirm" exact component={CompanyConfirm} title="CompanyConfirm" isPrivate />
         <Route path="/dashboard" exact component={AdminDashboard} title="Dashboard" isPrivate />
         <Route path="/services" exact component={Service} title="Service" isPrivate />
         <Route path="/news" exact component={News} title="News" isPrivate />
