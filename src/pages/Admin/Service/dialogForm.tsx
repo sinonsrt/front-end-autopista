@@ -131,6 +131,7 @@ const ServiceDialog: React.FC<Props> = ({
                   <Select
                     name="type_id"
                     label="Tipo de Serviço"
+                    required
                     options={data.map((item) => (
                       {id: item.id, text: item.description}
                     ))}

@@ -70,11 +70,18 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.info.main,
     },
     titleLogo: {
+      display: "flex",
+      textAlign: "center",
+      marginLeft: "35%",
       "& img": {
-        width: "5%",
+        width: "10%",
         margin: "0.5%",
       },
     },
+    title: {
+      marginTop: "4%",
+      marginLeft: "1%"
+    }
   })
 );
 
@@ -126,10 +133,11 @@ const CompanyConfirm: React.FC = () => {
 
   function showTypes(id: string, action: "view") {
     api
-      .get(`companyConfirm/${id}`)
+      .get(`companies/${id}`)
       .then((response) => {
         setDialogData({
           ...response.data,
+          services: response.data.services.map((item: any) => item.service_id),
           action: action,
         });
         setOpenDialog(true);
@@ -138,7 +146,8 @@ const CompanyConfirm: React.FC = () => {
     handleClose();
   }
 
-  function confirmCompany(id: string, action: "view" | "confirm") {
+  function confirmCompany(id: string, action: "confirm") {
+    console.log('entrou no cnfirm')
     api
       .get(`companyConfirm/${id}`)
       .then((response) => {
@@ -154,32 +163,16 @@ const CompanyConfirm: React.FC = () => {
 
   return (
     <>
-      <Typography
-        variant="h5"
-        display="initial"
-        align="center"
-        className={classes.titleLogo}
-      >
-        {" "}
-        <img src={CompanyLogo} alt="Empresas" /> Confirmação de Empresas
+    <div className={classes.titleLogo}>
+      <img src={CompanyLogo} alt="Empresas" />
+      <Typography variant="h5" align="center" className={classes.title}>
+        CONFIRMAÇÃO DE EMPRESAS
       </Typography>
+    </div>
 
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
           <TextInputSearch placeholder="Buscar por..." />
-        </Grid>
-        <Grid md={2} className={classes.textCenter}>
-          <Button
-            variant="contained"
-            className={classes.buttonAdd}
-            color="primary"
-            onClick={() => {
-              setDialogData({ id: "", description: "", action: "include" });
-              setOpenDialog(true);
-            }}
-          >
-            Incluir
-          </Button>
         </Grid>
       </Grid>
 
@@ -204,7 +197,14 @@ const CompanyConfirm: React.FC = () => {
                 <TableCell>{item.cnpj}</TableCell>
                 <TableCell>{item.description}</TableCell>
                 <TableCell>{item.phone}</TableCell>
-                <TableCell>{item.created_at.split("T")[0]}</TableCell>
+                <TableCell>
+                  {item.created_at
+                    ? item.created_at
+                        .split("T")[0]
+                        .split("-")
+                        .reverse()
+                        .join("/")
+                    : ""}</TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>
                     <List />

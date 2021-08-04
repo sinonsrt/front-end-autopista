@@ -1,26 +1,25 @@
-/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/iframe-has-title */
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import {
   Button,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Grid,
   Typography,
 } from "@material-ui/core";
 import Dialog, { DialogProps } from "@material-ui/core/Dialog";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import TextInput from "../../../components/TextInput";
+import TextInput from "../../components/TextInput";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import api from "../../../services/api";
+import api from "../../services/api";
 import { toast } from "react-toastify";
-import Select from "../../../components/Select";
-import AsyncSelect from "../../../components/AsyncSelect";
-import defaultImage from "../../../assets/default_image.png";
-import MultipleSelect from "../../../components/MultipleSelect";
+import Select from "../../components/Select";
+import AsyncSelect from "../../components/AsyncSelect";
+import defaultImage from "../../assets/default_image.png";
+import MultipleSelect from "../../components/MultipleSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,6 +52,18 @@ const useStyles = makeStyles((theme: Theme) =>
     formControlLabel: {
       marginTop: theme.spacing(1),
     },
+    logo: {
+      width: "300pt",
+      marginLeft: "25pt",
+      alignContent: "center",
+      borderRadius: "15pt"
+    },
+    map: {
+      float: "inline-start",
+    },
+    divImage: {
+      display: "flex"
+    }
   })
 );
 
@@ -63,7 +74,7 @@ interface Props {
   hide: any;
 }
 
-const CompanyDialog: React.FC<Props> = ({
+const GasStationDialog: React.FC<Props> = ({
   dialogData,
   refresh,
   visible,
@@ -157,7 +168,7 @@ const CompanyDialog: React.FC<Props> = ({
               break;
             case "view":
               api
-                .put(`companies/${values.id}`, formData)
+                .get(`companyConfirm/${values.id}`)
                 .then(() => {
                   setImageLocalPath(undefined);
                   setImage(undefined);
@@ -165,7 +176,9 @@ const CompanyDialog: React.FC<Props> = ({
                   hide();
                   toast.success("Empresa cadastrado com sucesso");
                 })
-                .catch((error) => toast.error("Erro ao alterar empresa"));
+                .catch((error) =>
+                  toast.error("Não foi possível efetuar a consulta!")
+                );
               break;
             default:
               toast.error("Erro ao realizar operação");
@@ -173,22 +186,21 @@ const CompanyDialog: React.FC<Props> = ({
           }
         }}
         validationSchema={Yup.object({
-          type_id: Yup.string().required(
-            'Selecione um valor válido no campo "Tipo".'
-          ),
+          /* description: Yup.string().required(
+            "É necessário informar a descrição"
+          ), */
         })}
       >
         {({ values, setFieldValue }) => (
           <Form className={classes.form}>
             <Paper className={classes.head}>
-              <DialogTitle>Empresa</DialogTitle>
+              <Typography variant="h5" align="center" > POSTO DE COMBUSTÍVEL </Typography>
             </Paper>
             <Grid container spacing={3}>
               <Grid xs={12} sm={12} md={12}>
                 <DialogContent>
                   <Select
                     name="type_id"
-                    required
                     label="Tipo de Empresa"
                     options={types.map((item) => ({
                       id: item.id,
@@ -273,27 +285,6 @@ const CompanyDialog: React.FC<Props> = ({
                 </DialogContent>
               </Grid>
 
-              {dialogData.action === "view" && (
-                <Grid xs={6} sm={6} md={12}>
-                  <DialogContent>
-                    <iframe
-                      width="400"
-                      height="300"
-                      loading="lazy"
-                      src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCARVw8BxECC731e9oN2A9-zTV6TbyVqM0&q=${`${dialogData.address
-                        .trim()
-                        .replaceAll(" ", "+")}+${dialogData.number
-                        .toString()
-                        .trim()
-                        .replaceAll(" ", "+")}+${
-                        city.find((item) => item.id === dialogData.city_id)
-                          .description
-                      }`}`}
-                    ></iframe>
-                  </DialogContent>
-                </Grid>
-              )}
-
               <Grid xs={12} sm={12} md={12}>
                 <Typography variant="h5" align="center">
                   Contato
@@ -341,32 +332,6 @@ const CompanyDialog: React.FC<Props> = ({
               </Grid>
             </Grid>
 
-            <Grid xs={6} sm={6} md={6}>
-              <img
-                src={
-                  values.avatar
-                    ? `http://25.99.194.144:3333/company/${values.avatar}`
-                    : imageLocalPath || defaultImage
-                }
-                style={{ width: 80, marginRight: 8 }}
-              />
-
-              <input
-                hidden={dialogData.action === "view"}
-                type="file"
-                required
-                onChange={(event) => {
-                  if (event.target.files && event.target.files[0]) {
-                    setFieldValue("avatar", null);
-                    setImage(event.target.files[0]);
-                    setImageLocalPath(
-                      URL.createObjectURL(event.target.files[0])
-                    );
-                  }
-                }}
-              />
-            </Grid>
-
             <Grid xs={12} sm={12} md={12}>
               <Typography variant="h5" align="center">
                 Serviços
@@ -386,7 +351,62 @@ const CompanyDialog: React.FC<Props> = ({
               </Grid>
             </Grid>
 
+            <div className={classes.divImage}>
+              <Grid xs={6} sm={6} md={6}>
+                <img
+                  src={
+                    values.avatar
+                      ? `http://25.99.194.144:3333/company/${values.avatar}`
+                      : imageLocalPath || defaultImage
+                  }
+                  className={classes.logo}
+                />
+
+                <input
+                  hidden={dialogData.action === "view"}
+                  type="file"
+                  onChange={(event) => {
+                    if (event.target.files && event.target.files[0]) {
+                      setFieldValue("avatar", null);
+                      setImage(event.target.files[0]);
+                      setImageLocalPath(
+                        URL.createObjectURL(event.target.files[0])
+                      );
+                    }
+                  }}
+                />
+              </Grid>
+
+              {dialogData.action === "view" && (
+                <Grid xs={6} sm={6} md={6}>
+                  <DialogContent>
+                    <iframe
+                      width="380"
+                      height="250"
+                      loading="lazy"
+                      className={classes.map}
+                      src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCARVw8BxECC731e9oN2A9-zTV6TbyVqM0&q=${`${dialogData.address
+                        .trim()
+                        .replaceAll(" ", "+")}+${dialogData.number
+                        .toString()
+                        .trim()
+                        .replaceAll(" ", "+")}+${
+                        city.find((item) => item.id === dialogData.city_id)
+                          .description
+                      }`}`}
+                    ></iframe>
+                  </DialogContent>
+                </Grid>
+              )}
+            </div>
+
             <DialogActions>
+              <Button
+                variant= 'contained'
+                color="secondary"
+              >
+                Avaliar Empresa
+              </Button>
               <Button
                 onClick={() => {
                   hide();
@@ -411,4 +431,4 @@ const CompanyDialog: React.FC<Props> = ({
   );
 };
 
-export default CompanyDialog;
+export default GasStationDialog;

@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/iframe-has-title */
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import {
@@ -16,8 +18,8 @@ import api from "../../../services/api";
 import { toast } from "react-toastify";
 import Select from "../../../components/Select";
 import AsyncSelect from "../../../components/AsyncSelect";
-import CheckBox from "../../../components/CheckBox";
 import defaultImage from "../../../assets/default_image.png";
+import MultipleSelect from "../../../components/MultipleSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,6 +52,18 @@ const useStyles = makeStyles((theme: Theme) =>
     formControlLabel: {
       marginTop: theme.spacing(1),
     },
+    logo: {
+      width: "300pt",
+      marginLeft: "25pt",
+      alignContent: "center",
+      borderRadius: "15pt"
+    },
+    map: {
+      float: "inline-start",
+    },
+    divImage: {
+      display: "flex"
+    }
   })
 );
 
@@ -134,7 +148,6 @@ const CompanyDialog: React.FC<Props> = ({
       <Formik
         initialValues={dialogData}
         onSubmit={(values) => {
-          console.log(values);
           values.avatar = image;
           const formData = new FormData();
           Object.keys(values).forEach((key) =>
@@ -153,9 +166,9 @@ const CompanyDialog: React.FC<Props> = ({
                 })
                 .catch((error) => toast.error("Erro ao cadastrar empresa"));
               break;
-            case "edit":
+            case "view":
               api
-                .put(`users/${values.id}`, formData)
+                .get(`companyConfirm/${values.id}`)
                 .then(() => {
                   setImageLocalPath(undefined);
                   setImage(undefined);
@@ -163,7 +176,9 @@ const CompanyDialog: React.FC<Props> = ({
                   hide();
                   toast.success("Empresa cadastrado com sucesso");
                 })
-                .catch((error) => toast.error("Erro ao alterar empresa"));
+                .catch((error) =>
+                  toast.error("Não foi possível efetuar a consulta!")
+                );
               break;
             default:
               toast.error("Erro ao realizar operação");
@@ -291,8 +306,9 @@ const CompanyDialog: React.FC<Props> = ({
               <Grid xs={6} sm={6} md={6}>
                 <DialogContent>
                   <Select
-                    name="worked_days"
+                    name="worked_day_id"
                     label="Dias de funcionamento"
+                    required
                     options={workedDays.map((item) => ({
                       id: item.id,
                       text: item.description,
@@ -304,8 +320,9 @@ const CompanyDialog: React.FC<Props> = ({
               <Grid xs={6} sm={6} md={6}>
                 <DialogContent>
                   <Select
-                    name="worked_time"
+                    name="worked_time_id"
                     label="Horário de funcionamento"
+                    required
                     options={workedTimes.map((item) => ({
                       id: item.id,
                       text: item.description,
@@ -315,46 +332,73 @@ const CompanyDialog: React.FC<Props> = ({
               </Grid>
             </Grid>
 
-            <Grid xs={6} sm={6} md={6}>
-              <img
-                src={
-                  values.avatar
-                    ? `http://25.99.194.144:3333/company/${values.avatar}`
-                    : imageLocalPath || defaultImage
-                }
-                style={{ width: 80, marginRight: 8 }}
-              />
-
-              <input
-                type="file"
-                onChange={(event) => {
-                  if (event.target.files && event.target.files[0]) {
-                    setFieldValue("avatar", null);
-                    setImage(event.target.files[0]);
-                    setImageLocalPath(
-                      URL.createObjectURL(event.target.files[0])
-                    );
-                  }
-                }}
-              />
-            </Grid>
-
             <Grid xs={12} sm={12} md={12}>
               <Typography variant="h5" align="center">
                 Serviços
               </Typography>
 
-              <DialogContent>
-                {services.map((item, index) => (
-                  <Grid xs={12} sm={12} md={12}>
-                    <CheckBox
-                      name={`service_${item.id}`}
-                      placeholder={item.description}
-                    />
-                  </Grid>
-                ))}
-              </DialogContent>
+              <Grid xs={6} sm={6} md={12}>
+                <DialogContent>
+                  <MultipleSelect
+                    name="services"
+                    label="Serviços"
+                    options={services.map((item) => ({
+                      id: item.id,
+                      text: item.description,
+                    }))}
+                  />
+                </DialogContent>
+              </Grid>
             </Grid>
+
+            <div className={classes.divImage}>
+              <Grid xs={6} sm={6} md={6}>
+                <img
+                  src={
+                    values.avatar
+                      ? `http://25.99.194.144:3333/company/${values.avatar}`
+                      : imageLocalPath || defaultImage
+                  }
+                  className={classes.logo}
+                />
+
+                <input
+                  hidden={dialogData.action === "view"}
+                  type="file"
+                  onChange={(event) => {
+                    if (event.target.files && event.target.files[0]) {
+                      setFieldValue("avatar", null);
+                      setImage(event.target.files[0]);
+                      setImageLocalPath(
+                        URL.createObjectURL(event.target.files[0])
+                      );
+                    }
+                  }}
+                />
+              </Grid>
+
+              {dialogData.action === "view" && (
+                <Grid xs={6} sm={6} md={6}>
+                  <DialogContent>
+                    <iframe
+                      width="380"
+                      height="250"
+                      loading="lazy"
+                      className={classes.map}
+                      src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCARVw8BxECC731e9oN2A9-zTV6TbyVqM0&q=${`${dialogData.address
+                        .trim()
+                        .replaceAll(" ", "+")}+${dialogData.number
+                        .toString()
+                        .trim()
+                        .replaceAll(" ", "+")}+${
+                        city.find((item) => item.id === dialogData.city_id)
+                          .description
+                      }`}`}
+                    ></iframe>
+                  </DialogContent>
+                </Grid>
+              )}
+            </div>
 
             <DialogActions>
               <Button

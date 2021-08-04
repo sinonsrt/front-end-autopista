@@ -70,11 +70,18 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.info.main,
     },
     titleLogo: {
+      display: "flex",
+      textAlign: "center",
+      marginLeft: "35%",
       "& img": {
-        width: "5%",
+        width: "10%",
         margin: "0.5%",
       },
     },
+    title: {
+      marginTop: "4%",
+      marginLeft: "1%"
+    }
   })
 );
 
@@ -137,15 +144,12 @@ const Service: React.FC = () => {
 
   return (
     <>
-      <Typography
-        variant="h5"
-        display="initial"
-        align="center"
-        className={classes.titleLogo}
-      >
-        {" "}
-        <img src={ServiceLogo} alt="Tipos" /> Serviços cadastrados
+    <div className={classes.titleLogo}>
+      <img src={ServiceLogo} alt="Empresas" />
+      <Typography variant="h5" align="center" className={classes.title}>
+        SERVIÇOS
       </Typography>
+    </div>
       
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
