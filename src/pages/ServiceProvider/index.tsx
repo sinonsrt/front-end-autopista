@@ -107,7 +107,7 @@ const ServiceProvider: React.FC = () => {
   useEffect(() => {
     api
       .get(
-        "http://localhost:3333/companies?order=id&type=asc&company_type=Prestador de serviço&confirmed=true"
+        "companies?order=id&type=asc&company_type=Prestador de serviço&confirmed=true"
       )
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
@@ -149,7 +149,7 @@ const ServiceProvider: React.FC = () => {
       </div>
       <Grid container direction="row" justify="space-around">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por..." />
+          <TextInputSearch placeholder="Buscar por nome..." />
         </Grid>
       </Grid>
 

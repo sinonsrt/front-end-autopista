@@ -87,7 +87,7 @@ const Header: React.FC = () => {
               to="/code"
               style={{ textDecoration: "none", color: "inherit" }}
             >
-              <MenuListItem>Códigos Bônus</MenuListItem>
+              <MenuListItem>Códigos Avaliativos</MenuListItem>
             </Link>
             <Link
               to="/workedDay"
@@ -120,7 +120,7 @@ const Header: React.FC = () => {
 
           <Button
             color="secondary"
-            href="/companyConfirm"
+            href="/Rating"
           >
             <Star />
             AVALIAÇÕES

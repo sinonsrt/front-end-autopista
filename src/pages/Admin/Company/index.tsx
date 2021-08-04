@@ -175,7 +175,7 @@ const Company: React.FC = () => {
 
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por..." />
+          <TextInputSearch placeholder="Buscar por razão social..." />
         </Grid>
         <Grid md={2} className={classes.textCenter}>
           <Button

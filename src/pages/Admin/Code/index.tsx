@@ -91,7 +91,7 @@ const Code: React.FC = () => {
   const [dialogData, setDialogData] = useState<any>({});
   const [refresh, setRefresh] = useState(0);
   const columns = [
-    { description: "Cupom Bônus", width: "40%" },
+    { description: "Cupôm Avaliativo", width: "40%" },
     { description: "Empresa", width: "40%" },
     { description: "Data de publicação", width: "20%" },
     { description: "Ações", width: "0%" },
@@ -154,7 +154,7 @@ const Code: React.FC = () => {
       
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por..." />
+          <TextInputSearch placeholder="Buscar por cupôm avaliativo..." />
         </Grid>
         <Grid md={2} className={classes.textCenter}>
           <Button

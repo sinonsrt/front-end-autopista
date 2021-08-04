@@ -139,9 +139,9 @@ const Rating: React.FC = () => {
       </Typography>
     </div>
 
-      <Grid container direction="row" justify="flex-start">
+      <Grid container direction="row" justify="space-around">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por..." />
+          <TextInputSearch placeholder="Buscar por código avaliativo..." />
         </Grid>
       </Grid>
 

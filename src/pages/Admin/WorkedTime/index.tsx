@@ -151,7 +151,7 @@ const WorkedTime: React.FC = () => {
     </div>
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por..." />
+          <TextInputSearch placeholder="Buscar por descrição..." />
         </Grid>
         <Grid md={2} className={classes.textCenter}>
           <Button
