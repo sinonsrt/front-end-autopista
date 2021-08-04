@@ -1,93 +1,172 @@
 import React, { useEffect, useState } from "react";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import { List, Search, Star } from "@material-ui/icons";
+import TableFooter from "@material-ui/core/TableFooter";
+import ServiceProviderDialog from "./dialogForm";
 import {
   Grid,
-  Typography,
-  TableContainer,
-  Paper,
-  Table,
-  TableHead,
-  TableCell,
-  TableBody,
-  TableRow,
-  Theme,
-  IconButton,
-  List,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
 } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInputSearch from "../../components/TextInputSearch";
 import api from "../../services/api";
 import { toast } from "react-toastify";
-import { createStyles, makeStyles } from "@material-ui/styles";
 import CompanyLogo from "../../assets/icons/serviceProvider.png";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    img: {
-      width: "10%",
+    root: {
+      "& > *": {
+        borderBottom: "unset",
+      },
     },
-    title: {
-      margin: "3%",
+    searchGrid: {
+      display: "flex",
+    },
+    buttonAdd: {
+      margin: theme.spacing(1.4),
+      paddingTop: theme.spacing(0.5),
+      paddingLeft: "28px",
+      paddingRight: "28px",
+      backgroundColor: theme.palette.success.main,
+      boxShadow: "none",
+      color: "#fff",
+      "&:hover": {
+        backgroundColor: "#208c4e",
+      },
+    },
+    headerTable: {
+      backgroundColor: theme.palette.info.main,
+    },
+    actionButton: {
+      marginRight: theme.spacing(1.5),
     },
     iconsColor: {
       color: "#212121",
     },
+    img: {
+      width: "20%",
+    },
+    spaceIcon: {
+      marginRight: theme.spacing(1),
+    },
+    pagination: {
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+    },
+    textCenter: {
+      textAlign: "center",
+    },
+    head: {
+      backgroundColor: theme.palette.info.main,
+    },
     titleLogo: {
+      display: "flex",
+      textAlign: "center",
+      marginLeft: "35%",
       "& img": {
-        width: "5%",
+        width: "10%",
         margin: "0.5%",
       },
     },
+    title: {
+      marginTop: "4%",
+      marginLeft: "1%"
+    }
   })
 );
 
 const ServiceProvider: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
+  const [dialogData, setDialogData] = useState<any>({});
   const [refresh, setRefresh] = useState(0);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const columns = [
-    { description: "", width: "40%" },
-    { description: "PRESTADORES DE SERVIÇO", width: "40%" },
-    { description: "", width: "40%" },
+    { description: "", width: "30%" },
+    { description: "", width: "15%" },
+    { description: "", width: "15%" },
+    { description: "", width: "25%" },
+    { description: "", width: "20%" },
+    { description: "Ações", width: "0%" },
   ];
+  const [openDialog, setOpenDialog] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedItemIndex, setSelectedItemIndex] = useState("");
 
   useEffect(() => {
     api
-      .get("companies?order=id&type=asc&page=1&limit=20&company_type=Prestador de serviço")
+      .get(
+        "http://localhost:3333/companies?order=id&type=asc&company_type=Prestador de serviço&confirmed=true"
+      )
       .then((response) => setData(response.data))
-      .catch((error) => {
-        console.log(error)
-        //toast.error("Não foi possivel efetuar a consulta!")
-      });
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, [refresh]);
 
-  console.log(data);
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    id: string
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedItemIndex(id);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  function showTypes(id: string, action: "view") {
+    api
+      .get(`companies/${id}`)
+      .then((response) => {
+        setDialogData({
+          ...response.data,
+          services: response.data.services.map((item: any) => item.service_id),
+          action: action,
+        });
+        setOpenDialog(true);
+      })
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+    handleClose();
+  }
 
   return (
     <>
-    <Typography
-      variant="h5"
-      display="initial"
-      align="center"
-      className={classes.titleLogo}
-    >
-      {" "}
-      <img src={CompanyLogo} alt="Empresas" /> PRESTADORES DE SERVIÇO
-    </Typography>
+      <div className={classes.titleLogo}>
+        <img src={CompanyLogo} alt="Empresas" />
+        <Typography variant="h5" align="center" className={classes.title}>
+          PRESTADORES DE SERVIÇO
+        </Typography>
+      </div>
       <Grid container direction="row" justify="space-around">
         <Grid md={10}>
           <TextInputSearch placeholder="Buscar por..." />
         </Grid>
       </Grid>
 
+      <p />
+
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
           <TableHead>
-            {columns.map((column) => (
-              <TableCell style={{ width: column.width }}>
-                {column.description}
-              </TableCell>
-            ))}
+            <TableRow className={classes.headerTable}>
+              {columns.map((column) => (
+                <TableCell style={{ width: column.width }}>
+                  {column.description}
+                </TableCell>
+              ))}
+            </TableRow>
           </TableHead>
+
           <TableBody>
             {data.map((item) => (
               <TableRow key={item.id}>
@@ -100,19 +179,76 @@ const ServiceProvider: React.FC = () => {
                   />{" "}
                 </TableCell>
                 <TableCell>
-                  {item.company_name} <br /> {item.cnpj}{" "}
+                  <strong>
+                    {" "}
+                    {item.company_name} <br /> {item.cnpj}{" "}
+                  </strong>
                 </TableCell>
-                <TableCell>{item.stars}</TableCell>
                 <TableCell align="center">
-                  <IconButton>
+                  {item.address} - {item.number} <br />{" "}
+                  <strong>
+                    {item.description} - {item.initials}
+                  </strong>{" "}
+                </TableCell>
+                <TableCell>{item.phone}</TableCell>
+                <TableCell>
+                  <Star />
+                  {item.stars}/5
+                </TableCell>
+                <TableCell align="center">
+                  <IconButton onClick={(event) => handleClick(event, item.id)}>
                     <List />
                   </IconButton>
+
+                  <Menu
+                    id={item.id}
+                    key={item.id}
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                    elevation={0}
+                    getContentAnchorEl={null}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "center",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "center",
+                    }}
+                  >
+                    <MenuItem
+                      onClick={() => showTypes(selectedItemIndex, "view")}
+                    >
+                      <ListItemIcon>
+                        <Search className={classes.iconsColor} />
+                      </ListItemIcon>
+                      <ListItemText primary="Visualizar" />
+                    </MenuItem>
+                  </Menu>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
+
+          <TableFooter>
+            {/* <Pagination
+              count={5}
+              size="small"
+              color="primary"
+              className={classes.pagination}
+            /> */}
+          </TableFooter>
         </Table>
       </TableContainer>
+
+      <ServiceProviderDialog
+        dialogData={dialogData}
+        visible={openDialog}
+        hide={() => setOpenDialog(false)}
+        refresh={() => setRefresh(Math.random())}
+      />
     </>
   );
 };

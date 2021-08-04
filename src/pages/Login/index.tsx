@@ -10,6 +10,8 @@ import { useAuth } from "../../hooks/Auth";
 import { toast } from "react-toastify";
 import TextInputPassword from "../../components/TextInputPassword";
 import Loader from "../../components/Loader";
+import PasswordDialog from "./dialogForm";
+import { Person, Store } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,83 +63,115 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(3),
     },
     a: {
-      color: "#595959",
-      display: "block",
-      marginTop: "15%",
-      textDecoration: "none",
+      margin: "5pt",
       fontSize: "18px",
     },
+    register: {
+      marginTop: "15%"
+    }
   })
 );
 
 const Login: React.FC = () => {
   const classes = useStyles();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogData, setDialogData] = useState<any>({});
+  const [refresh, setRefresh] = useState(0);
   const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
   return (
-    <div className={classes.container}>
-      <div className={classes.root}>
-        <img src={logo} alt="AutoPista" />
-        <Formik
-          initialValues={{
-            email: "",
-            password: "",
-          }}
-          onSubmit={async (values) => {
-            setLoading(true);
-            try {
-              await signIn(values)
-              .catch((error) =>
-                toast.error("Usuário ou senha incorretos!")
-              );
-            } catch (error) {
-              toast.error("Erro ao fazer login");
-            }
-            setLoading(false);
-          }}
-        >
-          {({ values, setFieldValue }) => (
-            <Form>
-              <Paper>
-                <Typography variant="h5" align="center">
-                  Bem Vindo!
-                </Typography>
-                <Grid>
-                  <TextInput
-                    name="email"
-                    label="E-mail"
-                    className={classes.textField}
-                  />
-                  <TextInputPassword
-                    name="password"
-                    label="Senha"
-                    className={classes.textField}
-                  />
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    className={classes.buttonLogin}
-                    size="large"
-                  >
-                    Entrar
-                  </Button>
-                </Grid>
-              </Paper>
-              <a href="/" className={classes.aLosePassword}>
-                <strong> Esqueci minha senha </strong>
-              </a>
-            </Form>
-          )}
-        </Formik>
-        <a href="/register" className={classes.a}>
-          <ReplyAllIcon />
-          Realizar cadastro
-        </a>
+    <>
+      <div className={classes.container}>
+        <div className={classes.root}>
+          <img src={logo} alt="AutoPista" />
+          <Formik
+            initialValues={{
+              email: "",
+              password: "",
+            }}
+            onSubmit={async (values) => {
+              setLoading(true);
+              try {
+                await signIn(values).catch((error) =>
+                  toast.error("Usuário ou senha incorretos!")
+                );
+              } catch (error) {
+                toast.error("Erro ao fazer login");
+              }
+              setLoading(false);
+            }}
+          >
+            {({ values, setFieldValue }) => (
+              <Form>
+                <Paper>
+                  <Typography variant="h5" align="center">
+                 SEJA BEM-VINDO!
+                  </Typography>
+                  <Grid>
+                    <TextInput
+                      name="email"
+                      label="E-mail"
+                      className={classes.textField}
+                    />
+                    <TextInputPassword
+                      name="password"
+                      label="Senha"
+                      className={classes.textField}
+                    />
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      className={classes.buttonLogin}
+                      size="large"
+                    >
+                      Entrar
+                    </Button>
+                  </Grid>
+                </Paper>
+                <a href="/" className={classes.aLosePassword}>
+                  <Typography align="center" variant="button">
+                    <strong> Esqueci minha senha </strong>
+                  </Typography>
+                </a>
+              </Form>
+            )}
+          </Formik>
+          <Typography align="center" variant="button" className={classes.register}>
+            <strong> Realize seu cadastro! </strong>
+          </Typography>
+          <div>
+            <Button
+              className={classes.a}
+              color="primary"
+              href="/companyRegister"
+              variant="contained"
+            >
+              <Store />
+              Empresa
+            </Button>
+            <Button
+              className={classes.a}
+              color="secondary"
+              href="/register"
+              variant="contained"
+            >
+              <Person />
+              Pessoa
+            </Button>
+          </div>
+        </div>
+        {loading && <Loader />}
+        <img className={classes.background} src={background} alt="Background" />
       </div>
-      {loading && <Loader />}
-      <img className={classes.background} src={background} alt="Background" />
-    </div>
+
+      <PasswordDialog
+        dialogData={dialogData}
+        visible={openDialog}
+        hide={() => setOpenDialog(false)}
+        refresh={() => setRefresh(Math.random())}
+      />
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import {
   Button,
@@ -22,6 +22,7 @@ import * as Yup from "yup";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
 import Select from "../../../components/Select";
+import AsyncSelect from "../../../components/AsyncSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,6 +58,7 @@ const CodeDialog: React.FC<Props> = ({
   hide,
 }) => {
   const classes = useStyles();
+  const [companies, setCompany] = useState<any[]>([]);
   const [data, setData] = useState<any[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
@@ -65,6 +67,13 @@ const CodeDialog: React.FC<Props> = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
+  
+  useEffect(() => {
+    api
+      .get("http://localhost:3333/companies?order=id&type=asc&company_type=Posto de combustivel")
+      .then((response) => setCompany(response.data))
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+  }, []);
 
   return (
     <Dialog
@@ -79,23 +88,23 @@ const CodeDialog: React.FC<Props> = ({
           switch (values.action) {
             case "include":
               api
-                .post("news", values)
+                .post("codes", values)
                 .then(() => {
                   refresh();
                   hide();
-                  toast.success("Cupom Bônus cadastrado com sucesso");
+                  toast.success("Cupom Avaliativo cadastrado com sucesso");
                 })
-                .catch((error) => toast.error("Erro ao cadastrar Cupom Bônus"));
+                .catch((error) => toast.error("Erro ao cadastrar Cupom Avaliativo"));
               break;
             case "edit":
               api
-                .put(`news/${values.id}`, values)
+                .put(`codes/${values.id}`, values)
                 .then(() => {
                   refresh();
                   hide();
-                  toast.success("Cupom Bônus cadastrado com sucesso");
+                  toast.success("Cupom Avaliativo cadastrado com sucesso");
                 })
-                .catch((error) => toast.error("Erro ao alterar Cupom Bônus"));
+                .catch((error) => toast.error("Erro ao alterar Cupom Avaliativo"));
               break;
             default:
               toast.error("Erro ao realizar operação");
@@ -119,19 +128,15 @@ const CodeDialog: React.FC<Props> = ({
             </DialogContent>
 
             <DialogContent>
-              <Select
-                name="type_id"
-                label="Tipo de Serviço"
-                options={[
-                  { id: "8d938bdc-fef3-5f66-8d49-b34762e794db", text: "ADM" },
-                ]}
-              />
-            </DialogContent>
-
-            <DialogContent>
-              <Fab color="primary" aria-label="add">
-                <AddIcon />
-              </Fab>
+              <AsyncSelect
+                    name="company_id"
+                    label="Empresa"
+                    required
+                    options={companies.map((item) => ({
+                      id: item.id,
+                      text: item.company_name,
+                    }))}
+                  />
             </DialogContent>
 
             <DialogActions>

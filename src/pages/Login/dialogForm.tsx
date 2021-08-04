@@ -1,19 +1,22 @@
-/* eslint-disable jsx-a11y/alt-text */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import {
   Button,
-  Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
+  Grid,
+  Typography,
 } from "@material-ui/core";
+import Dialog, { DialogProps } from "@material-ui/core/Dialog";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import TextInput from "../../../components/TextInput";
+import TextInput from "../../components/TextInput";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import api from "../../../services/api";
+import api from "../../services/api";
 import { toast } from "react-toastify";
+import Select from "../../components/Select";
+import AsyncSelect from "../../components/AsyncSelect";
+import CheckBox from "../../components/CheckBox";
 import defaultImage from "../../../assets/default_image.png";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,9 +35,24 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     head: {
       backgroundColor: theme.palette.info.main,
+      padding: "2px",
+    },
+    form: {
+      display: "flex",
+      flexDirection: "column",
+      margin: "auto",
+      width: "fit-content",
+    },
+    formControl: {
+      marginTop: theme.spacing(2),
+      minWidth: 120,
+    },
+    formControlLabel: {
+      marginTop: theme.spacing(1),
     },
   })
 );
+
 interface Props {
   dialogData: any;
   refresh: any;
@@ -42,27 +60,46 @@ interface Props {
   hide: any;
 }
 
-const NewsDialog: React.FC<Props> = ({
+const PasswordDialog: React.FC<Props> = ({
   dialogData,
   refresh,
   visible,
   hide,
 }) => {
   const classes = useStyles();
+  const [types, setTypes] = useState<any[]>([]);
+  const [city, setCity] = useState<any[]>([]);
+  const [workedDays, setWorkedDays] = useState<any[]>([]);
+  const [workedTimes, setWorkedTimes] = useState<any[]>([]);
+  const [services, setServices] = useState<any[]>([]);
+
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [maxWidth, setMaxWidth] = React.useState<DialogProps["maxWidth"]>("md");
 
   const [image, setImage] = useState<any>();
   const [imageLocalPath, setImageLocalPath] = useState<any>();
 
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setServices({ ...services, [event.target.name]: event.target.checked });
+  };
+
   return (
     <Dialog
       open={visible}
-      aria-labelledby="form-dialog-title"
-      fullWidth={true}
-      maxWidth={"md"}
+      onClose={handleClose}
+      fullWidth={fullWidth}
+      maxWidth={maxWidth}
+      aria-labelledby="max-width-dialog-title"
     >
       <Formik
         initialValues={dialogData}
         onSubmit={(values) => {
+          console.log(values);
           values.avatar = image;
           const formData = new FormData();
           Object.keys(values).forEach((key) =>
@@ -71,27 +108,27 @@ const NewsDialog: React.FC<Props> = ({
           switch (values.action) {
             case "include":
               api
-                .post("newsPaper", formData)
+                .post("companies", formData)
                 .then(() => {
                   refresh();
-                  hide();
                   setImageLocalPath(undefined);
                   setImage(undefined);
-                  toast.success("Notícias cadastrado com sucesso");
+                  hide();
+                  toast.success("Empresa cadastrado com sucesso");
                 })
-                .catch((error) => toast.error("Erro ao cadastrar notícias"));
+                .catch((error) => toast.error("Erro ao cadastrar empresa"));
               break;
             case "edit":
               api
-                .put(`newsPaper/${values.id}`, formData)
+                .put(`users/${values.id}`, formData)
                 .then(() => {
-                  refresh();
-                  hide();
                   setImageLocalPath(undefined);
                   setImage(undefined);
-                  toast.success("Notícias cadastrado com sucesso");
+                  refresh();
+                  hide();
+                  toast.success("Empresa cadastrado com sucesso");
                 })
-                .catch((error) => toast.error("Erro ao alterar notícias"));
+                .catch((error) => toast.error("Erro ao alterar empresa"));
               break;
             default:
               toast.error("Erro ao realizar operação");
@@ -99,55 +136,17 @@ const NewsDialog: React.FC<Props> = ({
           }
         }}
         validationSchema={Yup.object({
-          title: Yup.string().required("É necessário informar o título"),
-          description: Yup.string().required(
+          /* description: Yup.string().required(
             "É necessário informar a descrição"
-          ),
+          ), */
         })}
       >
         {({ values, setFieldValue }) => (
-          <Form>
+          <Form className={classes.form}>
             <Paper className={classes.head}>
-              <DialogTitle>Notícias</DialogTitle>
+              <Typography variant="h5">Empresa</Typography>
             </Paper>
-
-            <DialogContent>
-              <TextInput name="title" label="Título" required />
-            </DialogContent>
-
-            <DialogContent>
-              <TextInput name="description" label="Descrição" required />
-            </DialogContent>
-
-            <DialogContent>
-              <TextInput name="link" label="URL:" required />
-            </DialogContent>
-
-            <DialogContent style={{ display: "flex", alignItems: "center" }}>
-              <img
-                src={
-                  values.avatar
-                    ? `http://localhost:3333/news/${values.avatar}`
-                    : imageLocalPath || defaultImage
-                }
-                style={{ width: 150, marginRight: 8 }}
-              />
-
-              <input
-                type="file"
-                required
-                onChange={(event) => {
-                  if (event.target.files && event.target.files[0]) {
-                    setFieldValue("avatar", null);
-                    setImage(event.target.files[0]);
-                    setImageLocalPath(
-                      URL.createObjectURL(event.target.files[0])
-                    );
-                  }
-                }}
-              />
-            </DialogContent>
-
+           
             <DialogActions>
               <Button
                 onClick={() => {
@@ -173,4 +172,4 @@ const NewsDialog: React.FC<Props> = ({
   );
 };
 
-export default NewsDialog;
+export default PasswordDialog;

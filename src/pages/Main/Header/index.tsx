@@ -1,14 +1,14 @@
 import React from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import { NavLink, Link } from "react-router-dom";
 import { MenuList } from "../../../components/Menu/menuList";
 import { MenuListItem } from "../../../components/Menu/menuListItem";
 import logo from "../../../assets/autopista-bbranca-mp.png";
-import { Button } from "@material-ui/core";
+import { Button, Menu, MenuItem, Toolbar } from "@material-ui/core";
 import { useAuth } from "../../../hooks/Auth";
+import { Add, Person } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,16 +18,31 @@ const useStyles = makeStyles((theme: Theme) =>
     logo: {
       height: 60,
     },
+    new: {
+      position: "absolute",
+      right: 150,
+    },
     logout: {
-      position: 'absolute',
-      right: 0
-    }
+      position: "absolute",
+      right: 0,
+    },
   })
 );
 
 const Header: React.FC = () => {
   const classes = useStyles();
-  const { signOut } = useAuth()
+  const { signOut } = useAuth();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <div>
       <AppBar color="inherit" className={classes.appBar}>
@@ -102,72 +117,34 @@ const Header: React.FC = () => {
             </Link>
           </MenuList>
 
-          <MenuList heading="Relatórios">
+          <Button className={classes.new} color="primary" href="/companyConfirm">
+            <Add />
+            NOVAS EMPRESAS
+          </Button>
+
+          <MenuList heading="Seja bem-vindo" className={classes.logout}>
             <Link
-              to="/users"
-              style={{ textDecoration: "none", color: "inherit" }}
+              to="/userRole"
+              style={{ textDecoration: "none", color: "blue" }}
             >
-              <MenuListItem>Usuários</MenuListItem>
+              <MenuListItem>
+                <Person />
+                Perfil
+              </MenuListItem>
             </Link>
             <Link
-              to="/companys"
-              style={{ textDecoration: "none", color: "inherit" }}
+              to="/"
+              style={{ textDecoration: "none", color: "red" }}
+              onClick={() => {
+                signOut();
+              }}
             >
-              <MenuListItem>Empresas</MenuListItem>
-            </Link>
-            <hr />
-            
-            <Link
-              to="/accessLevel"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <MenuListItem>Nível de Acesso</MenuListItem>
-            </Link>
-            <Link
-              to="/types"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <MenuListItem>Tipos</MenuListItem>
-            </Link>
-            <Link
-              to="/services"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <MenuListItem>Serviços</MenuListItem>
-            </Link>
-            <hr />
-            <Link
-              to="/news"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <MenuListItem>Notícias</MenuListItem>
-            </Link>
-            <Link
-              to="/code"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <MenuListItem>Códigos Bônus</MenuListItem>
-            </Link>
-            <Link
-              to="/workedDay"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <MenuListItem>Dias de funcionamento</MenuListItem>
-            </Link>
-            <Link
-              to="/workedTime"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <MenuListItem>Horários de funcionamento</MenuListItem>
+              <MenuListItem>
+                <ExitToAppIcon />
+                 Sair
+              </MenuListItem>
             </Link>
           </MenuList>
-
-          <Button className={classes.logout} color="secondary" onClick={() => {
-            signOut()
-          }}>
-            <ExitToAppIcon/>
-           SAIR 
-          </Button>
         </Toolbar>
       </AppBar>
       ;

@@ -47,6 +47,18 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "#208c4e",
       },
     },
+    buttonReport: {
+      margin: theme.spacing(1.4),
+      paddingTop: theme.spacing(0.5),
+      paddingLeft: "28px",
+      paddingRight: "28px",
+      backgroundColor: theme.palette.primary.main,
+      boxShadow: "none",
+      color: "#fff",
+      "&:hover": {
+        backgroundColor: "#208c4e",
+      },
+    },
     headerTable: {
       backgroundColor: theme.palette.info.main,
     },
@@ -70,11 +82,18 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.info.main,
     },
     titleLogo: {
+      display: "flex",
+      textAlign: "center",
+      marginLeft: "35%",
       "& img": {
-        width: "5%",
+        width: "10%",
         margin: "0.5%",
       },
     },
+    title: {
+      marginTop: "4%",
+      marginLeft: "1%"
+    }
   })
 );
 
@@ -139,21 +158,29 @@ const User: React.FC = () => {
 
   return (
     <>
-      <Typography
-        variant="h5"
-        display="initial"
-        align="center"
-        className={classes.titleLogo}
-      >
-        {" "}
-        <img src={UserLogo} alt="Usuários" /> Usuários cadastrados
+    <div className={classes.titleLogo}>
+      <img src={UserLogo} alt="Empresas" />
+      <Typography variant="h5" align="center" className={classes.title}>
+        USUÁRIOS
       </Typography>
+    </div>
       
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
           <TextInputSearch placeholder="Buscar por..." />
         </Grid>
         <Grid md={2} className={classes.textCenter}>
+        <Button
+            variant="contained"
+            className={classes.buttonReport}
+            color="secondary"
+            onClick={() => {
+              setDialogData({ id: "", description: "", action: "include" });
+              setOpenDialog(true);
+            }}
+          >
+            Relatório
+          </Button>
           <Button
             variant="contained"
             className={classes.buttonAdd}
