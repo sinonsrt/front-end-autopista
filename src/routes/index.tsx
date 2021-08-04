@@ -9,6 +9,7 @@ import CompanyRegister from '../pages/CompanyRegister';
 import AccessLevel from '../pages/Admin/AccessLevel'
 import WorkedDay from '../pages/Admin/WorkedDay'
 import WorkedTime from '../pages/Admin/WorkedTime'
+import Rating from '../pages/Admin/Rating'
 import Code from '../pages/Admin/Code'
 import Company from '../pages/Admin/Company'
 import AdminDashboard from '../pages/Admin/Dashboard'
@@ -36,6 +37,7 @@ const Routes: React.FC = () => (
         <Route path="/accessLevel" exact component={AccessLevel} title="AccessLevel" isPrivate />
         <Route path="/workedDay" exact component={WorkedDay} title="WorkedDay" isPrivate />
         <Route path="/workedTime" exact component={WorkedTime} title="WorkedTime" isPrivate />
+        <Route path="/rating" exact component={Rating} title="Rating" isPrivate />
         <Route path="/code" exact component={Code} title="Code" isPrivate />
         <Route path="/companys" exact component={Company} title="Company" isPrivate />
         <Route path="/companyConfirm" exact component={CompanyConfirm} title="CompanyConfirm" isPrivate />

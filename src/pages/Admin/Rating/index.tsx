@@ -8,10 +8,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import {Delete, Edit, List, Search, Star } from "@material-ui/icons";
+import { Edit, Delete, List, Search } from "@material-ui/icons";
 import TableFooter from "@material-ui/core/TableFooter";
-import CompanyDialog from "./dialogForm";
 import {
+  Button,
   Grid,
   ListItemIcon,
   ListItemText,
@@ -19,10 +19,10 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import TextInputSearch from "../../components/TextInputSearch";
-import api from "../../services/api";
+import TextInputSearch from "../../../components/TextInputSearch";
+import api from "../../../services/api";
 import { toast } from "react-toastify";
-import CompanyLogo from "../../assets/icons/gasStation.png";
+import RatingLogo from "../../../assets/icons/star.png";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,9 +55,6 @@ const useStyles = makeStyles((theme: Theme) =>
     iconsColor: {
       color: "#212121",
     },
-    img: {
-      width: "20%",
-    },
     spaceIcon: {
       marginRight: theme.spacing(1),
     },
@@ -87,17 +84,17 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const GasStation: React.FC = () => {
+const Rating: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
   const [dialogData, setDialogData] = useState<any>({});
   const [refresh, setRefresh] = useState(0);
   const columns = [
-    { description: "", width: "30%" },
-    { description: "", width: "15%" },
-    { description: "", width: "15%" },
-    { description: "POSTOS DE COMBUSTIVEL", width: "25%" },
-    { description: "", width: "20%" },
+    { description: "Autor", width: "20%" },
+    { description: "Comentário", width: "20%" },
+    { description: "Data de publicação", width: "20%" },
+    { description: "Avaliação", width: "20%" },
+    { description: "Empresa", width: "20%" },
     { description: "Ações", width: "0%" },
   ];
   const [openDialog, setOpenDialog] = useState(false);
@@ -106,7 +103,7 @@ const GasStation: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("companies?order=id&type=asc&company_type=Posto de combustivel&confirmed=true")
+      .get("userCodes?order=id&type=asc")
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, [refresh]);
@@ -122,16 +119,12 @@ const GasStation: React.FC = () => {
     setAnchorEl(null);
   };
 
-  function showTypes(id: string, action: "view") {
+  function handleDelete(id: string) {
     api
-      .get(`companies/${id}`)
-      .then((response) => {
-        setDialogData({
-          ...response.data,
-          services: response.data.services.map((item: any) => item.service_id),
-          action: action,
-        });
-        setOpenDialog(true);
+      .delete(`userCodes/${id}`)
+      .then(() => {
+        toast.success("Registro excluído com sucesso");
+        setRefresh(Math.random());
       })
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
@@ -140,14 +133,15 @@ const GasStation: React.FC = () => {
   return (
     <>
     <div className={classes.titleLogo}>
-      <img src={CompanyLogo} alt="Empresas" />
+      <img src={RatingLogo} alt="Avaliação" />
       <Typography variant="h5" align="center" className={classes.title}>
-        POSTOS DE COMBUSTÍVEL
+        AVALIAÇÕES
       </Typography>
     </div>
+
       <Grid container direction="row" justify="space-around">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por nome..." />
+          <TextInputSearch placeholder="Buscar por código avaliativo..." />
         </Grid>
       </Grid>
 
@@ -168,21 +162,11 @@ const GasStation: React.FC = () => {
           <TableBody>
             {data.map((item) => (
               <TableRow key={item.id}>
-              <TableCell>
-                {" "}
-                <img
-                  src={`http://localhost:3333/company/${item.avatar}`}
-                  alt=""
-                  className={classes.img}
-                />{" "}
-              </TableCell>
-                <TableCell><strong> {item.company_name} <br /> {item.cnpj} </strong></TableCell>
-                <TableCell align="center" >{item.address} - {item.number} <br/> <strong>{item.description} - {item.initials}</strong> </TableCell>
-                <TableCell>{item.phone}</TableCell>
-                <TableCell>
-                  <Star />
-                  {item.stars}/5
-                </TableCell>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.comment}</TableCell>
+                <TableCell>{item.created_at.split("T")[0]}</TableCell>
+                <TableCell>{item.star}</TableCell>
+                <TableCell>{item.company_name}</TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>
                     <List />
@@ -206,13 +190,12 @@ const GasStation: React.FC = () => {
                       horizontal: "center",
                     }}
                   >
-                    <MenuItem
-                      onClick={() => showTypes(selectedItemIndex, "view")}
-                    >
+
+                    <MenuItem onClick={() => handleDelete(selectedItemIndex)}>
                       <ListItemIcon>
-                        <Search className={classes.iconsColor} />
+                        <Delete className={classes.iconsColor} />
                       </ListItemIcon>
-                      <ListItemText primary="Visualizar" />
+                      <ListItemText primary="Excluir" />
                     </MenuItem>
                   </Menu>
                 </TableCell>
@@ -230,15 +213,8 @@ const GasStation: React.FC = () => {
           </TableFooter>
         </Table>
       </TableContainer>
-
-      <CompanyDialog
-        dialogData={dialogData}
-        visible={openDialog}
-        hide={() => setOpenDialog(false)}
-        refresh={() => setRefresh(Math.random())}
-      />
     </>
   );
 };
 
-export default GasStation;
+export default Rating;

@@ -8,7 +8,7 @@ import { MenuListItem } from "../../../components/Menu/menuListItem";
 import logo from "../../../assets/autopista-bbranca-mp.png";
 import { Button, Menu, MenuItem, Toolbar } from "@material-ui/core";
 import { useAuth } from "../../../hooks/Auth";
-import { Add, Person } from "@material-ui/icons";
+import { Add, Person, Star } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +34,7 @@ const Header: React.FC = () => {
   const { signOut } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const { user } = useAuth();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -86,7 +87,7 @@ const Header: React.FC = () => {
               to="/code"
               style={{ textDecoration: "none", color: "inherit" }}
             >
-              <MenuListItem>Códigos Bônus</MenuListItem>
+              <MenuListItem>Códigos Avaliativos</MenuListItem>
             </Link>
             <Link
               to="/workedDay"
@@ -117,12 +118,24 @@ const Header: React.FC = () => {
             </Link>
           </MenuList>
 
-          <Button className={classes.new} color="primary" href="/companyConfirm">
+          <Button
+            color="secondary"
+            href="/Rating"
+          >
+            <Star />
+            AVALIAÇÕES
+          </Button>
+
+          <Button
+            className={classes.new}
+            color="primary"
+            href="/companyConfirm"
+          >
             <Add />
             NOVAS EMPRESAS
           </Button>
 
-          <MenuList heading="Seja bem-vindo" className={classes.logout}>
+          <MenuList heading={user.name} className={classes.logout}>
             <Link
               to="/userRole"
               style={{ textDecoration: "none", color: "blue" }}
@@ -141,7 +154,7 @@ const Header: React.FC = () => {
             >
               <MenuListItem>
                 <ExitToAppIcon />
-                 Sair
+                Sair
               </MenuListItem>
             </Link>
           </MenuList>

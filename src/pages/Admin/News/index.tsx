@@ -154,7 +154,7 @@ const News: React.FC = () => {
 
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por..." />
+          <TextInputSearch placeholder="Buscar por título..." />
         </Grid>
         <Grid md={2} className={classes.textCenter}>
           <Button
