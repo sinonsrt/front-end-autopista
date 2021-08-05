@@ -18,6 +18,7 @@ import { useAuth } from "../../../hooks/Auth";
 import { Add, Person, Star } from "@material-ui/icons";
 import UserRoleDialog from "../../UserRole/dialogForm";
 import CompanyRoleDialog from "../../CompanyRole/dialogForm";
+import RatingRoleDialog from "../../RatingRole/dialogForm";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
 
@@ -65,10 +66,11 @@ const Header: React.FC = () => {
     setAnchorEl(null);
   };
 
-  function showTypes(id: string, action: "view") {
-    /* api
+  function showTypes(id: string, action: "view") {/* 
+    api
       .get(`users/${user.id}`)
       .then((response) => {
+        console.log(response.data)
         setDialogData({
           ...response.data,
           services: response.data.services.map((item: any) => item.service_id),
@@ -195,7 +197,7 @@ const Header: React.FC = () => {
         ;
       </div>
 
-      <CompanyRoleDialog
+      <RatingRoleDialog
         dialogData={dialogData}
         visible={openDialog}
         hide={() => setOpenDialog(false)}

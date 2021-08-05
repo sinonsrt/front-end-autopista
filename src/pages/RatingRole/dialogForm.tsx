@@ -1,28 +1,32 @@
-import React, { useEffect, useState } from "react";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
+/* eslint-disable jsx-a11y/iframe-has-title */
+/* eslint-disable jsx-a11y/alt-text */
+import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
-import { Edit, Delete, List, Search } from "@material-ui/icons";
-import TableFooter from "@material-ui/core/TableFooter";
 import {
   Button,
   Grid,
+  IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableFooter,
+  TableHead,
+  TableRow,
+  Typography,
 } from "@material-ui/core";
+import Dialog, { DialogProps } from "@material-ui/core/Dialog";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import TextInputSearch from "../../../components/TextInputSearch";
-import api from "../../../services/api";
+import api from "../../services/api";
+import { useAuth } from "../../hooks/Auth";
+import { Star, List, Search, Delete } from "@material-ui/icons";
 import { toast } from "react-toastify";
-import RatingLogo from "../../../assets/icons/star.png";
+import TextInputSearch from "../../components/TextInputSearch";
+import RatingLogo from "../../assets/icons/star.png";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -81,10 +85,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Rating: React.FC = () => {
-  const classes = useStyles();
-  const [data, setData] = useState<any[]>([]);
-  const [refresh, setRefresh] = useState(0);
+interface Props {
+  dialogData: any;
+  refresh: any;
+  visible: boolean;
+  hide: any;
+}
+
+const RatingRoleDialog: React.FC<Props> = ({
+  dialogData,
+  refresh,
+  visible,
+  hide,
+}) => {
   const columns = [
     { description: "Autor", width: "20%" },
     { description: "Cupôm Avaliativo", width: "15%" },
@@ -94,15 +107,23 @@ const Rating: React.FC = () => {
     { description: "Empresa", width: "15%" },
     { description: "Ações", width: "0%" },
   ];
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const classes = useStyles();
+  const [data, setData] = useState<any[]>([]);
   const [selectedItemIndex, setSelectedItemIndex] = useState("");
+  const [apiRefresh, apiSetRefresh] = useState(0);
 
-  useEffect(() => {
-    api
-      .get("userCodes?order=id&type=asc")
-      .then((response) => setData(response.data))
-      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  const [services, setServices] = useState<any[]>([]);
+
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [maxWidth, setMaxWidth] = React.useState<DialogProps["maxWidth"]>("md");
+
+  const { user } = useAuth();
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -111,23 +132,37 @@ const Rating: React.FC = () => {
     setAnchorEl(event.currentTarget);
     setSelectedItemIndex(id);
   };
-  const handleClose = () => {
-    setAnchorEl(null);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setServices({ ...services, [event.target.name]: event.target.checked });
   };
+  
+  useEffect(() => {
+    api
+      .get("userCodesAll?order=id&type=asc")
+      .then((response) => setData(response.data))
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+  }, [refresh]);
 
   function handleDelete(id: string) {
     api
       .delete(`userCodes/${id}`)
       .then(() => {
         toast.success("Registro excluído com sucesso");
-        setRefresh(Math.random());
+        apiSetRefresh(Math.random());
       })
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
   }
 
   return (
-    <>
+    <Dialog
+      open={visible}
+      onClose={handleClose}
+      fullWidth={fullWidth}
+      maxWidth={maxWidth}
+      aria-labelledby="max-width-dialog-title"
+    >
       <div className={classes.titleLogo}>
         <img src={RatingLogo} alt="Avaliação" />
         <Typography variant="h5" align="center" className={classes.title}>
@@ -138,26 +173,6 @@ const Rating: React.FC = () => {
       <Grid container direction="row" justify="space-around">
         <Grid md={10}>
           <TextInputSearch placeholder="Buscar por código avaliativo..." />
-        </Grid>
-
-        <Grid md={1}>
-          <Button
-            variant="contained"
-            className={classes.buttonReport}
-            color="secondary"
-            onClick={() => {
-              api
-                .get(`ratingReports`)
-                .then((response) => {
-                  window.open(`${process.env.REACT_APP_API_URL}/${response.data}`);
-                })
-                .catch((error) =>
-                  toast.error("Nenhum registro encontrado com esse filtro ")
-                );
-            }}
-          >
-            Relatório
-          </Button>
         </Grid>
       </Grid>
 
@@ -229,8 +244,8 @@ const Rating: React.FC = () => {
           </TableFooter>
         </Table>
       </TableContainer>
-    </>
+    </Dialog>
   );
 };
 
-export default Rating;
+export default RatingRoleDialog;

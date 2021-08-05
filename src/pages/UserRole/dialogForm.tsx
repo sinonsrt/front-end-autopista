@@ -100,41 +100,6 @@ const UserRoleDialog: React.FC<Props> = ({
     setAnchorEl(null);
   };
 
-  /*  useEffect(() => {
-    api
-      .get("types")
-      .then((response) => setTypes(response.data))
-      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, []);
-
-  useEffect(() => {
-    api
-      .get("cities?page=1&limit=10000&order=description&type=asc")
-      .then((response) => setCity(response.data.data))
-      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, []);
-
-  useEffect(() => {
-    api
-      .get("workedDays")
-      .then((response) => setWorkedDays(response.data))
-      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, []);
-
-  useEffect(() => {
-    api
-      .get("workedTimes")
-      .then((response) => setWorkedTimes(response.data))
-      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, []);
-
-  useEffect(() => {
-    api
-      .get("services")
-      .then((response) => setServices(response.data))
-      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, []); */
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setServices({ ...services, [event.target.name]: event.target.checked });
   };
