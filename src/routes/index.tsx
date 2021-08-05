@@ -20,7 +20,6 @@ import User from '../pages/Admin/User'
 import Dashboard from '../pages/Dashboard';
 import GasStation from '../pages/GasStation';
 import ServiceProvider from '../pages/ServiceProvider';
-import UserRole from '../pages/UserRole';
 import AboutUs from '../pages/AboutUs';
 import CompanyConfirm from '../pages/Admin/CompanyConfirm';
 
@@ -31,7 +30,6 @@ const Routes: React.FC = () => (
         <Route path="/companyRegister" exact component={CompanyRegister} title="CompanyRegister" />
 
         <Route path="/aboutUs" exact component={AboutUs} title="AboutUs" isPrivate />
-        <Route path="/userRole" exact component={UserRole} title="UserRole" isPrivate />
         <Route path="/serviceProvider" exact component={ServiceProvider} title="ServiceProvider" isPrivate />
         <Route path="/gasStation" exact component={GasStation} title="GasStation" isPrivate />
         <Route path="/accessLevel" exact component={AccessLevel} title="AccessLevel" isPrivate />
