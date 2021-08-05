@@ -7,6 +7,8 @@ interface User {
   clinic_id: string;
   name: string;
   email: string;
+  avatar: string;
+  access_level: string;
 }
 
 interface AuthState {
