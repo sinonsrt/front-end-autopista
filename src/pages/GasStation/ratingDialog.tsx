@@ -14,10 +14,6 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import api from "../../services/api";
 import { toast } from "react-toastify";
-import Select from "../../components/Select";
-import AsyncSelect from "../../components/AsyncSelect";
-import CheckBox from "../../components/CheckBox";
-import defaultImage from "../../../assets/default_image.png";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,6 +46,9 @@ const useStyles = makeStyles((theme: Theme) =>
     formControlLabel: {
       marginTop: theme.spacing(1),
     },
+    title: {
+      margin: "5pt"
+    }
   })
 );
 
@@ -104,21 +103,39 @@ const PasswordDialog: React.FC<Props> = ({
             formData.append(key, values[key] === null ? "" : values[key])
           );
           api
-            .post("resetPassword", formData)
+            .post("userCodes", formData)
             .then((response) => {
               hide();
               toast.success(response.data);
             })
-            .catch((error) => toast.error("Erro ao realizar recuperação senha"));
+            .catch((error) => {
+              toast.error('Cupôm avaliativo inválido ou expirado!')
+            });
         }}
       >
         {({ values, setFieldValue }) => (
           <Form className={classes.form}>
-            <Typography variant="h5">RECUPERAÇÃO DE SENHA</Typography>
+            <Typography variant="h5" align="center" className={classes.title}>AVALIAR EMPRESA</Typography>
 
-            <DialogContent>
-              <TextInput name="email" label="E-mail" required />
-            </DialogContent>
+            <Grid container>
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <TextInput name="code" label="Cupôm Avaliativo" required />
+                </DialogContent>
+              </Grid>
+
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <TextInput name="star" label="Avaliação" required />
+                </DialogContent>
+              </Grid>
+
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <TextInput name="comment" label="Comentário" required />
+                </DialogContent>
+              </Grid>
+            </Grid>
 
             <DialogActions>
               <Button

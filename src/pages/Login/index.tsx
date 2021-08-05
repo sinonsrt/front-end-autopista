@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Paper, Typography, Grid } from "@material-ui/core";
+import { Button, Paper, Typography, Grid, MenuItem } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import TextInput from "../../components/TextInput";
 import ReplyAllIcon from "@material-ui/icons/ReplyAll";
@@ -67,8 +67,8 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: "18px",
     },
     register: {
-      marginTop: "15%"
-    }
+      marginTop: "15%",
+    },
   })
 );
 
@@ -76,9 +76,20 @@ const Login: React.FC = () => {
   const classes = useStyles();
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogData, setDialogData] = useState<any>({});
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [selectedItemIndex, setSelectedItemIndex] = useState("");
   const [refresh, setRefresh] = useState(0);
   const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  function showTypes(id: string, action: "view") {
+    setOpenDialog(true);
+  }
+
   return (
     <>
       <div className={classes.container}>
@@ -105,7 +116,7 @@ const Login: React.FC = () => {
               <Form>
                 <Paper>
                   <Typography variant="h5" align="center">
-                 SEJA BEM-VINDO!
+                    SEJA BEM-VINDO!
                   </Typography>
                   <Grid>
                     <TextInput
@@ -129,15 +140,19 @@ const Login: React.FC = () => {
                     </Button>
                   </Grid>
                 </Paper>
-                <a href="/" className={classes.aLosePassword}>
-                  <Typography align="center" variant="button">
-                    <strong> Esqueci minha senha </strong>
-                  </Typography>
+                <a className={classes.aLosePassword}>
+                  <Button variant="text" color="secondary" onClick={() => showTypes(selectedItemIndex, "view")}>
+                  <strong> Esqueci minha senha </strong>
+                  </Button>
                 </a>
               </Form>
             )}
           </Formik>
-          <Typography align="center" variant="button" className={classes.register}>
+          <Typography
+            align="center"
+            variant="button"
+            className={classes.register}
+          >
             <strong> Realize seu cadastro! </strong>
           </Typography>
           <div>
