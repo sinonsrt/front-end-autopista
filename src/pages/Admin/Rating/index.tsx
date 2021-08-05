@@ -148,8 +148,7 @@ const Rating: React.FC = () => {
               api
                 .get(`ratingReports`)
                 .then((response) => {
-                  console.log(process.env.REACT_APP_API_URL);
-                  window.open(`http://25.99.194.144:3333/${response.data}`);
+                  window.open(`${process.env.REACT_APP_API_URL}/${response.data}`);
                 })
                 .catch((error) =>
                   toast.error("Nenhum registro encontrado com esse filtro ")
