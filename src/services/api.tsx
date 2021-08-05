@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3333"
+  baseURL: process.env.REACT_APP_API_URL
 });
 
 api.interceptors.response.use(
@@ -13,7 +13,7 @@ api.interceptors.response.use(
       localStorage.removeItem("@ms1cte:token");
       localStorage.removeItem("@ms1cte:users");
       localStorage.removeItem("@ms1cte:environment");
-      window.location.replace("");
+      // window.location.replace("");
     }
     return Promise.reject(error);
   }

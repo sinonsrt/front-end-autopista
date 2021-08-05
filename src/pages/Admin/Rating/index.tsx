@@ -34,12 +34,9 @@ const useStyles = makeStyles((theme: Theme) =>
     searchGrid: {
       display: "flex",
     },
-    buttonAdd: {
-      margin: theme.spacing(1.4),
-      paddingTop: theme.spacing(0.5),
-      paddingLeft: "28px",
-      paddingRight: "28px",
-      backgroundColor: theme.palette.success.main,
+    buttonReport: {
+      margin: theme.spacing(1),
+      backgroundColor: theme.palette.primary.main,
       boxShadow: "none",
       color: "#fff",
       "&:hover": {
@@ -79,15 +76,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       marginTop: "4%",
-      marginLeft: "1%"
-    }
+      marginLeft: "1%",
+    },
   })
 );
 
 const Rating: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
-  const [dialogData, setDialogData] = useState<any>({});
   const [refresh, setRefresh] = useState(0);
   const columns = [
     { description: "Autor", width: "20%" },
@@ -97,7 +93,6 @@ const Rating: React.FC = () => {
     { description: "Empresa", width: "20%" },
     { description: "Ações", width: "0%" },
   ];
-  const [openDialog, setOpenDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItemIndex, setSelectedItemIndex] = useState("");
 
@@ -132,16 +127,36 @@ const Rating: React.FC = () => {
 
   return (
     <>
-    <div className={classes.titleLogo}>
-      <img src={RatingLogo} alt="Avaliação" />
-      <Typography variant="h5" align="center" className={classes.title}>
-        AVALIAÇÕES
-      </Typography>
-    </div>
+      <div className={classes.titleLogo}>
+        <img src={RatingLogo} alt="Avaliação" />
+        <Typography variant="h5" align="center" className={classes.title}>
+          AVALIAÇÕES
+        </Typography>
+      </div>
 
       <Grid container direction="row" justify="space-around">
         <Grid md={10}>
           <TextInputSearch placeholder="Buscar por código avaliativo..." />
+        </Grid>
+
+        <Grid md={1}>
+          <Button
+            variant="contained"
+            className={classes.buttonReport}
+            color="secondary"
+            onClick={() => {
+              api
+                .get(`ratingReports`)
+                .then((response) => {
+                  window.open(`${process.env.REACT_APP_API_URL}/${response.data}`);
+                })
+                .catch((error) =>
+                  toast.error("Nenhum registro encontrado com esse filtro ")
+                );
+            }}
+          >
+            Relatório
+          </Button>
         </Grid>
       </Grid>
 
@@ -190,7 +205,6 @@ const Rating: React.FC = () => {
                       horizontal: "center",
                     }}
                   >
-
                     <MenuItem onClick={() => handleDelete(selectedItemIndex)}>
                       <ListItemIcon>
                         <Delete className={classes.iconsColor} />

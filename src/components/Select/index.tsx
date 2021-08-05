@@ -4,7 +4,7 @@ import { TextField, TextFieldProps } from "@material-ui/core";
 import { useField, useFormikContext } from "formik";
 
 interface OptItens {
-  id: string;
+  id: string | number | boolean;
   text: string;
 }
 
@@ -33,6 +33,7 @@ const Select: React.FC<Props> = ({ name, label, options, ...otherProps }) => {
 
   return (
     <Autocomplete
+      disableClearable
       options={options}
       defaultValue={options.find((item) => item.id === field.value)}
       getOptionLabel={(option) => option.text}

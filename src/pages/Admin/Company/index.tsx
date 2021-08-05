@@ -11,6 +11,7 @@ import Paper from "@material-ui/core/Paper";
 import { Edit, Delete, List, Search } from "@material-ui/icons";
 import TableFooter from "@material-ui/core/TableFooter";
 import CompanyDialog from "./dialogForm";
+import ReportDialog from "./report";
 import {
   Button,
   Grid,
@@ -36,10 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
     },
     buttonAdd: {
-      margin: theme.spacing(1.4),
-      paddingTop: theme.spacing(0.5),
-      paddingLeft: "28px",
-      paddingRight: "28px",
+      margin: theme.spacing(1),
       backgroundColor: theme.palette.success.main,
       boxShadow: "none",
       color: "#fff",
@@ -48,10 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     buttonReport: {
-      margin: theme.spacing(1.4),
-      paddingTop: theme.spacing(0.5),
-      paddingLeft: "28px",
-      paddingRight: "28px",
+      margin: theme.spacing(1),
       backgroundColor: theme.palette.primary.main,
       boxShadow: "none",
       color: "#fff",
@@ -92,8 +87,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       marginTop: "4%",
-      marginLeft: "1%"
-    }
+      marginLeft: "1%",
+    },
   })
 );
 
@@ -111,6 +106,7 @@ const Company: React.FC = () => {
     { description: "Ações", width: "0%" },
   ];
   const [openDialog, setOpenDialog] = useState(false);
+  const [openReport, setOpenReport] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItemIndex, setSelectedItemIndex] = useState("");
 
@@ -166,29 +162,30 @@ const Company: React.FC = () => {
 
   return (
     <>
-    <div className={classes.titleLogo}>
-      <img src={CompanyLogo} alt="Empresas" />
-      <Typography variant="h5" align="center" className={classes.title}>
-        EMPRESAS
-      </Typography>
-    </div>
+      <div className={classes.titleLogo}>
+        <img src={CompanyLogo} alt="Empresas" />
+        <Typography variant="h5" align="center" className={classes.title}>
+          EMPRESAS
+        </Typography>
+      </div>
 
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por razão social..." />
+          <TextInputSearch placeholder="Buscar por nome..." />
         </Grid>
-        <Grid md={2} className={classes.textCenter}>
+        <Grid md={1}>
           <Button
             variant="contained"
             className={classes.buttonReport}
             color="secondary"
             onClick={() => {
-              setDialogData({ id: "", description: "", action: "include" });
-              setOpenDialog(true);
+              setOpenReport(true);
             }}
           >
             Relatório
           </Button>
+        </Grid>
+        <Grid md={1}>
           <Button
             variant="contained"
             className={classes.buttonAdd}
@@ -303,6 +300,8 @@ const Company: React.FC = () => {
         hide={() => setOpenDialog(false)}
         refresh={() => setRefresh(Math.random())}
       />
+
+      <ReportDialog visible={openReport} hide={() => setOpenReport(false)} />
     </>
   );
 };
