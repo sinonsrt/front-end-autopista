@@ -20,7 +20,7 @@ const App: React.FC = () => {
       },
       info: {
         main: "#eceff1",
-      },
+      }
     },
     props: {
       MuiFormControl: {
