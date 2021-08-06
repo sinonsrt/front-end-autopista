@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyContent: "center",
       width: "100%",
-      maxWidth: "700px",
+      maxWidth: "1000px",
       "& a": {
         textAlign: "center",
       },
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme: Theme) =>
     a: {
       color: "#595959",
       display: "block",
-      marginTop: "15%",
+      marginTop: "10%",
       textDecoration: "none",
       fontSize: "18px",
     },
@@ -81,6 +81,7 @@ const CompanyRegister: React.FC = () => {
   const [workedDays, setWorkedDays] = useState<any[]>([]);
   const [workedTimes, setWorkedTimes] = useState<any[]>([]);
   const [city, setCity] = useState<any[]>([]);
+  const [type, setTypes] = useState<any[]>([]);
   const [image, setImage] = useState<any>();
 
   useEffect(() => {
@@ -89,7 +90,7 @@ const CompanyRegister: React.FC = () => {
       .then((response) => setCity(response.data.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, []);
-/* 
+
   useEffect(() => {
     api
       .get("workedDays")
@@ -104,12 +105,19 @@ const CompanyRegister: React.FC = () => {
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     api
       .get("services")
       .then((response) => setServices(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, []); */
+  }, []);
+
+  useEffect(() => {
+    api
+      .get("types")
+      .then((response) => setTypes(response.data))
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+  }, []);
 
   return (
     <div className={classes.container}>
@@ -120,9 +128,10 @@ const CompanyRegister: React.FC = () => {
           onSubmit={(values: any) => {
             const formData = new FormData();
             Object.keys(values).forEach((key) => {
+              console.log(key);
               formData.append(key, values[key]);
             });
-            api.post("companies", formData);
+            api.post("companyRegister", formData);
           }}
         >
           {({ values, setFieldValue }) => (
@@ -149,25 +158,33 @@ const CompanyRegister: React.FC = () => {
                       className={classes.textField}
                     />
                   </Grid>
+
                   <Grid xs={6} sm={6} md={6}>
                     <TextInput
-                      name="email"
+                      name="cnpj"
                       required
-                      label="E-mail"
+                      label="CNPJ"
                       className={classes.textField}
                     />
                   </Grid>
 
                   <Grid xs={6} sm={6} md={6}>
-                    <TextInput
-                      name="phone"
+                    <Select
+                      name="type_id"
+                      label="Tipo de Empresa"
                       required
-                      label="Telefone"
-                      className={classes.textField}
+                      options={type.map((item) => ({
+                        id: item.id,
+                        text: item.description,
+                      }))}
                     />
                   </Grid>
 
-                  <Grid xs={6} sm={6} md={8}>
+                  <Grid xs={6} sm={6} md={12}>
+                    <hr />
+                  </Grid>
+
+                  <Grid xs={6} sm={6} md={4}>
                     <TextInput
                       name="district"
                       required
@@ -185,15 +202,6 @@ const CompanyRegister: React.FC = () => {
                     />
                   </Grid>
 
-                  <Grid xs={6} sm={6} md={8}>
-                    <TextInput
-                      name="address"
-                      required
-                      label="Endereço"
-                      className={classes.textField}
-                    />
-                  </Grid>
-
                   <Grid xs={6} sm={6} md={4}>
                     <TextInput
                       name="number"
@@ -203,15 +211,85 @@ const CompanyRegister: React.FC = () => {
                     />
                   </Grid>
 
-                  <Grid xs={6} sm={6} md={12}>
+                  <Grid xs={6} sm={6} md={6}>
+                    <TextInput
+                      name="address"
+                      required
+                      label="Endereço"
+                      className={classes.textField}
+                    />
+                  </Grid>
+
+                  <Grid xs={6} sm={6} md={6}>
                     <AsyncSelect
-                      name="async"
+                      name="city_id"
                       label="Cidade"
                       required
                       options={city.map((item) => ({
                         id: item.id,
                         text: item.description + " - " + item.state[0].initials,
                       }))}
+                      className={classes.textField}
+                    />
+                  </Grid>
+
+                  <Grid xs={6} sm={6} md={12}>
+                    <hr />
+                  </Grid>
+
+                  <Grid xs={6} sm={6} md={12}>
+                    <MultipleSelect
+                      name="services"
+                      label="Serviços"
+                      options={services.map((item) => ({
+                        id: item.id,
+                        text: item.description,
+                      }))}
+                    />
+                  </Grid>
+
+                  <Grid xs={6} sm={6} md={6}>
+                    <Select
+                      name="worked_day_id"
+                      label="Dias de funcionamento"
+                      required
+                      options={workedDays.map((item) => ({
+                        id: item.id,
+                        text: item.description,
+                      }))}
+                    />
+                  </Grid>
+
+                  <Grid xs={6} sm={6} md={6}>
+                    <Select
+                      name="worked_time_id"
+                      label="Horário de funcionamento"
+                      required
+                      options={workedTimes.map((item) => ({
+                        id: item.id,
+                        text: item.description,
+                      }))}
+                    />
+                  </Grid>
+
+                  <Grid xs={6} sm={6} md={12}>
+                    <hr />
+                  </Grid>
+
+                  <Grid xs={6} sm={6} md={6}>
+                    <TextInput
+                      name="email"
+                      required
+                      label="E-mail"
+                      className={classes.textField}
+                    />
+                  </Grid>
+
+                  <Grid xs={6} sm={6} md={6}>
+                    <TextInput
+                      name="phone"
+                      required
+                      label="Telefone"
                       className={classes.textField}
                     />
                   </Grid>
@@ -232,41 +310,6 @@ const CompanyRegister: React.FC = () => {
                       label="Confirme sua senha"
                       className={classes.textField}
                     />
-                  </Grid>
-
-                  <Grid xs={6} sm={6} md={12}>
-                    <MultipleSelect
-                      name="services"
-                      label="Serviços"
-                      options={services.map((item) => ({
-                        id: item.id,
-                        text: item.description,
-                      }))}
-                    />
-                  </Grid>
-
-                  <Grid xs={6} sm={6} md={6}>
-                      <Select
-                        name="worked_day_id"
-                        label="Dias de funcionamento"
-                        required
-                        options={workedDays.map((item) => ({
-                          id: item.id,
-                          text: item.description,
-                        }))}
-                      />
-                  </Grid>
-
-                  <Grid xs={6} sm={6} md={6}>
-                      <Select
-                        name="worked_time_id"
-                        label="Horário de funcionamento"
-                        required
-                        options={workedTimes.map((item) => ({
-                          id: item.id,
-                          text: item.description,
-                        }))}
-                      />
                   </Grid>
 
                   <Button
