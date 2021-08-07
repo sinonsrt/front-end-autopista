@@ -24,8 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Footer: React.FC = () => {
   const classes = useStyles();
-  const { user } = useAuth();
-  const [modalVisible, setModalVisible] = useState(false);
   return (
     <>
       <footer className="main-footer d-flex pt-footer">
