@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
 import Header from "./Header";
+import HeaderAdmin from "./HeaderAdmin";
 import Footer from "./Footer";
 import { useAuth } from "../../hooks/Auth";
 
@@ -24,7 +25,7 @@ const Main: React.FC = ({ children }) => {
 
   return user ? (
     <div className={classes.root}>
-      <Header/>
+      {user.access_level === 1 ? <HeaderAdmin /> : <Header />}
       <main className={classes.content}>{children}</main>
       <Footer />
     </div>

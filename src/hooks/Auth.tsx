@@ -4,11 +4,10 @@ import api from "../services/api";
 
 interface User {
   id: string;
-  clinic_id: string;
   name: string;
   email: string;
   avatar: string;
-  access_level: string;
+  access_level: number;
 }
 
 interface AuthState {

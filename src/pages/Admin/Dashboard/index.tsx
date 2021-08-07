@@ -17,14 +17,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     box: {
       display: "flex",
-      marginTop: "5%",
+      marginTop: "2%",
       justifyContent: "center",
     },
     card: {
       marginRight: "1%",
     },
     title: {
-      fontSize: "450%",
+      fontSize: "300%",
       margin: "0",
     },
     logoTitle: {

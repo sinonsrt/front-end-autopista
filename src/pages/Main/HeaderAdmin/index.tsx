@@ -13,10 +13,9 @@ import {
   Menu,
   MenuItem,
   Toolbar,
-  Typography,
 } from "@material-ui/core";
 import { useAuth } from "../../../hooks/Auth";
-import { Add, LocalConvenienceStore, Person, Star } from "@material-ui/icons";
+import { Add, Person, Star } from "@material-ui/icons";
 import UserRoleDialog from "../../UserRole/dialogForm";
 import CompanyRoleDialog from "../../CompanyRole/dialogForm";
 import RatingRoleDialog from "../../RatingRole/dialogForm";
@@ -34,7 +33,6 @@ const useStyles = makeStyles((theme: Theme) =>
     new: {
       position: "absolute",
       right: 150,
-      color: "red",
     },
     logout: {
       position: "absolute",
@@ -49,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Header: React.FC = () => {
+const HeaderAdmin: React.FC = () => {
   const classes = useStyles();
   const { signOut } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -68,8 +66,7 @@ const Header: React.FC = () => {
     setAnchorEl(null);
   };
 
-  function showTypes(id: string, action: "view") {
-    /* 
+  function showTypes(id: string, action: "view") {/* 
     api
       .get(`users/${user.id}`)
       .then((response) => {
@@ -94,32 +91,85 @@ const Header: React.FC = () => {
             <NavLink
               exact
               activeClassName="is-active"
-              to={ user.access_level === 1 ? "/Dashboard" : "/main"}
+              to="/Dashboard"
               className="mr-4"
             >
               <img src={logo} alt="logo" className={classes.logo} />
             </NavLink>
             <div />
+            <MenuList heading="Configurações">
+              <Link
+                to="/accessLevel"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <MenuListItem>Nível de Acesso</MenuListItem>
+              </Link>
+              <Link
+                to="/types"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <MenuListItem>Tipos</MenuListItem>
+              </Link>
+              <Link
+                to="/services"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <MenuListItem>Serviços</MenuListItem>
+              </Link>
+              <hr />
+              <Link
+                to="/news"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <MenuListItem>Notícias</MenuListItem>
+              </Link>
+              <Link
+                to="/code"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <MenuListItem>Códigos Avaliativos</MenuListItem>
+              </Link>
+              <Link
+                to="/workedDay"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <MenuListItem>Dias de funcionamento</MenuListItem>
+              </Link>
+              <Link
+                to="/workedTime"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <MenuListItem>Horários de funcionamento</MenuListItem>
+              </Link>
+            </MenuList>
 
-            <Button href="/main" variant="text">
-              Menu Principal
-            </Button>
+            <MenuList heading="Cadastros">
+              <Link
+                to="/users"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <MenuListItem>Usuários</MenuListItem>
+              </Link>
+              <Link
+                to="/companys"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <MenuListItem>Empresas</MenuListItem>
+              </Link>
+            </MenuList>
 
-            <Button href="/gasStation" variant="text">
-              Postos de Combustível
-            </Button>
-
-            <Button href="/aboutUs" variant="text">
-              Sobre Nós
+            <Button color="secondary" href="/Rating">
+              <Star />
+              AVALIAÇÕES
             </Button>
 
             <Button
               className={classes.new}
-              href="/serviceProvider"
-              variant="contained"
+              color="primary"
+              href="/companyConfirm"
             >
-              <LocalConvenienceStore />
-              Serviços 24hrs
+              <Add />
+              NOVAS EMPRESAS
             </Button>
 
             <MenuList heading={user.name} className={classes.logout}>
@@ -157,4 +207,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default HeaderAdmin;
