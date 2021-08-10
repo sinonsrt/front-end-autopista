@@ -22,6 +22,7 @@ import CompanyRoleDialog from "../../CompanyRole/dialogForm";
 import RatingRoleDialog from "../../RatingRole/dialogForm";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
+import Profile from "../../Profile";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,38 +54,14 @@ const Header: React.FC = () => {
   const classes = useStyles();
   const { signOut } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const [refresh, setRefresh] = useState(0);
   const { user } = useAuth();
   const [dialogData, setDialogData] = useState<any>({});
   const [selectedItemIndex, setSelectedItemIndex] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  function showTypes(id: string, action: "view") {
-    /* 
-    api
-      .get(`users/${user.id}`)
-      .then((response) => {
-        console.log(response.data)
-        setDialogData({
-          ...response.data,
-          services: response.data.services.map((item: any) => item.service_id),
-          action: action,
-        });
-        setOpenDialog(true);
-      })
-      .catch((error) => toast.error("Não foi possível efetuar a consulta!")); */
-    setOpenDialog(true);
-    handleClose();
-  }
 
   return (
     <>
@@ -94,7 +71,7 @@ const Header: React.FC = () => {
             <NavLink
               exact
               activeClassName="is-active"
-              to={ user.access_level === 1 ? "/Dashboard" : "/main"}
+              to={user.access_level === 1 ? "/Dashboard" : "/main"}
               className="mr-4"
             >
               <img src={logo} alt="logo" className={classes.logo} />
@@ -123,7 +100,7 @@ const Header: React.FC = () => {
             </Button>
 
             <MenuList heading={user.name} className={classes.logout}>
-              <MenuItem onClick={() => showTypes(selectedItemIndex, "view")}>
+              <MenuItem onClick={() => setOpenDialog(true)}>
                 <ListItemIcon className={classes.role}>
                   {" "}
                   <MenuListItem>
@@ -147,12 +124,7 @@ const Header: React.FC = () => {
         ;
       </div>
 
-      <RatingRoleDialog
-        dialogData={dialogData}
-        visible={openDialog}
-        hide={() => setOpenDialog(false)}
-        refresh={() => setRefresh(Math.random())}
-      />
+      {openDialog && <Profile hide={() => setOpenDialog(false)} />}
     </>
   );
 };

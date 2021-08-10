@@ -68,18 +68,10 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-  dialogData: any;
-  refresh: any;
-  visible: boolean;
   hide: any;
 }
 
-const CompanyRoleDialog: React.FC<Props> = ({
-  dialogData,
-  refresh,
-  visible,
-  hide,
-}) => {
+const CompanyRoleDialog: React.FC<Props> = ({ hide }) => {
   const classes = useStyles();
   const [types, setTypes] = useState<any[]>([]);
   const [city, setCity] = useState<any[]>([]);
@@ -100,7 +92,7 @@ const CompanyRoleDialog: React.FC<Props> = ({
     setAnchorEl(null);
   };
 
-  /*  useEffect(() => {
+  useEffect(() => {
     api
       .get("types")
       .then((response) => setTypes(response.data))
@@ -133,146 +125,122 @@ const CompanyRoleDialog: React.FC<Props> = ({
       .get("services")
       .then((response) => setServices(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, []); */
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setServices({ ...services, [event.target.name]: event.target.checked });
-  };
+  }, []);
 
   return (
-    <Dialog
-      open={visible}
-      onClose={handleClose}
-      fullWidth={fullWidth}
-      maxWidth={maxWidth}
-      aria-labelledby="max-width-dialog-title"
+    <Formik
+      initialValues={user.company[0]}
+      onSubmit={(values) => {
+        values.avatar = image;
+        const formData = new FormData();
+        Object.keys(values).forEach((key) =>
+          formData.append(key, values[key] === null ? "" : values[key])
+        );
+
+        api
+          .put(`companies/${values.id}`, values)
+          .then(() => {
+            setImageLocalPath(undefined);
+            setImage(undefined);
+            hide();
+            toast.success("Usuário atualizado com sucesso");
+          })
+          .catch((error) => toast.error("Não foi possível efetuar a ação!"));
+      }}
     >
-      <Formik
-        initialValues={dialogData}
-        onSubmit={(values) => {
-          values.avatar = image;
-          const formData = new FormData();
-          Object.keys(values).forEach((key) =>
-            formData.append(key, values[key] === null ? "" : values[key])
-          );
-          switch (values.action) {
-            case "view":
-              api
-                .get(`users/${values.id}`)
-                .then(() => {
-                  setImageLocalPath(undefined);
-                  setImage(undefined);
-                  refresh();
-                  hide();
-                  toast.success("Usuário encontrado com sucesso");
-                })
-                .catch((error) =>
-                  toast.error("Não foi possível efetuar a consulta!")
-                );
-              break;
-            default:
-              toast.error("Erro ao realizar operação");
-              break;
-          }
-        }}
-      >
-        {({ values, setFieldValue }) => (
-          <Form className={classes.form}>
-            <Typography variant="h5" align="center" className={classes.head}>
-              <strong>{user.name}</strong>
-            </Typography>
-            
-            <Grid container spacing={3}>
-              <Grid xs={12} sm={12} md={12}>
-                <DialogContent>
-                  <Select
-                    name="type_id"
-                    required
-                    label="Tipo de Empresa"
-                    options={types.map((item) => ({
-                      id: item.id,
-                      text: item.description,
-                    }))}
-                  />
-                </DialogContent>
-              </Grid>
+      {({ values, setFieldValue }) => (
+        <Form className={classes.form}>
+          <Typography variant="h5" align="center" className={classes.head}>
+            <strong>{user.name}</strong>
+          </Typography>
 
-              <Grid xs={6} sm={6} md={6}>
-                <DialogContent>
-                  <TextInput name="cnpj" label="CNPJ" required />
-                </DialogContent>
-              </Grid>
+          <Grid container spacing={3}>
+            <Grid xs={12} sm={12} md={12}>
+              <DialogContent>
+                <Select
+                  name="type_id"
+                  required
+                  label="Tipo de Empresa"
+                  options={types.map((item) => ({
+                    id: item.id,
+                    text: item.description,
+                  }))}
+                />
+              </DialogContent>
+            </Grid>
 
-              <Grid xs={6} sm={6} md={6}>
-                <DialogContent>
-                  <TextInput name="ie" label="Inscrição Estadual" required />
-                </DialogContent>
-              </Grid>
+            <Grid xs={6} sm={6} md={6}>
+              <DialogContent>
+                <TextInput name="cnpj" label="CNPJ" required />
+              </DialogContent>
+            </Grid>
 
-              <Grid xs={12} sm={12} md={12}>
-                <DialogContent>
-                  <TextInput
-                    name="corporate_name"
-                    label="Razão Social"
-                    required
-                  />
-                </DialogContent>
-              </Grid>
+            <Grid xs={6} sm={6} md={6}>
+              <DialogContent>
+                <TextInput name="ie" label="Inscrição Estadual" required />
+              </DialogContent>
+            </Grid>
 
-              <Grid xs={12} sm={12} md={12}>
-                <DialogContent>
-                  <TextInput
-                    name="company_name"
-                    label="Nome Fantasia"
-                    required
-                  />
-                </DialogContent>
-              </Grid>
+            <Grid xs={12} sm={12} md={12}>
+              <DialogContent>
+                <TextInput
+                  name="corporate_name"
+                  label="Razão Social"
+                  required
+                />
+              </DialogContent>
+            </Grid>
 
-              <Grid xs={12} sm={12} md={12}>
-                <Typography variant="h5" align="center">
-                  Endereço
-                </Typography>
-              </Grid>
+            <Grid xs={12} sm={12} md={12}>
+              <DialogContent>
+                <TextInput name="company_name" label="Nome Fantasia" required />
+              </DialogContent>
+            </Grid>
 
-              <Grid xs={6} sm={6} md={6}>
-                <DialogContent>
-                  <TextInput name="cep" label="CEP" required />
-                </DialogContent>
-              </Grid>
+            <Grid xs={12} sm={12} md={12}>
+              <Typography variant="h5" align="center">
+                Endereço
+              </Typography>
+            </Grid>
 
-              <Grid xs={6} sm={6} md={6}>
-                <DialogContent>
-                  <TextInput name="district" label="Bairro" required />
-                </DialogContent>
-              </Grid>
+            <Grid xs={6} sm={6} md={6}>
+              <DialogContent>
+                <TextInput name="cep" label="CEP" required />
+              </DialogContent>
+            </Grid>
 
-              <Grid xs={12} sm={12} md={12}>
-                <DialogContent>
-                  <TextInput name="address" label="Endereço" required />
-                </DialogContent>
-              </Grid>
+            <Grid xs={6} sm={6} md={6}>
+              <DialogContent>
+                <TextInput name="district" label="Bairro" required />
+              </DialogContent>
+            </Grid>
 
-              <Grid xs={4} sm={4} md={4}>
-                <DialogContent>
-                  <TextInput name="number" label="Numero" required />
-                </DialogContent>
-              </Grid>
+            <Grid xs={12} sm={12} md={12}>
+              <DialogContent>
+                <TextInput name="address" label="Endereço" required />
+              </DialogContent>
+            </Grid>
 
-              <Grid xs={8} sm={8} md={8}>
-                <DialogContent>
-                  <AsyncSelect
-                    name="city_id"
-                    label="Cidade"
-                    options={city.map((item) => ({
-                      id: item.id,
-                      text: `${item.description} - ${item.state[0].initials}`,
-                    }))}
-                  />
-                </DialogContent>
-              </Grid>
+            <Grid xs={4} sm={4} md={4}>
+              <DialogContent>
+                <TextInput name="number" label="Numero" required />
+              </DialogContent>
+            </Grid>
 
-              {dialogData.action === "view" && (
+            <Grid xs={8} sm={8} md={8}>
+              <DialogContent>
+                <AsyncSelect
+                  name="city_id"
+                  label="Cidade"
+                  options={city.map((item) => ({
+                    id: item.id,
+                    text: `${item.description} - ${item.state[0].initials}`,
+                  }))}
+                />
+              </DialogContent>
+            </Grid>
+
+            {/* {dialogData.action === "view" && (
                 <Grid xs={6} sm={6} md={12}>
                   <DialogContent>
                     <iframe
@@ -291,122 +259,119 @@ const CompanyRoleDialog: React.FC<Props> = ({
                     ></iframe>
                   </DialogContent>
                 </Grid>
-              )}
-
-              <Grid xs={12} sm={12} md={12}>
-                <Typography variant="h5" align="center">
-                  Contato
-                </Typography>
-              </Grid>
-
-              <Grid xs={6} sm={6} md={6}>
-                <DialogContent>
-                  <TextInput name="phone" label="Telefone" required />
-                </DialogContent>
-              </Grid>
-
-              <Grid xs={6} sm={6} md={6}>
-                <DialogContent>
-                  <TextInput name="email" label="E-mail" required />
-                </DialogContent>
-              </Grid>
-
-              <Grid xs={6} sm={6} md={6}>
-                <DialogContent>
-                  <Select
-                    name="worked_day_id"
-                    label="Dias de funcionamento"
-                    required
-                    options={workedDays.map((item) => ({
-                      id: item.id,
-                      text: item.description,
-                    }))}
-                  />
-                </DialogContent>
-              </Grid>
-
-              <Grid xs={6} sm={6} md={6}>
-                <DialogContent>
-                  <Select
-                    name="worked_time_id"
-                    label="Horário de funcionamento"
-                    required
-                    options={workedTimes.map((item) => ({
-                      id: item.id,
-                      text: item.description,
-                    }))}
-                  />
-                </DialogContent>
-              </Grid>
-            </Grid>
-
-            <Grid xs={6} sm={6} md={6}>
-              <img
-                src={
-                  values.avatar
-                    ? `http://25.99.194.144:3333/company/${values.avatar}`
-                    : imageLocalPath || defaultImage
-                }
-                style={{ width: 80, marginRight: 8 }}
-              />
-
-              <input
-                hidden={dialogData.action === "view"}
-                type="file"
-                required
-                onChange={(event) => {
-                  if (event.target.files && event.target.files[0]) {
-                    setFieldValue("avatar", null);
-                    setImage(event.target.files[0]);
-                    setImageLocalPath(
-                      URL.createObjectURL(event.target.files[0])
-                    );
-                  }
-                }}
-              />
-            </Grid>
+              )} */}
 
             <Grid xs={12} sm={12} md={12}>
               <Typography variant="h5" align="center">
-                Serviços
+                Contato
               </Typography>
-
-              <Grid xs={6} sm={6} md={12}>
-                <DialogContent>
-                  <MultipleSelect
-                    name="services"
-                    label="Serviços"
-                    options={services.map((item) => ({
-                      id: item.id,
-                      text: item.description,
-                    }))}
-                  />
-                </DialogContent>
-              </Grid>
             </Grid>
 
-            <DialogActions>
-              <Button
-                onClick={() => {
-                  hide();
-                  setImageLocalPath(undefined);
-                  setImage(undefined);
-                }}
-                color="primary"
-              >
-                Cancelar
-              </Button>
+            <Grid xs={6} sm={6} md={6}>
+              <DialogContent>
+                <TextInput name="phone" label="Telefone" required />
+              </DialogContent>
+            </Grid>
 
-              {values.action !== "view" && (
-                <Button type="submit" className={classes.buttonAdd}>
-                  Gravar
-                </Button>
-              )}
-            </DialogActions>
-          </Form>
-        )}
-      </Formik>
-    </Dialog>
+            <Grid xs={6} sm={6} md={6}>
+              <DialogContent>
+                <TextInput name="email" label="E-mail" required />
+              </DialogContent>
+            </Grid>
+
+            <Grid xs={6} sm={6} md={6}>
+              <DialogContent>
+                <Select
+                  name="worked_day_id"
+                  label="Dias de funcionamento"
+                  required
+                  options={workedDays.map((item) => ({
+                    id: item.id,
+                    text: item.description,
+                  }))}
+                />
+              </DialogContent>
+            </Grid>
+
+            <Grid xs={6} sm={6} md={6}>
+              <DialogContent>
+                <Select
+                  name="worked_time_id"
+                  label="Horário de funcionamento"
+                  required
+                  options={workedTimes.map((item) => ({
+                    id: item.id,
+                    text: item.description,
+                  }))}
+                />
+              </DialogContent>
+            </Grid>
+          </Grid>
+
+          <Grid xs={6} sm={6} md={6}>
+            <img
+              src={
+                values.avatar
+                  ? `http://25.99.194.144:3333/company/${values.avatar}`
+                  : imageLocalPath || defaultImage
+              }
+              style={{ width: 80, marginRight: 8 }}
+            />
+
+            <input
+              // hidden={dialogData.action === "view"}
+              type="file"
+              required
+              onChange={(event) => {
+                if (event.target.files && event.target.files[0]) {
+                  setFieldValue("avatar", null);
+                  setImage(event.target.files[0]);
+                  setImageLocalPath(URL.createObjectURL(event.target.files[0]));
+                }
+              }}
+            />
+          </Grid>
+
+          <Grid xs={12} sm={12} md={12}>
+            <Typography variant="h5" align="center">
+              Serviços
+            </Typography>
+
+            <Grid xs={6} sm={6} md={12}>
+              <DialogContent>
+                <MultipleSelect
+                  name="services"
+                  label="Serviços"
+                  options={services.map((item) => ({
+                    id: item.id,
+                    text: item.description,
+                  }))}
+                />
+              </DialogContent>
+            </Grid>
+          </Grid>
+
+          <DialogActions>
+            <Button
+              onClick={() => {
+                hide();
+                setImageLocalPath(undefined);
+                setImage(undefined);
+              }}
+              color="primary"
+            >
+              Cancelar
+            </Button>
+
+            {values.action !== "view" && (
+              <Button type="submit" className={classes.buttonAdd}>
+                Gravar
+              </Button>
+            )}
+          </DialogActions>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
