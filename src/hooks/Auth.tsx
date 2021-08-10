@@ -7,6 +7,9 @@ interface User {
   name: string;
   email: string;
   avatar: string;
+  phone: string;
+  city: any;
+  company: any;
   access_level: number;
 }
 

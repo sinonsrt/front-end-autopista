@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import {
   Button,
+  DialogActions,
   Grid,
   IconButton,
   ListItemIcon,
@@ -86,18 +87,10 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-  dialogData: any;
-  refresh: any;
-  visible: boolean;
   hide: any;
 }
 
-const RatingRoleDialog: React.FC<Props> = ({
-  dialogData,
-  refresh,
-  visible,
-  hide,
-}) => {
+const RatingRoleDialog: React.FC<Props> = ({ hide }) => {
   const columns = [
     { description: "Autor", width: "20%" },
     { description: "Cupôm Avaliativo", width: "15%" },
@@ -112,8 +105,6 @@ const RatingRoleDialog: React.FC<Props> = ({
   const [data, setData] = useState<any[]>([]);
   const [selectedItemIndex, setSelectedItemIndex] = useState("");
   const [apiRefresh, apiSetRefresh] = useState(0);
-
-  const [services, setServices] = useState<any[]>([]);
 
   const [fullWidth, setFullWidth] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -133,16 +124,12 @@ const RatingRoleDialog: React.FC<Props> = ({
     setSelectedItemIndex(id);
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setServices({ ...services, [event.target.name]: event.target.checked });
-  };
-  
   useEffect(() => {
     api
       .get("userCodesAll?order=id&type=asc")
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  }, [apiRefresh]);
 
   function handleDelete(id: string) {
     api
@@ -156,13 +143,7 @@ const RatingRoleDialog: React.FC<Props> = ({
   }
 
   return (
-    <Dialog
-      open={visible}
-      onClose={handleClose}
-      fullWidth={fullWidth}
-      maxWidth={maxWidth}
-      aria-labelledby="max-width-dialog-title"
-    >
+    <>
       <div className={classes.titleLogo}>
         <img src={RatingLogo} alt="Avaliação" />
         <Typography variant="h5" align="center" className={classes.title}>
@@ -233,18 +214,20 @@ const RatingRoleDialog: React.FC<Props> = ({
               </TableRow>
             ))}
           </TableBody>
-
-          <TableFooter>
-            {/* <Pagination
-              count={5}
-              size="small"
-              color="primary"
-              className={classes.pagination}
-            /> */}
-          </TableFooter>
         </Table>
       </TableContainer>
-    </Dialog>
+
+      <DialogActions>
+        <Button
+          onClick={() => {
+            hide();
+          }}
+          color="primary"
+        >
+          Retornar
+        </Button>
+      </DialogActions>
+    </>
   );
 };
 

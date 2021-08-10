@@ -155,7 +155,7 @@ const CompanyDialog: React.FC<Props> = ({
                 })
                 .catch((error) => toast.error("Erro ao cadastrar empresa"));
               break;
-            case "view":
+            case "edit":
               api
                 .put(`companies/${values.id}`, formData)
                 .then(() => {

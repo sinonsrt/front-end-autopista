@@ -21,6 +21,7 @@ import CompanyRoleDialog from "../../CompanyRole/dialogForm";
 import RatingRoleDialog from "../../RatingRole/dialogForm";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
+import Profile from "../../Profile";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,7 +67,8 @@ const HeaderAdmin: React.FC = () => {
     setAnchorEl(null);
   };
 
-  function showTypes(id: string, action: "view") {/* 
+  function showTypes(id: string, action: "view") {
+    /* 
     api
       .get(`users/${user.id}`)
       .then((response) => {
@@ -173,7 +175,7 @@ const HeaderAdmin: React.FC = () => {
             </Button>
 
             <MenuList heading={user.name} className={classes.logout}>
-              <MenuItem onClick={() => showTypes(selectedItemIndex, "view")}>
+              <MenuItem onClick={() => setOpenDialog(true)}>
                 <ListItemIcon className={classes.role}>
                   {" "}
                   <MenuListItem>
@@ -197,12 +199,7 @@ const HeaderAdmin: React.FC = () => {
         ;
       </div>
 
-      <RatingRoleDialog
-        dialogData={dialogData}
-        visible={openDialog}
-        hide={() => setOpenDialog(false)}
-        refresh={() => setRefresh(Math.random())}
-      />
+      {openDialog && <Profile hide={() => setOpenDialog(false)} />}
     </>
   );
 };
