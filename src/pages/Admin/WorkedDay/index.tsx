@@ -104,7 +104,7 @@ const WorkedDay: React.FC = () => {
       .get(`workedDays?search=${search}`)
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [search]);
+  }, [search, refresh]);
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
