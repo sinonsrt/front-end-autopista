@@ -65,12 +65,20 @@ const CompanyDialog: React.FC<Props> = ({ visible, hide }) => {
   const classes = useStyles();
 
   const [fullWidth, setFullWidth] = React.useState(true);
+  const [city, setCity] = useState<any[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps["maxWidth"]>("xs");
 
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    api
+      .get("cities?page=1&limit=10000&order=description&type=asc")
+      .then((response) => setCity(response.data.data))
+      .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
+  }, []);
 
   return (
     <Dialog
@@ -81,10 +89,10 @@ const CompanyDialog: React.FC<Props> = ({ visible, hide }) => {
       aria-labelledby="max-width-dialog-title"
     >
       <Formik
-        initialValues={{ confirmed: true }}
+        initialValues={{ confirmed: true, city_id: '' }}
         onSubmit={(values) => {
           api
-            .get(`userReports?confirmed=${values.confirmed}`)
+            .get(`userReports?confirmed=${values.confirmed}&city_id=${values.city_id}`)
             .then((response) => {
               window.open(`${process.env.REACT_APP_API_URL}/${response.data}`);
             })
@@ -113,6 +121,17 @@ const CompanyDialog: React.FC<Props> = ({ visible, hide }) => {
                 </DialogContent>
               </Grid>
             </Grid>
+
+            <DialogContent>
+              <AsyncSelect
+                name="city_id"
+                label="Cidade"
+                options={city.map((item) => ({
+                  id: item.id,
+                  text: `${item.description} - ${item.state[0].initials}`,
+                }))}
+              />
+            </DialogContent>
 
             <DialogActions>
               <Button
