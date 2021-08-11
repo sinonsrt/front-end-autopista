@@ -25,6 +25,7 @@ interface SignInCredentials {
 
 interface AuthContextData {
   user: User;
+  updateUser: Function;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
 }
@@ -72,8 +73,21 @@ export const AuthProvider: React.FC = ({ children }) => {
     setData({} as AuthState);
   }, [history]);
 
+  const updateUser = useCallback(
+    (userData) => {
+      setData({ token: data.token, user: { ...data.user, ...userData } });
+      localStorage.setItem(
+        "@autopista:user",
+        JSON.stringify({ ...data.user, ...userData })
+      );
+    },
+    [data]
+  );
+
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ user: data.user, signIn, signOut, updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

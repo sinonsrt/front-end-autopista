@@ -80,7 +80,7 @@ const UserRoleDialog: React.FC<Props> = ({ hide }) => {
   const [image, setImage] = useState<any>();
   const [imageLocalPath, setImageLocalPath] = useState<any>();
 
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
 
   useEffect(() => {
     api
@@ -113,6 +113,7 @@ const UserRoleDialog: React.FC<Props> = ({ hide }) => {
           api
             .put(`users/${user.id}`, values)
             .then(() => {
+              updateUser(values);
               setImageLocalPath(undefined);
               setImage(undefined);
               hide();
