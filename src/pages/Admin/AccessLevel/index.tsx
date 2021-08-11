@@ -112,7 +112,7 @@ const AccessLevel: React.FC = () => {
       .get(`accesslevel?search=${search}`)
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível realizar a consulta!"));
-  }, [search]);
+  }, [search, refresh]);
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
