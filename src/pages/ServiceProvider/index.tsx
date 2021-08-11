@@ -56,7 +56,8 @@ const useStyles = makeStyles((theme: Theme) =>
       color: "#212121",
     },
     img: {
-      width: "20%",
+      width: "50%",
+      borderRadius: "15pt",
     },
     spaceIcon: {
       marginRight: theme.spacing(1),
@@ -82,8 +83,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       marginTop: "4%",
-      marginLeft: "1%"
-    }
+      marginLeft: "1%",
+    },
   })
 );
 
@@ -91,11 +92,12 @@ const ServiceProvider: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
   const [dialogData, setDialogData] = useState<any>({});
+  const [search, setSearch] = useState("");
   const [refresh, setRefresh] = useState(0);
   const columns = [
     { description: "", width: "30%" },
     { description: "", width: "15%" },
-    { description: "", width: "15%" },
+    { description: "", width: "25%" },
     { description: "", width: "25%" },
     { description: "", width: "20%" },
     { description: "Ações", width: "0%" },
@@ -106,12 +108,10 @@ const ServiceProvider: React.FC = () => {
 
   useEffect(() => {
     api
-      .get(
-        "companies?order=id&type=asc&company_type=Prestador de serviço&confirmed=true"
-      )
+      .get(`companies?order=id&type=asc&company_type=Prestador de serviço&confirmed=true&search=${search}`)
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  }, [search, refresh]);
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -149,7 +149,11 @@ const ServiceProvider: React.FC = () => {
       </div>
       <Grid container direction="row" justify="space-around">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por nome..." />
+          <TextInputSearch
+            placeholder="Buscar por nome..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value || "")}
+          />
         </Grid>
       </Grid>
 
@@ -178,7 +182,7 @@ const ServiceProvider: React.FC = () => {
                     className={classes.img}
                   />{" "}
                 </TableCell>
-                <TableCell>
+                <TableCell align="center">
                   <strong>
                     {" "}
                     {item.company_name} <br /> {item.cnpj}{" "}
@@ -187,13 +191,17 @@ const ServiceProvider: React.FC = () => {
                 <TableCell align="center">
                   {item.address} - {item.number} <br />{" "}
                   <strong>
-                    {item.description} - {item.initials}
+                    {item.district} <br /> {item.description} - {item.initials}
                   </strong>{" "}
                 </TableCell>
-                <TableCell>{item.phone}</TableCell>
-                <TableCell>
-                  <Star />
-                  {item.stars}/5
+                <TableCell align="center">
+                  {item.phone} <br /> {item.email}
+                </TableCell>
+                <TableCell align="center">
+                  <Typography variant="h5" display="inline">
+                    <Star color="secondary" />
+                    <strong>{item.stars}/5</strong>
+                  </Typography>
                 </TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>

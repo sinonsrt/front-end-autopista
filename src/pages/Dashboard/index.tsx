@@ -1,55 +1,65 @@
 import React, { useEffect, useState } from "react";
-import {
-  Grid,
-  Typography,
-  TableContainer,
-  Paper,
-  Table,
-  TableHead,
-  TableCell,
-  TableBody,
-  TableRow,
-  Theme,
-  IconButton,
-  List,
-} from "@material-ui/core";
-import TextInputSearch from "../../components/TextInputSearch";
+import { Typography, Theme } from "@material-ui/core";
+import logo from "../../assets/autopista-bbranca-mp.png";
 import api from "../../services/api";
 import { toast } from "react-toastify";
 import { createStyles, makeStyles } from "@material-ui/styles";
+import InfoCard from "../../components/InfoCard";
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     img: {
-      width: "10%",
+      width: "35%",
     },
     title: {
-      margin: "3%",
+      fontSize: "300%",
+      margin: "0",
     },
     iconsColor: {
       color: "#212121",
+    },
+    container: {
+      marginTop: "5%",
+      textAlign: "center",
+    },
+    box: {
+      display: "flex",
+      marginTop: "2%",
+      justifyContent: "center",
+    },
+    card: {
+      marginRight: "1%",
+    },
+    logoTitle: {
+      marginTop: "-5%",
+      letterSpacing: "3px",
     },
   })
 );
 
 const Dashboard: React.FC = () => {
   const classes = useStyles();
+  const matches = useMediaQuery('(min-width:600px)');
   const [data, setData] = useState<any[]>([]);
   const [refresh, setRefresh] = useState(0);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const columns = [
-    { description: "", width: "40%" },
-    { description: "POSTOS DE COMBUSTÍVEL", width: "40%" },
-    { description: "", width: "40%" },
+    { description: "", width: "30%" },
+    { description: "", width: "15%" },
+    { description: "", width: "15%" },
+    { description: "POSTOS DE COMBUSTIVEL", width: "25%" },
+    { description: "", width: "20%" },
   ];
 
   useEffect(() => {
     api
-      .get("companies?order=id&type=asc&page=1&limit=20&company_type=Posto de combustivel")
+      .get(
+        "companies?order=id&type=asc&page=1&limit=20&company_type=Posto de combustivel&confirmed=true&page=1&limit=5&star=3"
+      )
       .then((response) => setData(response.data))
       .catch((error) => {
-        console.log(error)
-        //toast.error("Não foi possivel efetuar a consulta!")
+        toast.error("Não foi possivel efetuar a consulta!");
       });
   }, [refresh]);
 
@@ -57,54 +67,33 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      <Typography
-        variant="h1"
-        display="initial"
-        align="center"
-        className={classes.title}
-      >
-        Seja bem vindo!
-      </Typography>
-      <Grid container direction="row" justify="space-around">
-        <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por..." />
-        </Grid>
-      </Grid>
-
-      <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
-          <TableHead>
-            {columns.map((column) => (
-              <TableCell style={{ width: column.width }}>
-                {column.description}
-              </TableCell>
-            ))}
-          </TableHead>
-          <TableBody>
-            {data.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>
-                  {" "}
-                  <img
-                    src={`http://localhost:3333/company/${item.avatar}`}
-                    alt=""
-                    className={classes.img}
-                  />{" "}
-                </TableCell>
-                <TableCell>
-                  {item.company_name} <br /> {item.cnpj}{" "}
-                </TableCell>
-                <TableCell>{item.stars}</TableCell>
-                <TableCell align="center">
-                  <IconButton>
-                    <List />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <div className={classes.container}>
+        <div className={classes.logoTitle}>
+          <img src={logo} alt="AutoPosto" />
+          <Typography gutterBottom variant="h5" component="h2">
+            SEJA BEM-VINDO!
+          </Typography>
+        </div>
+        <Typography gutterBottom variant="h2" component="h2">
+          EMPRESAS MAIS BEM AVALIADAS
+        </Typography>
+        <div className={classes.box}>
+          {data.map((item) => (
+            <div className={classes.card}>
+              <InfoCard
+                image={
+                  item.avatar
+                  ? `http://localhost:3333/company/${item.avatar}`
+                  : `http://localhost:3333/base/base.jpg`
+                }
+                title={item.company_name}
+                text={item.description + " - " + item.initials}
+                imageTitle={item.company_name}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </>
   );
 };

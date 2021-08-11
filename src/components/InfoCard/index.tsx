@@ -46,7 +46,7 @@ const InfoCard: React.FC<Props> = ({
           <Typography gutterBottom variant="h5" component="h2">
             {title}
           </Typography>
-          <Typography variant="h3" color="textSecondary" component="p">
+          <Typography variant="h4" color="textSecondary" component="p">
             {text}
           </Typography>
         </CardContent>
@@ -58,7 +58,7 @@ const InfoCard: React.FC<Props> = ({
           align="center"
           onClick={firstButtonAction}
         >
-          CADASTRADOS
+          
         </Typography>
       </b>
     </Card>

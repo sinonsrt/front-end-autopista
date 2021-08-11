@@ -8,7 +8,14 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { Edit, Delete, List, Search } from "@material-ui/icons";
+import {
+  Edit,
+  Delete,
+  List,
+  Search,
+  Check,
+  HighlightOff,
+} from "@material-ui/icons";
 import TableFooter from "@material-ui/core/TableFooter";
 import UserDialog from "./dialogForm";
 import ReportDialog from "./report";
@@ -25,6 +32,8 @@ import TextInputSearch from "../../../components/TextInputSearch";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
 import UserLogo from "../../../assets/icons/user-logo.svg";
+import Select from "../../../components/Select";
+import { id } from "date-fns/locale";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -97,11 +106,13 @@ const User: React.FC = () => {
   const [data, setData] = useState<any[]>([]);
   const [dialogData, setDialogData] = useState<any>({});
   const [refresh, setRefresh] = useState(0);
+  const [search, setSearch] = useState("");
   const columns = [
     { description: "Nome", width: "40%" },
-    { description: "E-mail", width: "45%" },
-    { description: "Confimado", width: "5%" },
+    { description: "E-mail", width: "30%" },
+    { description: "Cidade", width: "20%" },
     { description: "Data de cadastro", width: "10%" },
+    { description: "Confirmado", width: "10%" },
     { description: "Ações", width: "0%" },
   ];
   const [openDialog, setOpenDialog] = useState(false);
@@ -111,10 +122,10 @@ const User: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("users")
+      .get(`users?search=${search}`)
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  }, [search, refresh]);
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -151,7 +162,6 @@ const User: React.FC = () => {
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
   }
-
   return (
     <>
       <div className={classes.titleLogo}>
@@ -163,7 +173,11 @@ const User: React.FC = () => {
 
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por nome..." />
+          <TextInputSearch
+            placeholder="Buscar por nome..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value || "")}
+          />
         </Grid>
         <Grid md={1}>
           <Button
@@ -211,8 +225,27 @@ const User: React.FC = () => {
               <TableRow key={item.id}>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.email}</TableCell>
-                <TableCell>{item.confirmed}</TableCell>
-                <TableCell>{item.created_at.split("T")[0]}</TableCell>
+                <TableCell>
+                  {item.city[0].description +
+                    "-" +
+                    item.city[0].state[0].initials}
+                </TableCell>
+                <TableCell>
+                  {item.created_at
+                    ? item.created_at
+                        .split("T")[0]
+                        .split("-")
+                        .reverse()
+                        .join("/")
+                    : ""}
+                </TableCell>
+                <TableCell align="center">
+                  {item.confirmed ? (
+                    <Check style={{ color: "green" }} />
+                  ) : (
+                    <HighlightOff style={{ color: "red" }} />
+                  )}
+                </TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>
                     <List />

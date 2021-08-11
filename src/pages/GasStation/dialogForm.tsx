@@ -157,70 +157,61 @@ const GasStationDialog: React.FC<Props> = ({
       >
         <Formik
           initialValues={dialogData}
-          onSubmit={(values) => {
-            values.avatar = image;
-            const formData = new FormData();
-            Object.keys(values).forEach((key) =>
-              formData.append(key, values[key] === null ? "" : values[key])
-            );
-            switch (values.action) {
-              case "include":
-                api
-                  .post("companies", formData)
-                  .then(() => {
-                    refresh();
-                    setImageLocalPath(undefined);
-                    setImage(undefined);
-                    hide();
-                    toast.success("Empresa cadastrado com sucesso");
-                  })
-                  .catch((error) => toast.error("Erro ao cadastrar empresa"));
-                break;
-              case "view":
-                api
-                  .get(`companyConfirm/${values.id}`)
-                  .then(() => {
-                    setImageLocalPath(undefined);
-                    setImage(undefined);
-                    refresh();
-                    hide();
-                    toast.success("Empresa cadastrado com sucesso");
-                  })
-                  .catch((error) =>
-                    toast.error("Não foi possível efetuar a consulta!")
-                  );
-                break;
-              default:
-                toast.error("Erro ao realizar operação");
-                break;
-            }
-          }}
-          validationSchema={Yup.object({
-            /* description: Yup.string().required(
-            "É necessário informar a descrição"
-          ), */
-          })}
+          onSubmit={(values) => {}}
+          validationSchema={Yup.object({})}
         >
           {({ values, setFieldValue }) => (
             <Form className={classes.form}>
               <Paper className={classes.head}>
                 <Typography variant="h5" align="center">
-                  {" "}
-                  POSTO DE COMBUSTÍVEL{" "}
+                  POSTO DE COMBUSTÍVEL
                 </Typography>
               </Paper>
+
+              <div className={classes.divImage}>
+                <Grid xs={6} sm={6} md={6}>
+                  <img
+                    src={
+                      values.avatar
+                        ? `http://25.99.194.144:3333/company/${values.avatar}`
+                        : imageLocalPath || defaultImage
+                    }
+                    className={classes.logo}
+                  />
+                </Grid>
+
+                {dialogData.action === "view" && (
+                  <Grid xs={6} sm={6} md={6}>
+                    <DialogContent>
+                      <iframe
+                        width="380"
+                        height="250"
+                        loading="lazy"
+                        className={classes.map}
+                        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCARVw8BxECC731e9oN2A9-zTV6TbyVqM0&q=${`${dialogData.address
+                          .trim()
+                          .replaceAll(" ", "+")}+${dialogData.number
+                          .toString()
+                          .trim()
+                          .replaceAll(" ", "+")}+${
+                          city.find((item) => item.id === dialogData.city_id)
+                            .description
+                        }`}`}
+                      ></iframe>
+                    </DialogContent>
+                  </Grid>
+                )}
+              </div>
+
               <Grid container spacing={3}>
-                <Grid xs={12} sm={12} md={12}>
-                  <DialogContent>
-                    <Select
-                      name="type_id"
-                      label="Tipo de Empresa"
-                      options={types.map((item) => ({
-                        id: item.id,
-                        text: item.description,
-                      }))}
-                    />
-                  </DialogContent>
+                <Grid xs={6} sm={6} md={12}>
+                  <Typography
+                    variant="h5"
+                    align="center"
+                    style={{ marginTop: "2%" }}
+                  >
+                    {values.company_name}
+                  </Typography>
                 </Grid>
 
                 <Grid xs={6} sm={6} md={6}>
@@ -229,63 +220,43 @@ const GasStationDialog: React.FC<Props> = ({
                   </DialogContent>
                 </Grid>
 
-                <Grid xs={6} sm={6} md={6}>
+                <Grid xs={12} sm={12} md={6}>
                   <DialogContent>
-                    <TextInput name="ie" label="Inscrição Estadual" required />
-                  </DialogContent>
-                </Grid>
-
-                <Grid xs={12} sm={12} md={12}>
-                  <DialogContent>
-                    <TextInput
-                      name="corporate_name"
-                      label="Razão Social"
-                      required
-                    />
-                  </DialogContent>
-                </Grid>
-
-                <Grid xs={12} sm={12} md={12}>
-                  <DialogContent>
-                    <TextInput
-                      name="company_name"
-                      label="Nome Fantasia"
-                      required
-                    />
+                    <TextInput name="company_name" label="EMPRESA" required />
                   </DialogContent>
                 </Grid>
 
                 <Grid xs={12} sm={12} md={12}>
                   <Typography variant="h5" align="center">
-                    Endereço
+                    ENDEREÇO
                   </Typography>
                 </Grid>
 
-                <Grid xs={6} sm={6} md={6}>
-                  <DialogContent>
-                    <TextInput name="cep" label="CEP" required />
-                  </DialogContent>
-                </Grid>
-
-                <Grid xs={6} sm={6} md={6}>
-                  <DialogContent>
-                    <TextInput name="district" label="Bairro" required />
-                  </DialogContent>
-                </Grid>
-
-                <Grid xs={12} sm={12} md={12}>
+                <Grid xs={12} sm={12} md={10}>
                   <DialogContent>
                     <TextInput name="address" label="Endereço" required />
                   </DialogContent>
                 </Grid>
 
-                <Grid xs={4} sm={4} md={4}>
+                <Grid xs={4} sm={4} md={2}>
                   <DialogContent>
                     <TextInput name="number" label="Numero" required />
                   </DialogContent>
                 </Grid>
 
-                <Grid xs={8} sm={8} md={8}>
+                <Grid xs={6} sm={6} md={4}>
+                  <DialogContent>
+                    <TextInput name="cep" label="CEP" required />
+                  </DialogContent>
+                </Grid>
+
+                <Grid xs={6} sm={6} md={4}>
+                  <DialogContent>
+                    <TextInput name="district" label="Bairro" required />
+                  </DialogContent>
+                </Grid>
+
+                <Grid xs={8} sm={8} md={4}>
                   <DialogContent>
                     <AsyncSelect
                       name="city_id"
@@ -300,7 +271,7 @@ const GasStationDialog: React.FC<Props> = ({
 
                 <Grid xs={12} sm={12} md={12}>
                   <Typography variant="h5" align="center">
-                    Contato
+                    CONTATO
                   </Typography>
                 </Grid>
 
@@ -347,7 +318,7 @@ const GasStationDialog: React.FC<Props> = ({
 
               <Grid xs={12} sm={12} md={12}>
                 <Typography variant="h5" align="center">
-                  Serviços
+                  SERVIÇOS OFERECIDOS
                 </Typography>
 
                 <Grid xs={6} sm={6} md={12}>
@@ -364,57 +335,12 @@ const GasStationDialog: React.FC<Props> = ({
                 </Grid>
               </Grid>
 
-              <div className={classes.divImage}>
-                <Grid xs={6} sm={6} md={6}>
-                  <img
-                    src={
-                      values.avatar
-                        ? `http://25.99.194.144:3333/company/${values.avatar}`
-                        : imageLocalPath || defaultImage
-                    }
-                    className={classes.logo}
-                  />
-
-                  <input
-                    hidden={dialogData.action === "view"}
-                    type="file"
-                    onChange={(event) => {
-                      if (event.target.files && event.target.files[0]) {
-                        setFieldValue("avatar", null);
-                        setImage(event.target.files[0]);
-                        setImageLocalPath(
-                          URL.createObjectURL(event.target.files[0])
-                        );
-                      }
-                    }}
-                  />
-                </Grid>
-
-                {dialogData.action === "view" && (
-                  <Grid xs={6} sm={6} md={6}>
-                    <DialogContent>
-                      <iframe
-                        width="380"
-                        height="250"
-                        loading="lazy"
-                        className={classes.map}
-                        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCARVw8BxECC731e9oN2A9-zTV6TbyVqM0&q=${`${dialogData.address
-                          .trim()
-                          .replaceAll(" ", "+")}+${dialogData.number
-                          .toString()
-                          .trim()
-                          .replaceAll(" ", "+")}+${
-                          city.find((item) => item.id === dialogData.city_id)
-                            .description
-                        }`}`}
-                      ></iframe>
-                    </DialogContent>
-                  </Grid>
-                )}
-              </div>
-
               <DialogActions>
-                <Button  onClick={() => showTypes(selectedItemIndex, "view")} variant="contained" color="secondary">
+                <Button
+                  onClick={() => showTypes(selectedItemIndex, "view")}
+                  variant="contained"
+                  color="secondary"
+                >
                   Avaliar Empresa
                 </Button>
                 <Button

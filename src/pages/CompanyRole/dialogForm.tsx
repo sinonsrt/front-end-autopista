@@ -21,6 +21,9 @@ import AsyncSelect from "../../components/AsyncSelect";
 import defaultImage from "../../assets/default_image.png";
 import MultipleSelect from "../../components/MultipleSelect";
 import { useAuth } from "../../hooks/Auth";
+import TextInputPhone from "../../components/TextInputPhone";
+import TextInputCnpj from "../../components/TextInputCnpj";
+import TextInputCep from "../../components/TextInputCep";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
     },
     logo: {
-      width: "150pt",
+      width: "300pt",
       marginLeft: "25pt",
       alignContent: "center",
       borderRadius: "15pt",
@@ -171,7 +174,7 @@ const CompanyRoleDialog: React.FC<Props> = ({ hide }) => {
 
             <Grid xs={6} sm={6} md={6}>
               <DialogContent>
-                <TextInput name="cnpj" label="CNPJ" required />
+                <TextInputCnpj name="cnpj" label="CNPJ" required />
               </DialogContent>
             </Grid>
 
@@ -205,7 +208,7 @@ const CompanyRoleDialog: React.FC<Props> = ({ hide }) => {
 
             <Grid xs={6} sm={6} md={6}>
               <DialogContent>
-                <TextInput name="cep" label="CEP" required />
+                <TextInputCep name="cep" label="CEP" required />
               </DialogContent>
             </Grid>
 
@@ -240,27 +243,6 @@ const CompanyRoleDialog: React.FC<Props> = ({ hide }) => {
               </DialogContent>
             </Grid>
 
-            {/* {dialogData.action === "view" && (
-                <Grid xs={6} sm={6} md={12}>
-                  <DialogContent>
-                    <iframe
-                      width="400"
-                      height="300"
-                      loading="lazy"
-                      src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCARVw8BxECC731e9oN2A9-zTV6TbyVqM0&q=${`${dialogData.address
-                        .trim()
-                        .replaceAll(" ", "+")}+${dialogData.number
-                        .toString()
-                        .trim()
-                        .replaceAll(" ", "+")}+${
-                        city.find((item) => item.id === dialogData.city_id)
-                          .description
-                      }`}`}
-                    ></iframe>
-                  </DialogContent>
-                </Grid>
-              )} */}
-
             <Grid xs={12} sm={12} md={12}>
               <Typography variant="h5" align="center">
                 Contato
@@ -269,7 +251,7 @@ const CompanyRoleDialog: React.FC<Props> = ({ hide }) => {
 
             <Grid xs={6} sm={6} md={6}>
               <DialogContent>
-                <TextInput name="phone" label="Telefone" required />
+                <TextInputPhone name="phone" label="Telefone" required />
               </DialogContent>
             </Grid>
 
@@ -308,30 +290,6 @@ const CompanyRoleDialog: React.FC<Props> = ({ hide }) => {
             </Grid>
           </Grid>
 
-          <Grid xs={6} sm={6} md={6}>
-            <img
-              src={
-                values.avatar
-                  ? `http://25.99.194.144:3333/company/${values.avatar}`
-                  : imageLocalPath || defaultImage
-              }
-              style={{ width: 80, marginRight: 8 }}
-            />
-
-            <input
-              // hidden={dialogData.action === "view"}
-              type="file"
-              required
-              onChange={(event) => {
-                if (event.target.files && event.target.files[0]) {
-                  setFieldValue("avatar", null);
-                  setImage(event.target.files[0]);
-                  setImageLocalPath(URL.createObjectURL(event.target.files[0]));
-                }
-              }}
-            />
-          </Grid>
-
           <Grid xs={12} sm={12} md={12}>
             <Typography variant="h5" align="center">
               Serviços
@@ -350,6 +308,34 @@ const CompanyRoleDialog: React.FC<Props> = ({ hide }) => {
               </DialogContent>
             </Grid>
           </Grid>
+
+          <div className={classes.divImage}>
+            <Grid xs={6} sm={6} md={6}>
+              <img
+                src={
+                  values.avatar
+                    ? `http://25.99.194.144:3333/company/${values.avatar}`
+                    : imageLocalPath || defaultImage
+                }
+                className={classes.logo}
+              />
+
+              <input
+                // hidden={dialogData.action === "view"}
+                type="file"
+                required
+                onChange={(event) => {
+                  if (event.target.files && event.target.files[0]) {
+                    setFieldValue("avatar", null);
+                    setImage(event.target.files[0]);
+                    setImageLocalPath(
+                      URL.createObjectURL(event.target.files[0])
+                    );
+                  }
+                }}
+              />
+            </Grid>
+          </div>
 
           <DialogActions>
             <Button

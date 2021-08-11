@@ -8,7 +8,15 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { Edit, Delete, List, Search } from "@material-ui/icons";
+import {
+  Edit,
+  Delete,
+  List,
+  Search,
+  Check,
+  HighlightOff,
+  Star,
+} from "@material-ui/icons";
 import TableFooter from "@material-ui/core/TableFooter";
 import CompanyDialog from "./dialogForm";
 import ReportDialog from "./report";
@@ -19,12 +27,14 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  useTheme,
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInputSearch from "../../../components/TextInputSearch";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
 import CompanyLogo from "../../../assets/icons/company-logo.svg";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -93,16 +103,23 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Company: React.FC = () => {
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up("sm"));
+
   const classes = useStyles();
   const [data, setData] = useState<any[]>([{ services: [] }]);
   const [dialogData, setDialogData] = useState<any>({});
+  const [search, setSearch] = useState("");
   const [refresh, setRefresh] = useState(0);
   const columns = [
-    { description: "Razão Social", width: "30%" },
-    { description: "CNPJ", width: "15%" },
-    { description: "Tipo", width: "25%" },
-    { description: "Telefone", width: "15%" },
-    { description: "Data de cadastro", width: "20%" },
+    { description: "Razão Social", width: "25%" },
+    { description: "CNPJ", width: "20%" },
+    { description: "Tipo", width: "20%" },
+    { description: "Cidade", width: "20%" },
+    { description: "Telefone", width: "20%" },
+    { description: "Data de cadastro", width: "5%" },
+    { description: "Avaliação", width: "2%" },
+    { description: "Confirmado", width: "2%" },
     { description: "Ações", width: "0%" },
   ];
   const [openDialog, setOpenDialog] = useState(false);
@@ -112,16 +129,12 @@ const Company: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("companies?order=created_at&type=asc&confirmed=true")
+      .get(
+        `companies?order=created_at&type=asc&confirmed=true&search=${search}`
+      )
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-
-    api
-      .get(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyCARVw8BxECC731e9oN2A9-zTV6TbyVqM0`
-      )
-      .then((response) => console.log(response.data));
-  }, [refresh]);
+  }, [search, refresh]);
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -171,7 +184,11 @@ const Company: React.FC = () => {
 
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por nome..." />
+          <TextInputSearch
+            placeholder="Buscar por razão social..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value || "")}
+          />
         </Grid>
         <Grid md={1}>
           <Button
@@ -219,7 +236,10 @@ const Company: React.FC = () => {
               <TableRow key={item.id}>
                 <TableCell>{item.company_name}</TableCell>
                 <TableCell>{item.cnpj}</TableCell>
-                <TableCell>{item.description}</TableCell>
+                <TableCell>{item.type}</TableCell>
+                <TableCell>
+                  {item.description + " - " + item.initials}
+                </TableCell>
                 <TableCell>{item.phone}</TableCell>
                 <TableCell>
                   {item.created_at
@@ -229,6 +249,21 @@ const Company: React.FC = () => {
                         .reverse()
                         .join("/")
                     : ""}
+                </TableCell>
+                <TableCell align="center">
+                  <Typography variant="h5" display="inline">
+                    <Star color="secondary" />
+                    <strong>{item.stars}/5</strong>
+                  </Typography>
+                </TableCell>
+                <TableCell align="center">
+                  <Typography display="block">
+                    {item.confirmed ? (
+                      <Check style={{ color: "green" }} />
+                    ) : (
+                      <HighlightOff style={{ color: "red" }} />
+                    )}
+                  </Typography>
                 </TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>

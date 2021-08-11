@@ -1,17 +1,17 @@
-/* eslint-disable jsx-a11y/iframe-has-title */
 /* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable jsx-a11y/iframe-has-title */
 import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import {
   Button,
   DialogActions,
   DialogContent,
+  DialogTitle,
   Grid,
   Typography,
 } from "@material-ui/core";
 import Dialog, { DialogProps } from "@material-ui/core/Dialog";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import TextInput from "../../components/TextInput";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import api from "../../services/api";
@@ -20,6 +20,13 @@ import Select from "../../components/Select";
 import AsyncSelect from "../../components/AsyncSelect";
 import defaultImage from "../../assets/default_image.png";
 import MultipleSelect from "../../components/MultipleSelect";
+import TextInputPassword from "../../components/TextInputPassword";
+import TextInput from "../../components/TextInput";
+import TextInputPhone from "../../components/TextInputPhone";
+import TextInputCnpj from "../../components/TextInputCnpj";
+import TextInputCep from "../../components/TextInputCep";
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,16 +60,14 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
     },
     logo: {
-      width: "300pt",
+      width: "500pt",
       marginLeft: "25pt",
       alignContent: "center",
       borderRadius: "15pt",
     },
-    map: {
-      float: "inline-start",
-    },
-    divImage: {
-      display: "flex",
+    textField: {
+      width: "97.5%",
+      margin: theme.spacing(1),
     },
   })
 );
@@ -74,14 +79,16 @@ interface Props {
   hide: any;
 }
 
-const ServiceProviderDialog: React.FC<Props> = ({
+const CompanyDialog: React.FC<Props> = ({
   dialogData,
   refresh,
   visible,
   hide,
 }) => {
   const classes = useStyles();
+  const matches = useMediaQuery('(min-width:600px)');
   const [types, setTypes] = useState<any[]>([]);
+  const [openDialog, setOpenDialog] = useState(false);
   const [city, setCity] = useState<any[]>([]);
   const [workedDays, setWorkedDays] = useState<any[]>([]);
   const [workedTimes, setWorkedTimes] = useState<any[]>([]);
@@ -153,145 +160,114 @@ const ServiceProviderDialog: React.FC<Props> = ({
           Object.keys(values).forEach((key) =>
             formData.append(key, values[key] === null ? "" : values[key])
           );
-          switch (values.action) {
-            case "include":
-              api
-                .post("companies", formData)
-                .then(() => {
-                  refresh();
-                  setImageLocalPath(undefined);
-                  setImage(undefined);
-                  hide();
-                  toast.success("Empresa cadastrado com sucesso");
-                })
-                .catch((error) => toast.error("Erro ao cadastrar empresa"));
-              break;
-            case "view":
-              api
-                .get(`companyConfirm/${values.id}`)
-                .then(() => {
-                  setImageLocalPath(undefined);
-                  setImage(undefined);
-                  refresh();
-                  hide();
-                  toast.success("Empresa cadastrado com sucesso");
-                })
-                .catch((error) =>
-                  toast.error("Não foi possível efetuar a consulta!")
-                );
-              break;
-            default:
-              toast.error("Erro ao realizar operação");
-              break;
-          }
+          api
+            .post("companyRegister", formData)
+            .then(() => {
+              refresh();
+              setImageLocalPath(undefined);
+              setImage(undefined);
+              hide();
+              toast.success(
+                "Caso seu cadastro seja aprovado, entraremos em contato em breve! Obrigado!"
+              );
+            })
+            .catch((error) => toast.error("Erro ao realizar cadastro!"));
         }}
         validationSchema={Yup.object({
-          /* description: Yup.string().required(
-            "É necessário informar a descrição"
-          ), */
+          type_id: Yup.string().required("Tipo de empresa obrigatório!"),
+          cnpj: Yup.string()
+            .required("CNPJ é obrigatório!")
+            .min(15, "CNPJ inválido!"),
+          corporate_name: Yup.string().required("Razão social é obrigatório!"),
+          company_name: Yup.string().required("Nome Fantasia é obrigatório!"),
+          cep: Yup.string()
+            .required("CEP é obrigatório!")
+            .min(7, "CEP inválido!"),
+          district: Yup.string().required("Bairro é obrigatório!"),
+          address: Yup.string().required("Endereço é obrigatório!"),
+          number: Yup.string().required("Número é obrigatório!"),
+          city_id: Yup.number().required("Cidade é obrigatório!"),
+          phone: Yup.string()
+            .required("Número de telefone obrigatório!")
+            .min(14, "Número de telefone inválido!"),
+          email: Yup.string()
+            .email("Endereço de e-mail inválido!")
+            .required("O endereço de e-mail é obrigatório!"),
+          worked_day_id: Yup.string().required(
+            "Dias de funcionamento é obrigatório!"
+          ),
+          worked_time_id: Yup.string().required(
+            "Horário de funcionamento é obrigatório!"
+          ),
+          password: Yup.string()
+            .required("A senha é obrigatória!")
+            .min(6, "A senha deve conter no mínimo 6 dígitos!"),
         })}
+        validateOnBlur={false}
+        validateOnChange={true}
+        enableReinitialize={true}
       >
         {({ values, setFieldValue }) => (
           <Form className={classes.form}>
             <Paper className={classes.head}>
-              <Typography variant="h5" align="center">
-                {" "}
-                PRESTADOR DE SERVIÇO{" "}
-              </Typography>
+              <DialogTitle>Venha fazer parte do AutoPista!</DialogTitle>
             </Paper>
             <Grid container spacing={3}>
-              <div className={classes.divImage}>
-                <Grid xs={6} sm={6} md={6}>
-                  <img
-                    src={
-                      values.avatar
-                        ? `http://25.99.194.144:3333/company/${values.avatar}`
-                        : imageLocalPath || defaultImage
-                    }
-                    className={classes.logo}
+              <Grid xs={12} sm={12} md={12}>
+                <DialogContent>
+                  <Select
+                    name="type_id"
+                    required
+                    label="Tipo de Empresa"
+                    options={types.map((item) => ({
+                      id: item.id,
+                      text: item.description,
+                    }))}
                   />
-
-                  <input
-                    hidden={dialogData.action === "view"}
-                    type="file"
-                    onChange={(event) => {
-                      if (event.target.files && event.target.files[0]) {
-                        setFieldValue("avatar", null);
-                        setImage(event.target.files[0]);
-                        setImageLocalPath(
-                          URL.createObjectURL(event.target.files[0])
-                        );
-                      }
-                    }}
-                  />
-                </Grid>
-
-                {dialogData.action === "view" && (
-                  <Grid xs={6} sm={6} md={6}>
-                    <DialogContent>
-                      <iframe
-                        width="380"
-                        height="250"
-                        loading="lazy"
-                        className={classes.map}
-                        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCARVw8BxECC731e9oN2A9-zTV6TbyVqM0&q=${`${dialogData.address
-                          .trim()
-                          .replaceAll(" ", "+")}+${dialogData.number
-                          .toString()
-                          .trim()
-                          .replaceAll(" ", "+")}+${
-                          city.find((item) => item.id === dialogData.city_id)
-                            .description
-                        }`}`}
-                      ></iframe>
-                    </DialogContent>
-                  </Grid>
-                )}
-              </div>
-
-              <Grid xs={6} sm={6} md={12}>
-                <Typography
-                  variant="h5"
-                  align="center"
-                  style={{ marginTop: "2%" }}
-                >
-                  {values.company_name}
-                </Typography>
+                </DialogContent>
               </Grid>
 
               <Grid xs={6} sm={6} md={6}>
                 <DialogContent>
-                  <TextInput name="cnpj" label="CNPJ" required />
+                  <TextInputCnpj name="cnpj" label="CNPJ" required />
+                </DialogContent>
+              </Grid>
+
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <TextInput name="ie" label="Inscrição Estadual" />
+                </DialogContent>
+              </Grid>
+
+              <Grid xs={12} sm={6} md={6}>
+                <DialogContent>
+                  <TextInput
+                    name="corporate_name"
+                    label="Razão Social"
+                    required
+                  />
                 </DialogContent>
               </Grid>
 
               <Grid xs={12} sm={12} md={6}>
                 <DialogContent>
-                  <TextInput name="company_name" label="EMPRESA" required />
+                  <TextInput
+                    name="company_name"
+                    label="Nome Fantasia"
+                    required
+                  />
                 </DialogContent>
               </Grid>
 
               <Grid xs={12} sm={12} md={12}>
                 <Typography variant="h5" align="center">
-                  ENDEREÇO
+                  Endereço
                 </Typography>
-              </Grid>
-
-              <Grid xs={12} sm={12} md={10}>
-                <DialogContent>
-                  <TextInput name="address" label="Endereço" required />
-                </DialogContent>
-              </Grid>
-
-              <Grid xs={4} sm={4} md={2}>
-                <DialogContent>
-                  <TextInput name="number" label="Numero" required />
-                </DialogContent>
               </Grid>
 
               <Grid xs={6} sm={6} md={4}>
                 <DialogContent>
-                  <TextInput name="cep" label="CEP" required />
+                  <TextInputCep name="cep" label="CEP" required />
                 </DialogContent>
               </Grid>
 
@@ -314,15 +290,27 @@ const ServiceProviderDialog: React.FC<Props> = ({
                 </DialogContent>
               </Grid>
 
+              <Grid xs={12} sm={12} md={10}>
+                <DialogContent>
+                  <TextInput name="address" label="Endereço" required />
+                </DialogContent>
+              </Grid>
+
+              <Grid xs={4} sm={4} md={2}>
+                <DialogContent>
+                  <TextInput name="number" label="Numero" required />
+                </DialogContent>
+              </Grid>
+
               <Grid xs={12} sm={12} md={12}>
                 <Typography variant="h5" align="center">
-                  CONTATO
+                  Contato
                 </Typography>
               </Grid>
 
               <Grid xs={6} sm={6} md={6}>
                 <DialogContent>
-                  <TextInput name="phone" label="Telefone" required />
+                  <TextInputPhone name="phone" label="Telefone" required />
                 </DialogContent>
               </Grid>
 
@@ -363,7 +351,7 @@ const ServiceProviderDialog: React.FC<Props> = ({
 
             <Grid xs={12} sm={12} md={12}>
               <Typography variant="h5" align="center">
-                SERVIÇOS OFERECIDOS
+                Serviços
               </Typography>
 
               <Grid xs={6} sm={6} md={12}>
@@ -378,6 +366,47 @@ const ServiceProviderDialog: React.FC<Props> = ({
                   />
                 </DialogContent>
               </Grid>
+            </Grid>
+
+            <Grid xs={12} sm={12} md={12}>
+              <Typography variant="h5" align="center">
+                Segurança
+              </Typography>
+            </Grid>
+
+            <Grid xs={6} sm={6} md={12}>
+              <DialogContent>
+                <TextInputPassword name="password" label="Senha" required />
+              </DialogContent>
+            </Grid>
+
+            <Grid xs={6} sm={6} md={6}>
+              <img
+                src={
+                  values.avatar
+                    ? `http://25.99.194.144:3333/company/${values.avatar}`
+                    : imageLocalPath || defaultImage
+                }
+                style={{ width: 80, marginRight: 8 }}
+                className={classes.logo}
+              />
+
+              <label htmlFor="logo">
+                <input
+                  hidden={dialogData.action === "view"}
+                  type="file"
+                  required
+                  onChange={(event) => {
+                    if (event.target.files && event.target.files[0]) {
+                      setFieldValue("avatar", null);
+                      setImage(event.target.files[0]);
+                      setImageLocalPath(
+                        URL.createObjectURL(event.target.files[0])
+                      );
+                    }
+                  }}
+                />
+              </label>
             </Grid>
 
             <DialogActions>
@@ -405,4 +434,4 @@ const ServiceProviderDialog: React.FC<Props> = ({
   );
 };
 
-export default ServiceProviderDialog;
+export default CompanyDialog;

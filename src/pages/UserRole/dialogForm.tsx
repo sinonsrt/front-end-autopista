@@ -17,6 +17,9 @@ import { toast } from "react-toastify";
 import AsyncSelect from "../../components/AsyncSelect";
 import defaultImage from "../../assets/default_image.png";
 import { useAuth } from "../../hooks/Auth";
+import { SecurityOutlined } from "@material-ui/icons";
+import PasswordDialog from "./PasswordDialog";
+import TextInputPhone from "../../components/TextInputPhone";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -70,6 +73,9 @@ interface Props {
 const UserRoleDialog: React.FC<Props> = ({ hide }) => {
   const classes = useStyles();
   const [city, setCity] = useState<any[]>([]);
+  const [passwordOpenDialog, passwordSetOpenDialog] = useState(false);
+  const [passwordDialogData, passwordSetDialogData] = useState<any>({});
+  const [refresh, setRefresh] = useState(0);
 
   const [image, setImage] = useState<any>();
   const [imageLocalPath, setImageLocalPath] = useState<any>();
@@ -83,118 +89,139 @@ const UserRoleDialog: React.FC<Props> = ({ hide }) => {
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, []);
 
+  function passwordChange(action: "password") {
+    passwordSetOpenDialog(true);
+  }
+
   return (
-    <Formik
-      initialValues={{
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        avatar: user.avatar,
-        city_id: user.city[0].id,
-      }}
-      onSubmit={(values: any) => {
-        values.avatar = image;
-        const formData = new FormData();
-        Object.keys(values).forEach((key) =>
-          formData.append(key, values[key] === null ? "" : values[key])
-        );
+    <>
+      <Formik
+        initialValues={{
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          avatar: user.avatar,
+          city_id: user.city[0].description,
+        }}
+        onSubmit={(values: any) => {
+          values.avatar = image;
+          const formData = new FormData();
+          Object.keys(values).forEach((key) =>
+            formData.append(key, values[key] === null ? "" : values[key])
+          );
 
-        api
-          .put(`users/${values.id}`, values)
-          .then(() => {
-            setImageLocalPath(undefined);
-            setImage(undefined);
-            hide();
-            toast.success("Usuário atualizado com sucesso");
-          })
-          .catch((error) => toast.error("Não foi possível efetuar a ação!"));
-      }}
-    >
-      {({ values, setFieldValue }) => (
-        <Form className={classes.form}>
-          <Typography variant="h5" align="center" className={classes.head}>
-            <strong>{user.name}</strong>
-          </Typography>
-          <Grid container>
-            <Grid xs={12} sm={12} md={6}>
-              <DialogContent>
-                <TextInput name="name" label="Nome" required />
-              </DialogContent>
+          api
+            .put(`users/${user.id}`, values)
+            .then(() => {
+              setImageLocalPath(undefined);
+              setImage(undefined);
+              hide();
+              toast.success("Usuário atualizado com sucesso");
+            })
+            .catch((error) => toast.error("Não foi possível efetuar a ação!"));
+        }}
+      >
+        {({ values, setFieldValue }) => (
+          <Form className={classes.form}>
+            <Typography variant="h5" align="center" className={classes.head}>
+              <strong>{user.name}</strong>
+            </Typography>
+            <Grid container>
+              <Grid xs={12} sm={12} md={6}>
+                <DialogContent>
+                  <TextInput name="name" label="Nome" required />
+                </DialogContent>
+              </Grid>
+
+              <Grid xs={12} sm={12} md={6}>
+                <DialogContent>
+                  <TextInput name="email" label="E-mail" required />
+                </DialogContent>
+              </Grid>
+
+              <Grid xs={12} sm={12} md={6}>
+                <DialogContent>
+                  <TextInputPhone name="phone" label="Telefone" required />
+                </DialogContent>
+              </Grid>
+
+              <Grid xs={12} sm={12} md={6}>
+                <DialogContent>
+                  <TextInput name="city_id" label="Cidade" required />
+                </DialogContent>
+              </Grid>
             </Grid>
 
             <Grid xs={12} sm={12} md={6}>
               <DialogContent>
-                <TextInput name="email" label="E-mail" required />
+                <Button
+                  style={{ color: "red", margin: "5px" }}
+                  variant="contained"
+                  startIcon={<SecurityOutlined />}
+                  size="medium"
+                  onClick={() => passwordChange("password")}
+                >
+                  Segurança
+                </Button>
               </DialogContent>
             </Grid>
 
-            <Grid xs={12} sm={12} md={6}>
-              <DialogContent>
-                <TextInput name="phone" label="Telefone" required />
-              </DialogContent>
-            </Grid>
+            <div className={classes.divImage}>
+              <Grid xs={6} sm={6} md={6}>
+                <DialogContent>
+                  <img
+                    src={
+                      user.avatar
+                        ? `http://localhost:3333/company/${user.avatar}`
+                        : imageLocalPath || defaultImage
+                    }
+                    className={classes.logo}
+                  />
 
-            <Grid xs={12} sm={12} md={6}>
-              <DialogContent>
-                <AsyncSelect
-                  name="city_id"
-                  label="Cidade"
-                  required
-                  options={city.map((item) => ({
-                    id: item.id,
-                    text: item.description + " - " + item.state[0].initials,
-                  }))}
-                />
-              </DialogContent>
-            </Grid>
-          </Grid>
+                  <input
+                    // hidden={data.action === "view"}
+                    type="file"
+                    onChange={(event) => {
+                      if (event.target.files && event.target.files[0]) {
+                        setFieldValue("avatar", null);
+                        setImage(event.target.files[0]);
+                        setImageLocalPath(
+                          URL.createObjectURL(event.target.files[0])
+                        );
+                      }
+                    }}
+                  />
+                </DialogContent>
+              </Grid>
+            </div>
 
-          <div className={classes.divImage}>
-            <Grid xs={6} sm={6} md={6}>
-              <img
-                src={
-                  user.avatar
-                    ? `http://localhost:3333/company/${user.avatar}`
-                    : imageLocalPath || defaultImage
-                }
-                className={classes.logo}
-              />
-
-              <input
-                // hidden={data.action === "view"}
-                type="file"
-                onChange={(event) => {
-                  if (event.target.files && event.target.files[0]) {
-                    setFieldValue("avatar", null);
-                    setImage(event.target.files[0]);
-                    setImageLocalPath(
-                      URL.createObjectURL(event.target.files[0])
-                    );
-                  }
+            <DialogActions>
+              <Button
+                onClick={() => {
+                  hide();
+                  setImageLocalPath(undefined);
+                  setImage(undefined);
                 }}
-              />
-            </Grid>
-          </div>
+                color="primary"
+              >
+                Retornar
+              </Button>
 
-          <DialogActions>
-            <Button
-              onClick={() => {
-                hide();
-                setImageLocalPath(undefined);
-                setImage(undefined);
-              }}
-              color="primary"
-            >
-              Retornar
-            </Button>
+              <Button type="submit" className={classes.buttonAdd}>
+                Gravar
+              </Button>
+            </DialogActions>
+          </Form>
+        )}
+      </Formik>
 
-            <Button type="submit" className={classes.buttonAdd}>
-              Gravar
-            </Button>
-          </DialogActions>
-        </Form>
-      )}
-    </Formik>
+      <PasswordDialog
+        dialogData={passwordDialogData}
+        visible={passwordOpenDialog}
+        hide={() => passwordSetOpenDialog(false)}
+        refresh={() => setRefresh(Math.random())}
+      />
+    </>
   );
 };
 
