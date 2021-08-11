@@ -17,6 +17,7 @@ import TextInputPassword from "../../../components/TextInputPassword";
 import Select from "../../../components/Select";
 import defaultUser from "../../../assets/default_user.png";
 import AsyncSelect from "../../../components/AsyncSelect";
+import TextInputPhone from "../../../components/TextInputPhone";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -118,10 +119,20 @@ const UserDialog: React.FC<Props> = ({
           }
         }}
         validationSchema={Yup.object({
-          /* description: Yup.string().required(
-            "É necessário informar a descrição"
-          ), */
+          name: Yup.string().required("Nome de usuário obrigatório!"),
+          email: Yup.string()
+            .email("Endereço de e-mail inválido!")
+            .required("O endereço de e-mail é obrigatório!"),
+          phone: Yup.string()
+            .required("Número de telefone obrigatório!")
+            .min(14, "Número de telefone inválido!"),
+          password: Yup.string()
+            .required("A senha é obrigatória!")
+            .min(6, "A senha deve conter no mínimo 6 dígitos!"),
         })}
+        validateOnBlur={false}
+        validateOnChange={true}
+        enableReinitialize={true}
       >
         {({ values, setFieldValue }) => (
           <Form>
@@ -138,19 +149,7 @@ const UserDialog: React.FC<Props> = ({
             </DialogContent>
 
             <DialogContent>
-              <TextInputPassword name="password" label="Senha" required />
-            </DialogContent>
-
-            <DialogContent>
-              <TextInputPassword
-                name="confirm-password"
-                label="Confirme sua senha"
-                required
-              />
-            </DialogContent>
-
-            <DialogContent>
-              <TextInput name="phone" label="Telefone" required />
+              <TextInputPhone name="phone" label="Telefone" required />
             </DialogContent>
 
             <DialogContent>
@@ -182,20 +181,7 @@ const UserDialog: React.FC<Props> = ({
                     ? `http://25.99.194.144:3333/avatar/${values.avatar}`
                     : imageLocalPath || defaultUser
                 }
-                style={{ width: 80, marginRight: 8 }}
-              />
-
-              <input
-                type="file"
-                onChange={(event) => {
-                  if (event.target.files && event.target.files[0]) {
-                    setFieldValue("avatar", null);
-                    setImage(event.target.files[0]);
-                    setImageLocalPath(
-                      URL.createObjectURL(event.target.files[0])
-                    );
-                  }
-                }}
+                style={{ width: 120, marginRight: 8, alignItems: "center" }}
               />
             </DialogContent>
 

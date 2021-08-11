@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import TextInputPassword from "../../components/TextInputPassword";
 import Loader from "../../components/Loader";
 import PasswordDialog from "./dialogForm";
+import CompanyDialog from "./CompanyForm";
 import { Person, Store } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -75,6 +76,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Login: React.FC = () => {
   const classes = useStyles();
   const [openDialog, setOpenDialog] = useState(false);
+  const [CompanyOpenDialog, setCompanyOpenDialog] = useState(false);
   const [dialogData, setDialogData] = useState<any>({});
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [selectedItemIndex, setSelectedItemIndex] = useState("");
@@ -86,8 +88,12 @@ const Login: React.FC = () => {
     setAnchorEl(null);
   };
 
-  function showTypes(id: string, action: "view") {
+  function showTypes(id: string, action: "password") {
     setOpenDialog(true);
+  }
+
+  function showCompanyRegister(id: string, action: "company") {
+    setCompanyOpenDialog(true);
   }
 
   return (
@@ -104,7 +110,7 @@ const Login: React.FC = () => {
               setLoading(true);
               try {
                 await signIn(values).catch((error) =>
-                  toast.error("Usuário ou senha incorretos!")
+                  toast.error(error.response.data)
                 );
               } catch (error) {
                 toast.error("Erro ao fazer login");
@@ -141,8 +147,12 @@ const Login: React.FC = () => {
                   </Grid>
                 </Paper>
                 <a className={classes.aLosePassword}>
-                  <Button variant="text" color="secondary" onClick={() => showTypes(selectedItemIndex, "view")}>
-                  <strong> Esqueci minha senha </strong>
+                  <Button
+                    variant="text"
+                    color="secondary"
+                    onClick={() => showTypes(selectedItemIndex, "password")}
+                  >
+                    <strong> Esqueci minha senha </strong>
                   </Button>
                 </a>
               </Form>
@@ -157,9 +167,9 @@ const Login: React.FC = () => {
           </Typography>
           <div>
             <Button
+              onClick={() => showCompanyRegister(selectedItemIndex, "company")}
               className={classes.a}
               color="primary"
-              href="/companyRegister"
               variant="contained"
             >
               <Store />
@@ -184,6 +194,13 @@ const Login: React.FC = () => {
         dialogData={dialogData}
         visible={openDialog}
         hide={() => setOpenDialog(false)}
+        refresh={() => setRefresh(Math.random())}
+      />
+
+      <CompanyDialog
+        dialogData={dialogData}
+        visible={CompanyOpenDialog}
+        hide={() => setCompanyOpenDialog(false)}
         refresh={() => setRefresh(Math.random())}
       />
     </>

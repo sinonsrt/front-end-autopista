@@ -12,8 +12,14 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextInput from "../../components/TextInput";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import TextInputPassword from "../../components/TextInputPassword";
 import api from "../../services/api";
 import { toast } from "react-toastify";
+import Select from "../../components/Select";
+import AsyncSelect from "../../components/AsyncSelect";
+import CheckBox from "../../components/CheckBox";
+import defaultImage from "../../../assets/default_image.png";
+import { useAuth } from "../../hooks/Auth";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,9 +52,6 @@ const useStyles = makeStyles((theme: Theme) =>
     formControlLabel: {
       marginTop: theme.spacing(1),
     },
-    title: {
-      margin: "5pt"
-    }
   })
 );
 
@@ -86,6 +89,7 @@ const PasswordDialog: React.FC<Props> = ({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setServices({ ...services, [event.target.name]: event.target.checked });
   };
+  const { user } = useAuth();
 
   return (
     <Dialog
@@ -103,45 +107,35 @@ const PasswordDialog: React.FC<Props> = ({
             formData.append(key, values[key] === null ? "" : values[key])
           );
           api
-            .post("userCodes", formData)
+            .put(`changePassword/${user.id}`, formData)
             .then((response) => {
               hide();
               toast.success(response.data);
             })
-            .catch((error) => {
-              toast.error('Cupôm avaliativo inválido ou expirado!')
-            });
+            .catch((error) => toast.error("Erro ao realizar alteração senha"));
         }}
-        validationSchema={Yup.object({
-          code: Yup.string().required("Cupôm Avaliativo obrigatório!"),
-        })}
-        validateOnBlur={false}
-        validateOnChange={true}
-        enableReinitialize={true}
       >
         {({ values, setFieldValue }) => (
           <Form className={classes.form}>
-            <Typography variant="h5" align="center" className={classes.title}>AVALIAR EMPRESA</Typography>
+            <Typography variant="h5" className={classes.head}>
+              ALTERAÇÃO DE SENHA
+            </Typography>
 
-            <Grid container>
-              <Grid xs={6} sm={6} md={6}>
-                <DialogContent>
-                  <TextInput name="code" label="Cupôm Avaliativo" required />
-                </DialogContent>
-              </Grid>
+            <DialogContent>
+              <TextInputPassword
+                name="current_password"
+                label="Senha atual"
+                required
+              />
+            </DialogContent>
 
-              <Grid xs={6} sm={6} md={6}>
-                <DialogContent>
-                  <TextInput name="star" label="Avaliação" required helperText="Avaliações podem ser feitas com valores de 1 a 5"/>
-                </DialogContent>
-              </Grid>
-
-              <Grid xs={6} sm={6} md={6}>
-                <DialogContent>
-                  <TextInput name="comment" label="Comentário" required />
-                </DialogContent>
-              </Grid>
-            </Grid>
+            <DialogContent>
+              <TextInputPassword
+                name="new_password"
+                label="Nova senha"
+                required
+              />
+            </DialogContent>
 
             <DialogActions>
               <Button

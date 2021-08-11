@@ -8,7 +8,14 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { Edit, Delete, List, Search } from "@material-ui/icons";
+import {
+  Edit,
+  Delete,
+  List,
+  Search,
+  StarBorder,
+  Star,
+} from "@material-ui/icons";
 import TableFooter from "@material-ui/core/TableFooter";
 import {
   Button,
@@ -85,6 +92,7 @@ const Rating: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
   const [refresh, setRefresh] = useState(0);
+  const [search, setSearch] = useState("");
   const columns = [
     { description: "Autor", width: "20%" },
     { description: "Cupôm Avaliativo", width: "15%" },
@@ -99,10 +107,10 @@ const Rating: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("userCodes?order=id&type=asc")
+      .get(`userCodes?order=id&type=asc&search=${search}`)
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  }, [search, refresh]);
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -125,7 +133,7 @@ const Rating: React.FC = () => {
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
   }
-
+  console.log(data);
   return (
     <>
       <div className={classes.titleLogo}>
@@ -137,7 +145,11 @@ const Rating: React.FC = () => {
 
       <Grid container direction="row" justify="space-around">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por código avaliativo..." />
+          <TextInputSearch
+            placeholder="Buscar por código avaliativo..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value || "")}
+          />
         </Grid>
 
         <Grid md={1}>
@@ -149,7 +161,9 @@ const Rating: React.FC = () => {
               api
                 .get(`ratingReports`)
                 .then((response) => {
-                  window.open(`${process.env.REACT_APP_API_URL}/${response.data}`);
+                  window.open(
+                    `${process.env.REACT_APP_API_URL}/${response.data}`
+                  );
                 })
                 .catch((error) =>
                   toast.error("Nenhum registro encontrado com esse filtro ")
@@ -181,8 +195,21 @@ const Rating: React.FC = () => {
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.code}</TableCell>
                 <TableCell>{item.comment}</TableCell>
-                <TableCell>{item.created_at.split("T")[0]}</TableCell>
-                <TableCell>{item.star}</TableCell>
+                <TableCell>
+                  {item.created_at
+                    ? item.created_at
+                        .split("T")[0]
+                        .split("-")
+                        .reverse()
+                        .join("/")
+                    : ""}
+                </TableCell>
+                <TableCell align="center">
+                  <Typography variant="h6" display="inline">
+                    <Star color="secondary" />
+                    <strong>{item.star}/5</strong>
+                  </Typography>
+                </TableCell>
                 <TableCell>{item.company_name}</TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>

@@ -70,7 +70,7 @@ const CodeDialog: React.FC<Props> = ({
   
   useEffect(() => {
     api
-      .get("http://localhost:3333/companies?order=id&type=asc&company_type=Posto de combustivel")
+      .get("companies?order=id&type=asc&company_type=Posto de combustivel")
       .then((response) => setCompany(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
   }, []);
@@ -104,7 +104,7 @@ const CodeDialog: React.FC<Props> = ({
                   hide();
                   toast.success("Cupom Avaliativo cadastrado com sucesso");
                 })
-                .catch((error) => toast.error("Erro ao alterar Cupom Avaliativo"));
+                .catch((error) => toast.error(error.response.data));
               break;
             default:
               toast.error("Erro ao realizar operação");
@@ -128,7 +128,7 @@ const CodeDialog: React.FC<Props> = ({
             </DialogContent>
 
             <DialogContent>
-              <AsyncSelect
+              <Select
                     name="company_id"
                     label="Empresa"
                     required

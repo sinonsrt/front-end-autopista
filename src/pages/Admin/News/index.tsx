@@ -80,8 +80,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       marginTop: "4%",
-      marginLeft: "1%"
-    }
+      marginLeft: "1%",
+    },
   })
 );
 
@@ -90,6 +90,7 @@ const News: React.FC = () => {
   const [data, setData] = useState<any[]>([]);
   const [dialogData, setDialogData] = useState<any>({});
   const [refresh, setRefresh] = useState(0);
+  const [search, setSearch] = useState("");
   const columns = [
     { description: "Titulo", width: "40%" },
     { description: "Autor", width: "40%" },
@@ -102,10 +103,10 @@ const News: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("newsPaper")
+      .get(`newsPaper?search=${search}`)
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  }, [search]);
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -145,16 +146,20 @@ const News: React.FC = () => {
 
   return (
     <>
-    <div className={classes.titleLogo}>
-      <img src={NewsLogo} alt="Empresas" />
-      <Typography variant="h5" align="center" className={classes.title}>
-        NOTÍCIAS
-      </Typography>
-    </div>
+      <div className={classes.titleLogo}>
+        <img src={NewsLogo} alt="Empresas" />
+        <Typography variant="h5" align="center" className={classes.title}>
+          NOTÍCIAS
+        </Typography>
+      </div>
 
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por título..." />
+          <TextInputSearch
+            placeholder="Buscar por título..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value || "")}
+          />
         </Grid>
         <Grid md={2} className={classes.textCenter}>
           <Button

@@ -8,7 +8,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import {Delete, Edit, List, Search, Star } from "@material-ui/icons";
+import { Delete, Edit, List, Search, Star } from "@material-ui/icons";
 import TableFooter from "@material-ui/core/TableFooter";
 import CompanyDialog from "./dialogForm";
 import {
@@ -56,7 +56,8 @@ const useStyles = makeStyles((theme: Theme) =>
       color: "#212121",
     },
     img: {
-      width: "20%",
+      width: "50%",
+      borderRadius: "15pt",
     },
     spaceIcon: {
       marginRight: theme.spacing(1),
@@ -82,21 +83,22 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       marginTop: "4%",
-      marginLeft: "1%"
-    }
+      marginLeft: "1%",
+    },
   })
 );
 
 const GasStation: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
   const [dialogData, setDialogData] = useState<any>({});
   const [refresh, setRefresh] = useState(0);
   const columns = [
     { description: "", width: "30%" },
     { description: "", width: "15%" },
-    { description: "", width: "15%" },
-    { description: "POSTOS DE COMBUSTIVEL", width: "25%" },
+    { description: "", width: "25%" },
+    { description: "", width: "25%" },
     { description: "", width: "20%" },
     { description: "Ações", width: "0%" },
   ];
@@ -106,10 +108,12 @@ const GasStation: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("companies?order=id&type=asc&company_type=Posto de combustivel&confirmed=true")
+      .get(
+        `companies?order=id&type=asc&company_type=Posto de combustivel&confirmed=true&search=${search}`
+      )
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  }, [search]);
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -136,18 +140,21 @@ const GasStation: React.FC = () => {
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
   }
-
   return (
     <>
-    <div className={classes.titleLogo}>
-      <img src={CompanyLogo} alt="Empresas" />
-      <Typography variant="h5" align="center" className={classes.title}>
-        POSTOS DE COMBUSTÍVEL
-      </Typography>
-    </div>
+      <div className={classes.titleLogo}>
+        <img src={CompanyLogo} alt="Empresas" />
+        <Typography variant="h5" align="center" className={classes.title}>
+          POSTOS DE COMBUSTÍVEL
+        </Typography>
+      </div>
       <Grid container direction="row" justify="space-around">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por nome..." />
+          <TextInputSearch
+            placeholder="Buscar por nome..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value || "")}
+          />
         </Grid>
       </Grid>
 
@@ -168,20 +175,34 @@ const GasStation: React.FC = () => {
           <TableBody>
             {data.map((item) => (
               <TableRow key={item.id}>
-              <TableCell>
-                {" "}
-                <img
-                  src={`http://localhost:3333/company/${item.avatar}`}
-                  alt=""
-                  className={classes.img}
-                />{" "}
-              </TableCell>
-                <TableCell><strong> {item.company_name} <br /> {item.cnpj} </strong></TableCell>
-                <TableCell align="center" >{item.address} - {item.number} <br/> <strong>{item.description} - {item.initials}</strong> </TableCell>
-                <TableCell>{item.phone}</TableCell>
                 <TableCell>
-                  <Star />
-                  {item.stars}/5
+                  {" "}
+                  <img
+                    src={`http://localhost:3333/company/${item.avatar}`}
+                    alt=""
+                    className={classes.img}
+                  />{" "}
+                </TableCell>
+                <TableCell align="center">
+                  <strong>
+                    {" "}
+                    {item.company_name} <br /> {item.cnpj}{" "}
+                  </strong>
+                </TableCell>
+                <TableCell align="center">
+                  {item.address} - {item.number} <br />{" "}
+                  <strong>
+                    {item.district} <br /> {item.description} - {item.initials}
+                  </strong>{" "}
+                </TableCell>
+                <TableCell align="center">
+                  {item.phone} <br /> {item.email}
+                </TableCell>
+                <TableCell align="center">
+                  <Typography variant="h5" display="inline">
+                    <Star color="secondary" />
+                    <strong>{item.stars}/5</strong>
+                  </Typography>
                 </TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>

@@ -4,7 +4,6 @@ import Route from './Route';
 
 import Login from '../pages/Login';
 import Register from '../pages/Register';
-import CompanyRegister from '../pages/CompanyRegister';
 
 import AccessLevel from '../pages/Admin/AccessLevel'
 import WorkedDay from '../pages/Admin/WorkedDay'
@@ -27,7 +26,6 @@ const Routes: React.FC = () => (
     <Switch>
         <Route path="/" exact component={Login} title="Login" />
         <Route path="/register" exact component={Register} title="Register" />
-        <Route path="/companyRegister" exact component={CompanyRegister} title="CompanyRegister" />
 
         <Route path="/aboutUs" exact component={AboutUs} title="AboutUs" isPrivate />
         <Route path="/serviceProvider" exact component={ServiceProvider} title="ServiceProvider" isPrivate />

@@ -8,7 +8,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { Edit, Delete, List, Search } from "@material-ui/icons";
+import { Edit, Delete, List, Search, Check, HighlightOff } from "@material-ui/icons";
 import TableFooter from "@material-ui/core/TableFooter";
 import CompanyDialog from "./dialogForm";
 import {
@@ -80,8 +80,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       marginTop: "4%",
-      marginLeft: "1%"
-    }
+      marginLeft: "1%",
+    },
   })
 );
 
@@ -90,12 +90,15 @@ const CompanyConfirm: React.FC = () => {
   const [data, setData] = useState<any[]>([]);
   const [dialogData, setDialogData] = useState<any>({});
   const [refresh, setRefresh] = useState(0);
+  const [search, setSearch] = useState("");
   const columns = [
-    { description: "Razão Social", width: "30%" },
-    { description: "CNPJ", width: "15%" },
-    { description: "Tipo", width: "25%" },
-    { description: "Telefone", width: "15%" },
-    { description: "Data de cadastro", width: "20%" },
+    { description: "Razão Social", width: "25%" },
+    { description: "CNPJ", width: "20%" },
+    { description: "Tipo", width: "20%" },
+    { description: "Cidade", width: "20%" },
+    { description: "Telefone", width: "20%" },
+    { description: "Data de cadastro", width: "15%" },
+    { description: "Confirmado", width: "5%" },
     { description: "Ações", width: "0%" },
   ];
   const [openDialog, setOpenDialog] = useState(false);
@@ -104,10 +107,10 @@ const CompanyConfirm: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("companies?order=id&type=asc&confirmed=false")
+      .get(`companies?order=id&type=asc&confirmed=false&search=${search}`)
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  }, [search, refresh]);
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -122,7 +125,7 @@ const CompanyConfirm: React.FC = () => {
 
   function handleDelete(id: string) {
     api
-      .delete(`companies/${id}`)
+      .delete(`destroyCompany/${id}`)
       .then(() => {
         toast.success("Registro excluído com sucesso");
         setRefresh(Math.random());
@@ -147,15 +150,11 @@ const CompanyConfirm: React.FC = () => {
   }
 
   function confirmCompany(id: string, action: "confirm") {
-    console.log('entrou no cnfirm')
     api
       .get(`companyConfirm/${id}`)
       .then((response) => {
-        setDialogData({
-          ...response.data,
-          action: action,
-        });
-        setOpenDialog(true);
+        setRefresh(Math.random())
+        toast.success(response.data)
       })
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
     handleClose();
@@ -163,16 +162,20 @@ const CompanyConfirm: React.FC = () => {
 
   return (
     <>
-    <div className={classes.titleLogo}>
-      <img src={CompanyLogo} alt="Empresas" />
-      <Typography variant="h5" align="center" className={classes.title}>
-        CONFIRMAÇÃO DE EMPRESAS
-      </Typography>
-    </div>
+      <div className={classes.titleLogo}>
+        <img src={CompanyLogo} alt="Empresas" />
+        <Typography variant="h5" align="center" className={classes.title}>
+          CONFIRMAÇÃO DE EMPRESAS
+        </Typography>
+      </div>
 
       <Grid container direction="row" justify="space-around">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por razão social..." />
+          <TextInputSearch
+            placeholder="Buscar por razão social..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value || "")}
+          />
         </Grid>
       </Grid>
 
@@ -195,7 +198,8 @@ const CompanyConfirm: React.FC = () => {
               <TableRow key={item.id}>
                 <TableCell>{item.company_name}</TableCell>
                 <TableCell>{item.cnpj}</TableCell>
-                <TableCell>{item.description}</TableCell>
+                <TableCell>{item.type}</TableCell>
+                <TableCell>{item.description + "-" + item.initials}</TableCell>
                 <TableCell>{item.phone}</TableCell>
                 <TableCell>
                   {item.created_at
@@ -204,7 +208,15 @@ const CompanyConfirm: React.FC = () => {
                         .split("-")
                         .reverse()
                         .join("/")
-                    : ""}</TableCell>
+                    : ""}
+                </TableCell>
+                <TableCell align="center">
+                  {item.confirmed ? (
+                    <Check style={{ color: "green" }} />
+                  ) : (
+                    <HighlightOff style={{ color: "red" }} />
+                  )}
+                </TableCell>
                 <TableCell align="center">
                   <IconButton onClick={(event) => handleClick(event, item.id)}>
                     <List />

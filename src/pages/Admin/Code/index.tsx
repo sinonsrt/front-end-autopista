@@ -80,14 +80,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       marginTop: "4%",
-      marginLeft: "1%"
-    }
+      marginLeft: "1%",
+    },
   })
 );
 
 const Code: React.FC = () => {
   const classes = useStyles();
   const [data, setData] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
   const [dialogData, setDialogData] = useState<any>({});
   const [refresh, setRefresh] = useState(0);
   const columns = [
@@ -102,10 +103,10 @@ const Code: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("codes")
+      .get(`codes?search=${search}`)
       .then((response) => setData(response.data))
       .catch((error) => toast.error("Não foi possível efetuar a consulta!"));
-  }, [refresh]);
+  }, [search, refresh]);
 
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -145,16 +146,20 @@ const Code: React.FC = () => {
 
   return (
     <>
-    <div className={classes.titleLogo}>
-      <img src={CodeLogo} alt="Empresas" />
-      <Typography variant="h5" align="center" className={classes.title}>
-        CÓDIGO AVALIATIVO
-      </Typography>
-    </div>
-      
+      <div className={classes.titleLogo}>
+        <img src={CodeLogo} alt="Empresas" />
+        <Typography variant="h5" align="center" className={classes.title}>
+          CÓDIGO AVALIATIVO
+        </Typography>
+      </div>
+
       <Grid container direction="row" justify="flex-start">
         <Grid md={10}>
-          <TextInputSearch placeholder="Buscar por cupôm avaliativo..." />
+          <TextInputSearch
+            placeholder="Buscar por cupôm avaliativo..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value || "")}
+          />
         </Grid>
         <Grid md={2} className={classes.textCenter}>
           <Button
