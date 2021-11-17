@@ -408,7 +408,7 @@ const CompanyDialog: React.FC<Props> = ({
                       height="250"
                       loading="lazy"
                       className={classes.map}
-                      src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCARVw8BxECC731e9oN2A9-zTV6TbyVqM0&q=${`${dialogData.address
+                      src={`https://www.google.com/maps/embed/v1/place?key=//CHAVEGOOGLE&q=${`${dialogData.address
                         .trim()
                         .replaceAll(" ", "+")}+${dialogData.number
                         .toString()
